@@ -1,5 +1,5 @@
 
-project "CoreLib"
+project "EngineCore"
 
     kind "StaticLib"       
 
@@ -9,4 +9,7 @@ project "CoreLib"
 
     zpm.export [[
         includedirs "core/include/"
+        flags "C++11"
     ]]
+	
+	

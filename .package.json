@@ -8,6 +8,10 @@
             {
                 "name": "Zefiros-Software/GoogleTest",
                 "version": "@head"
+            },
+			{
+                "name": "Zefiros-Software/CoreLib",
+                "version": "@head"
             }
         ]
     }
