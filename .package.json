@@ -5,10 +5,6 @@
             "Zefiros-Software/Zefiros-Defaults"
         ],
         "requires": [
-            {
-                "name": "Zefiros-Software/GoogleTest",
-                "version": "@head"
-            },
 			{
                 "name": "Zefiros-Software/CoreLib",
                 "version": "@head"

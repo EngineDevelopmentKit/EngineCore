@@ -23,67 +23,87 @@
 -- @endcond
 --]]
 
-local zefiros = require( "Zefiros-Software/Zefiros-Defaults", "@head" )
-
 workspace "EngineDevelopmentKit"
-	
-	zpm.uses "Zefiros-Software/CoreLib" 
-
-	zefiros.setDefaults( "engineCore" )
-	
-	project "Engine"
-
-		kind "WindowedApp"
-		flags "WinMain"
-	
-		configurations { "Debug", "Release", "OptimisedDebug" }
-	
-		platforms { "x86_64", "x86" }
-	
-		location( "engineCore/" )
-		objdir "bin/obj/"
-
-		vectorextensions "SSE"
-		warnings "Extra"
-	
-		flags {
-		"Unicode",
-		"C++11"
-		}
-	
-		links "engineCore"
-        
-		filter "platforms:x86"
-			targetdir "bin/x86/"
-			debugdir "bin/x86/"
-			architecture "x86"
     
-		filter "platforms:x86_64"
-			targetdir "bin/x86_64/"
-			debugdir "bin/x86_64/"
-			architecture "x86_64"
-        
-		filter "*Debug"
-			targetsuffix "d"
-			defines "DEBUG"
+    configurations { "Debug", "Release", "OptimisedDebug" }
+    platforms { "x86_64", "x86" }
+    
+    objdir "bin/obj/"
+    
+    vectorextensions "SSE"
+    warnings "Extra"
+    
+    flags {
+        "Unicode",
+        "C++11"
+      }
+     
+    filter "platforms:x86"
+        targetdir "bin/x86/"
+        debugdir "bin/x86/"
+        architecture "x86"
+    
+    filter "platforms:x86_64"
+        targetdir "bin/x86_64/"
+        debugdir "bin/x86_64/"
+        architecture "x86_64"
+      
+    filter "*Debug"
+        targetsuffix "d"
+        defines "DEBUG"
 
-			flags { "Symbols" }
-			optimize "Off"
+        flags { "Symbols" }
+        optimize "Off"
         
-		filter "*OptimisedDebug"
-			targetsuffix "od"
-			flags "LinkTimeOptimization"
-			optimize "Speed"
+    filter "*OptimisedDebug"
+        targetsuffix "od"
+        flags "LinkTimeOptimization"
+        optimize "Speed"
+        
+    filter "*Release"
+        optimize "Speed"
+        defines "NDEBUG"
+       
+    filter {}
+    
+    project "EngineCore"
+     
+		targetname( "EngineCore" )
+        kind "StaticLib"     
+        
+        location( "engineCore/" )
+        
+        zpm.uses "Zefiros-Software/CoreLib"
+            
+		includedirs {
+			"engineCore/include/"
+			}				
+		     
+        files { 
+           "engineCore/include/**.hpp",
+           "engineCore/include/**.h",
+           "engineCore/src/**.cpp"
+            }
+                
+    project "Engine"
 
-		filter "*Release"
-			optimize "Speed"
-			defines "NDEBUG"
+        kind "WindowedApp"
+        flags "WinMain"
+        targetname( "Engine" )
+    
+        links "EngineCore"
         
-		filter {}
-		
-		files { 
+        zpm.uses "Zefiros-Software/CoreLib"
+    
+        location( "engine/" )
+        
+        includedirs {
+			"engineCore/include/"
+			}				
+        
+        files { 
             "engine/main.cpp", 
             "engine/**.rc"
           } 
 
-	
+    
