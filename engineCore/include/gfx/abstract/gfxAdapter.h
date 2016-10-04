@@ -9,7 +9,7 @@
 
 namespace EDK
 {
-    namespace GFX
+    namespace Graphics
     {
         struct DisplayMode
         {

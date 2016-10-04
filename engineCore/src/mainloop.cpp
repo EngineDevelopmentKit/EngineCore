@@ -36,6 +36,6 @@ void EDK::MainLoop( S32 argc, char **argv )
 
     while ( gameInstance.IsRunning() )
     {
-
+        gameInstance.Update();
     }
 }
