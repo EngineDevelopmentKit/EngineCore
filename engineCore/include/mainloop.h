@@ -24,33 +24,16 @@
 * @endcond
 */
 
-#include "mainloop.h"
 
-#include "preproc/os.h"
+#pragma once
+#ifndef __EDK_MAINLOOP_H__
+#define __EDK_MAINLOOP_H__
 
-#include <stdlib.h>
+#include "common/types.h"
 
-#if OS_IS_WINDOWS
-
-#include <windows.h>
-
-#pragma warning(suppress: 28251)
-int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline, int iCmdshow )
+namespace EDK
 {
-    // Suppress warnings
-    ( void )hInstance;
-    ( void )hPrevInstance;
-    ( void )pScmdline;
-    ( void )iCmdshow;
-#else
-
-U32 main( S32 argc, char **argv )
-{
-    S32 __argc = argc;
-    char **__argv = argv;
-#endif
-    //start the new game instance and run it
-    EDK::MainLoop( __argc, __argv );
-
-    return 0;
+    void MainLoop( S32 argc, char **argv );
 }
+
+#endif
