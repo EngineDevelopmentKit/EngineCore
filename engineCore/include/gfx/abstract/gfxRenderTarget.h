@@ -34,42 +34,42 @@ namespace EDK
 {
     namespace Graphics
     {
-        class FrameBuffer;
+        enum class DataFormat;
 
         enum class BlendSource
         {
-            Blend_Zero = 1,
-            Blend_One = 2,
-            Blend_src_color = 3,
-            Blend_inv_src_color = 4,
-            Blend_dest_color = 5,
-            Blend_inv_dest_color = 6,
-            Blend_blendFactor = 7,
-            Blend_inv_blendFactor = 8,
-            Blend_src_alpha = 9,
-            Blend_inv_src_alpha = 10,
-            Blend_dest_alpha = 11,
-            Blend_inv_dest_alpha = 12,
+            BlendZero = 1,
+            BlendOne = 2,
+            BlendSrcColour = 3,
+            BlendInvSrcColour = 4,
+            BlendDestColour = 5,
+            BlendInvDestColour = 6,
+            BlendFactor = 7,
+            BlendInvBlendFactor = 8,
+            BlendSrcAlpha = 9,
+            BlendInvSrcAlpha = 10,
+            BlendDestAlpha = 11,
+            BlendInvDestAlpha = 12,
         };
 
         enum class BlendOperation
         {
-            BlendOp_add = 1,
-            BlendOp_subtract = 2,
-            BlendOp_rev_subtract = 3,
-            BlendOp_min = 4,
-            BlendOp_max = 5
+            BlendOpAdd = 1,
+            BlendOpSubtract = 2,
+            BlendOpRevSubtract = 3,
+            BlendOpMin = 4,
+            BlendOpMax = 5
         };
 
         enum ChannelTarget
         {
-            Channel_R = 0x01,
-            Channel_G = 0x02,
-            Channel_B = 0x04,
-            Channel_A = 0x08,
-            Channel_RG = ( Channel_R | Channel_G ),
-            Channel_RGB = ( Channel_R | Channel_G | Channel_B ),
-            Channel_RGBA = ( Channel_R | Channel_G | Channel_B | Channel_A )
+            ChannelR = 0x01,
+            ChannelG = 0x02,
+            ChannelB = 0x04,
+            ChannelA = 0x08,
+            ChannelRG = ( ChannelR | ChannelG ),
+            ChannelRGB = ( ChannelR | ChannelG | ChannelB ),
+            ChannelRGBA = ( ChannelR | ChannelG | ChannelB | ChannelA )
         };
 
         enum BlendStateFlags
@@ -91,13 +91,14 @@ namespace EDK
 
             ChannelTarget writeMask;
 
-            FrameBuffer *frameBuffer;
+            DataFormat renderTargetFormat;
         };
 
 
         struct RenderTargetState
         {
             U32 blendStateFlags;
+            U32 numRenderTargets;
 
             RenderTarget renderTargets[8];
         };
