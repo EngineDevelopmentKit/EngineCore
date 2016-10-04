@@ -27,11 +27,21 @@ namespace EDK
             FrontByCounterClockWise = 2
         };
 
+        enum InputPrimitives
+        {
+            PointList = 1,
+            LineList = 2,
+            TriangleList = 3
+        };
+
         struct RasterizerState
         {
             FillMode fillMode;
             CullMode cullMode;
             TriangleFaceMode faceMode;
+            InputPrimitives inputLayout;
+
+            U32 msaaSamples;
 
             bool lineAntiAliasing;
         };

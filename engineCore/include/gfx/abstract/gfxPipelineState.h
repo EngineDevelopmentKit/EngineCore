@@ -36,6 +36,7 @@ namespace EDK
         class PipelineSignature;
 
         struct RasterizerState;
+        struct DepthStencilState;
         struct RenderTargetState;
 
         class PipelineState
@@ -47,8 +48,9 @@ namespace EDK
 
         private:
 
-            ShaderProgram *mShaderProgram;
-            RasterizerState *mRasterizerState;
+            ShaderProgram     *mShaderProgram;
+            RasterizerState   *mRasterizerState;
+            DepthStencilState *mDepthStencilState;
             RenderTargetState *mRenderTargetState;
             PipelineSignature *mPipelineSignature;
         };

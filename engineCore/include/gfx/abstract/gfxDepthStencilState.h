@@ -8,7 +8,9 @@ namespace EDK
 {
     namespace Graphics
     {
-        enum DepthCompareOperation
+        enum class DataFormat;
+
+        enum ComparisonOperation
         {
             DepthOpNever = 1,
             DepthOpLess = 2,
@@ -20,6 +22,26 @@ namespace EDK
             DepthOpAlways = 8
         };
 
+        enum StencilOperation
+        {
+            StencilOpKeep = 1,
+            StencilOpZero = 2,
+            StencilOpReplace = 3,
+            StencilOpIncr = 4,
+            StencilOpIncrSat = 5,
+            StencilOpDecr = 6,
+            StencilOpDecrSat = 7,
+            StencilOpInvert = 8
+        };
+
+        struct StencilTest
+        {
+            StencilOperation onStencilFail;
+            StencilOperation onStencilPassDepthFail;
+            StencilOperation onStencilDepthPass;
+            ComparisonOperation stencilCompareOp;
+        };
+
         struct DepthStencilState
         {
             bool enableDepthTest;
@@ -29,9 +51,16 @@ namespace EDK
             U8 stencilWriteMask;
             U8 stencilReadMask;
 
-            DepthCompareOperation depthTestOp;
+            F32 depthBias;
+            F32 depthBiasClamp;
+            F32 slopeScaledDepthBias;
 
+            DataFormat depthBufferFormat;
 
+            ComparisonOperation depthTestOp;
+
+            StencilTest backFaceStencilTest;
+            StencilTest frontFaceStencilTest;
         };
     }
 }
