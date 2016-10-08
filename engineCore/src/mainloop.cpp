@@ -28,14 +28,17 @@
 
 #include "common/program.h"
 
+#include <SFML/Window.hpp>
+
 void EDK::MainLoop( S32 argc, char **argv )
 {
     Program gameInstance( argc, argv );
-
+    
     gameInstance.Init();
-
+    
     while ( gameInstance.IsRunning() )
     {
         gameInstance.Update();
+        
     }
 }

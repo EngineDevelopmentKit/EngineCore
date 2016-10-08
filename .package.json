@@ -5,10 +5,15 @@
             "Zefiros-Software/Zefiros-Defaults"
         ],
         "requires": [
-			{
+	    {
                 "name": "Zefiros-Software/CoreLib",
                 "version": "@head"
+            },
+            {   
+                "name": "Zefiros-Software/SFML",
+                "version": "2.4.0"
             }
+            
         ]
     }
 }

@@ -68,17 +68,17 @@ workspace "EngineDevelopmentKit"
     
     project "EngineCore"
      
-		targetname( "EngineCore" )
+        targetname( "EngineCore" )
         kind "StaticLib"     
         
         location( "engineCore/" )
         
         zpm.uses "Zefiros-Software/CoreLib"
+        
+        includedirs {
+            "engineCore/include/"
+        }
             
-		includedirs {
-			"engineCore/include/"
-			}				
-		     
         files { 
            "engineCore/include/**.hpp",
            "engineCore/include/**.h",
@@ -94,12 +94,12 @@ workspace "EngineDevelopmentKit"
         links "EngineCore"
         
         zpm.uses "Zefiros-Software/CoreLib"
-    
+        
         location( "engine/" )
         
         includedirs {
-			"engineCore/include/"
-			}				
+                "engineCore/include/"
+            }
         
         files { 
             "engine/main.cpp", 
