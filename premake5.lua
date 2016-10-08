@@ -74,6 +74,7 @@ workspace "EngineDevelopmentKit"
         location( "engineCore/" )
         
         zpm.uses "Zefiros-Software/CoreLib"
+        zpm.uses "Zefiros-Software/SFML"
         
         includedirs {
             "engineCore/include/"
@@ -84,6 +85,12 @@ workspace "EngineDevelopmentKit"
            "engineCore/include/**.h",
            "engineCore/src/**.cpp"
             }
+         
+         -- TEMP TEST
+        
+        --includedirs{ "/Users/koenvisscher/Documents/Code/EngineDevelopmentKit/EngineCore/tt_lib/include"}
+        
+        -- END TEMP
                 
     project "Engine"
 
@@ -94,8 +101,15 @@ workspace "EngineDevelopmentKit"
         links "EngineCore"
         
         zpm.uses "Zefiros-Software/CoreLib"
+        zpm.uses "Zefiros-Software/SFML"
         
         location( "engine/" )
+        
+        -- TEMP TEST
+        --linkoptions { "-F /Users/koenvisscher/Documents/Code/EngineDevelopmentKit/EngineCore/tt_lib/Frameworks -framework sfml-window -framework sfml-system"}
+        --includedirs{ "/Users/koenvisscher/Documents/Code/EngineDevelopmentKit/EngineCore/tt_lib/include"}
+        
+        -- END TEMP
         
         includedirs {
                 "engineCore/include/"

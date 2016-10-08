@@ -36,9 +36,24 @@ void EDK::MainLoop( S32 argc, char **argv )
     
     gameInstance.Init();
     
+    sf::Window window(sf::VideoMode(800, 600), "SFML window");
+    
     while ( gameInstance.IsRunning() )
     {
+        // Event processing
+    	sf::Event event;
+        while (window.pollEvent(event))
+        {
+            // Request for closing the window
+            if (event.type == sf::Event::Closed)
+            {
+                window.close();
+            }   
+        }
+        
         gameInstance.Update();
         
+        window.setActive();
+        window.display();   
     }
 }
