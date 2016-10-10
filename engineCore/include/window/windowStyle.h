@@ -25,57 +25,23 @@
 */
 
 #pragma once
-#ifndef __EDK_WINDOW_H__
-#define __EDK_WINDOW_H__
-
-#include "common/types.h"
-
-#include "math/scalar/vec2i.h"
-
-#include "window/abstract/windowHandle.h"
-
-#include <string>
+#ifndef __EDK_WINDOWSTYLE_H__
+#define __EDK_WINDOWSTYLE_H__
 
 namespace EDK
 {
-    class IWindow
+    namespace Window
     {
-    public:
-
-        IWindow();
-        virtual ~IWindow() {}
-
-        virtual void Show() = 0;
-        virtual void Hide() = 0;
-        virtual void Close() = 0;
-        virtual void Open( const Vec2I &size, const std::string &title ) = 0;
-
-        virtual bool IsOpen() const = 0;
-
-        virtual Vec2I GetSize() const = 0;
-        virtual Vec2I GetPosition() const = 0;
-
-        virtual void SetSize( const Vec2I &v ) = 0;
-        virtual void SetPosition( const Vec2I &v ) = 0;
-
-        virtual void SetMarginedMode( S32 mode ) = 0;
-        virtual void SetFullScreenMode( S32 mode ) = 0;
-        virtual void SetBorderlessMode( S32 mode ) = 0;
-
-        virtual void Release() = 0;
-        virtual void ProcessEvents() = 0;
-
-        virtual NativeWindowHandle GetNativeWindowHandle() const = 0;
-
-    protected:
-
-        virtual void OnShow() = 0;
-        virtual void OnHide() = 0;
-        virtual void OnClose() = 0;
-        virtual void OnResize() = 0;
-        virtual void OnReposition() = 0;
-
-    };
+        enum Style
+        {
+            Plain = 0x00, // The window has a plain style
+            CaptionBar = 0x01, // The window has a caption bar
+            Closable = 0x02 | CaptionBar, // The window is closable and has a caption bar
+            Resizable = 0x04 | CaptionBar, // the window is resizable and has a caption bar
+            Fullscreen = 0x08, // The window starts fullscreen
+            Default = Resizable | Closable // The window is resizable and closable
+        };
+    }
 }
 
 #endif

@@ -25,8 +25,8 @@
 */
 
 #pragma once
-#ifndef __EDK_WINDOW_H__
-#define __EDK_WINDOW_H__
+#ifndef __EDK_WINDOWHANDLE_H__
+#define __EDK_WINDOWHANDLE_H__
 
 #include "common/types.h"
 
@@ -34,39 +34,41 @@
 
 #if OS_IS_WINDOWS
 
-    struct HWND__;
+struct HWND__;
 
-    namespace EDK
-    {
-        typedef HWND__* NativeWindowHandle;
-    }
+namespace EDK
+{
+    typedef HWND__ *NativeWindowHandle;
+}
 
 #elif OS_IS_LINUX
 
-    namespace EDK
-    {
-        typedef U64 NativeWindowHandle;
-    }
+namespace EDK
+{
+    typedef U64 NativeWindowHandle;
+}
 
 #elif OS_IS_MACOS
 
-    namespace EDK
-    {
-        typedef void* NativeWindowHandle;
-    }
+namespace EDK
+{
+    typedef void *NativeWindowHandle;
+}
 
 #elif OS_IS_ANDROID
-    
-    namespace EDK
-    {
-        typedef void* NativeWindowHandle;
-    }
+
+namespace EDK
+{
+    typedef void *NativeWindowHandle;
+}
 
 #elif OS_IS_IOS
 
-    namespace EDK
-    {
-        typedef void* NativeWindowHandle;
-    }
+namespace EDK
+{
+    typedef void *NativeWindowHandle;
+}
+
+#endif
 
 #endif
