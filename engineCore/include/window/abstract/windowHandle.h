@@ -24,48 +24,49 @@
 * @endcond
 */
 
-#include "mainloop.h"
+#pragma once
+#ifndef __EDK_WINDOW_H__
+#define __EDK_WINDOW_H__
 
-#include "common/program.h"
+#include "common/types.h"
 
-#include "ui.h"
+#include "preproc/os.h"
 
-#include <iostream>
+#if OS_IS_WINDOWS
 
+    struct HWND__;
 
-int onClosing(uiWindow *w, void *windowAlive)
-{
-    *static_cast<bool *>(windowAlive) = false;
-	uiQuit();
-	return 1;
-}
-
-void EDK::MainLoop( S32 argc, char **argv )
-{
-    uiInitOptions o;
-	uiWindow *w;
-
-	memset(&o, 0, sizeof (uiInitOptions));
-	if (uiInit(&o) != NULL)
-		return;
-
-    bool windowActive = true;
-
-	w = uiNewWindow("Hello", 320, 240, 0);
-	uiWindowSetMargined(w, 1);
-    uiWindowOnClosing(w, onClosing,  &windowActive);
-
-	uiControlShow( uiControl(w) );
-    uiMainSteps();
-    
-    Program gameInstance( argc, argv );
-    
-    gameInstance.Init();
-    
-    while ( gameInstance.IsRunning() && windowActive )
+    namespace EDK
     {
-        gameInstance.Update();
-        
-        uiMainStep( 0 );
+        typedef HWND__* NativeWindowHandle;
     }
-}
+
+#elif OS_IS_LINUX
+
+    namespace EDK
+    {
+        typedef U64 NativeWindowHandle;
+    }
+
+#elif OS_IS_MACOS
+
+    namespace EDK
+    {
+        typedef void* NativeWindowHandle;
+    }
+
+#elif OS_IS_ANDROID
+    
+    namespace EDK
+    {
+        typedef void* NativeWindowHandle;
+    }
+
+#elif OS_IS_IOS
+
+    namespace EDK
+    {
+        typedef void* NativeWindowHandle;
+    }
+
+#endif

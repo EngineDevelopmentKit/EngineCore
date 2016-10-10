@@ -5,8 +5,12 @@
             "Zefiros-Software/Zefiros-Defaults"
         ],
         "requires": [
-			{
+	    {
                 "name": "Zefiros-Software/CoreLib",
+                "version": "@head"
+            },
+            {   
+                "name": "Zefiros-Software/libgui",
                 "version": "@head"
             }
         ]

@@ -24,48 +24,53 @@
 * @endcond
 */
 
-#include "mainloop.h"
+#pragma once
+#ifndef __EDK_WINDOW_H__
+#define __EDK_WINDOW_H__
 
-#include "common/program.h"
+#include "common/types.h"
 
-#include "ui.h"
+#include "math/scalar/vec2i.h"
 
-#include <iostream>
+#include "window/abstract/windowHandle.h"
 
+#include <string>
 
-int onClosing(uiWindow *w, void *windowAlive)
+namespace EDK
 {
-    *static_cast<bool *>(windowAlive) = false;
-	uiQuit();
-	return 1;
-}
-
-void EDK::MainLoop( S32 argc, char **argv )
-{
-    uiInitOptions o;
-	uiWindow *w;
-
-	memset(&o, 0, sizeof (uiInitOptions));
-	if (uiInit(&o) != NULL)
-		return;
-
-    bool windowActive = true;
-
-	w = uiNewWindow("Hello", 320, 240, 0);
-	uiWindowSetMargined(w, 1);
-    uiWindowOnClosing(w, onClosing,  &windowActive);
-
-	uiControlShow( uiControl(w) );
-    uiMainSteps();
-    
-    Program gameInstance( argc, argv );
-    
-    gameInstance.Init();
-    
-    while ( gameInstance.IsRunning() && windowActive )
+    class Window
     {
-        gameInstance.Update();
+    public:
+    
+        Window();
+       
+        virtual void Show() = 0;
+        virtual void Hide() = 0;
+        virtual void Close() = 0;
+        virtual void Open( const Vec2I &size, const std::string &title ) = 0;
         
-        uiMainStep( 0 );
+        virtual bool IsOpen() const = 0;
+        
+        virtual Vec2I GetSize() const = 0;
+        virtual Vec2I GetPosition() const = 0;
+        
+        virtual void SetSize( const Vec2I &v ) = 0;
+        virtual void SetPosition( const Vec2I &v ) = 0;
+        
+        virtual void SetMarginedMode( S32 mode ) = 0;
+        virtual void SetFullScreenMode( S32 mode ) = 0;
+        virtual void SetBorderlessMode( S32 mode ) = 0;
+        
+        NativeWindowHandle GetNativeWindowHandle() const = 0;
+        
+    protected:
+        
+        virtual void OnShow() = 0;
+        virtual void OnHide() = 0;
+        virtual void OnClose() = 0;
+        virtual void OnResize() = 0;
+        virtual void OnReposition() = 0;
     }
 }
+
+#endif

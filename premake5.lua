@@ -68,22 +68,29 @@ workspace "EngineDevelopmentKit"
     
     project "EngineCore"
      
-		targetname( "EngineCore" )
+        targetname( "EngineCore" )
         kind "StaticLib"     
         
         location( "engineCore/" )
         
         zpm.uses "Zefiros-Software/CoreLib"
+        zpm.uses "Zefiros-Software/libgui"
+        
+        includedirs {
+            "engineCore/include/"
+        }
             
-		includedirs {
-			"engineCore/include/"
-			}				
-		     
         files { 
            "engineCore/include/**.hpp",
            "engineCore/include/**.h",
            "engineCore/src/**.cpp"
             }
+         
+         -- TEMP TEST
+        
+        --includedirs{ "/Users/koenvisscher/Documents/Code/EngineDevelopmentKit/EngineCore/tt_lib/include"}
+        
+        -- END TEMP
                 
     project "Engine"
 
@@ -94,12 +101,19 @@ workspace "EngineDevelopmentKit"
         links "EngineCore"
         
         zpm.uses "Zefiros-Software/CoreLib"
-    
+        zpm.uses "Zefiros-Software/libgui"
+        
         location( "engine/" )
         
+        -- TEMP TEST
+        --linkoptions { "-F /Users/koenvisscher/Documents/Code/EngineDevelopmentKit/EngineCore/tt_lib/Frameworks -framework sfml-window -framework sfml-system"}
+        --includedirs{ "/Users/koenvisscher/Documents/Code/EngineDevelopmentKit/EngineCore/tt_lib/include"}
+        
+        -- END TEMP
+        
         includedirs {
-			"engineCore/include/"
-			}				
+                "engineCore/include/"
+            }
         
         files { 
             "engine/main.cpp", 
