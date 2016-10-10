@@ -74,7 +74,7 @@ workspace "EngineDevelopmentKit"
         location( "engineCore/" )
         
         zpm.uses "Zefiros-Software/CoreLib"
-        zpm.uses "Zefiros-Software/SFML"
+        zpm.uses "Zefiros-Software/libgui"
         
         includedirs {
             "engineCore/include/"
@@ -101,7 +101,7 @@ workspace "EngineDevelopmentKit"
         links "EngineCore"
         
         zpm.uses "Zefiros-Software/CoreLib"
-        zpm.uses "Zefiros-Software/SFML"
+        zpm.uses "Zefiros-Software/libgui"
         
         location( "engine/" )
         

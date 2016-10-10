@@ -10,10 +10,9 @@
                 "version": "@head"
             },
             {   
-                "name": "Zefiros-Software/SFML",
+                "name": "Zefiros-Software/libgui",
                 "version": "@head"
             }
-            
         ]
     }
 }

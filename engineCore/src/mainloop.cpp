@@ -28,32 +28,44 @@
 
 #include "common/program.h"
 
-#include <SFML/Window.hpp>
+#include "ui.h"
+
+#include <iostream>
+
+
+int onClosing(uiWindow *w, void *windowAlive)
+{
+    *static_cast<bool *>(windowAlive) = false;
+	uiQuit();
+	return 1;
+}
 
 void EDK::MainLoop( S32 argc, char **argv )
 {
+    uiInitOptions o;
+	uiWindow *w;
+
+	memset(&o, 0, sizeof (uiInitOptions));
+	if (uiInit(&o) != NULL)
+		return;
+
+    bool windowActive = true;
+
+	w = uiNewWindow("Hello", 320, 240, 0);
+	uiWindowSetMargined(w, 1);
+    uiWindowOnClosing(w, onClosing,  &windowActive);
+
+	uiControlShow( uiControl(w) );
+    uiMainSteps();
+    
     Program gameInstance( argc, argv );
     
     gameInstance.Init();
     
-    sf::Window window(sf::VideoMode(800, 600), "SFML window");
-    
-    while ( gameInstance.IsRunning() )
+    while ( gameInstance.IsRunning() && windowActive )
     {
-        // Event processing
-    	sf::Event event;
-        while (window.pollEvent(event))
-        {
-            // Request for closing the window
-            if (event.type == sf::Event::Closed)
-            {
-                window.close();
-            }   
-        }
-        
         gameInstance.Update();
         
-        window.setActive();
-        window.display();   
+        uiMainStep( 0 );
     }
 }
