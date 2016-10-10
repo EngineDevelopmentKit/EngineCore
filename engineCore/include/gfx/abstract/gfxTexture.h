@@ -24,54 +24,18 @@
 * @endcond
 */
 
-
 #pragma once
-#ifndef __EDK_GFX_ARCHITECTURE_H__
-#define __EDK_GFX_ARCHITECTURE_H__
-
-#include "common/types.h"
-
-#include <vector>
+#ifndef __EDK_GFX_TEXTURE_H__
+#define __EDK_GFX_TEXTURE_H__
 
 namespace EDK
 {
     namespace Graphics
     {
-        class Factory;
-        class VideoCard;
-
-        enum Interface
+        class Texture
         {
-            Direct3D9   = 0x01,
-            Direct3D11  = 0x02,
-            Direct3D12  = 0x04,
-            Metal       = 0x08,
-            Vulkan      = 0x10,
-            OpenGL2_1   = 0x20,
-            OpenGL3_1   = 0x40,
-            OpenGLES2   = 0x80,
-            OpenGLES3_1 = 0x100
+
         };
-
-        enum BackEndPriority
-        {
-            FirstInPriority = 1,
-            LastInPriority = 2
-        };
-
-        struct VideoArchitecture
-        {
-            U64 capabilities;
-            U64 supportedInterfaces;
-
-            std::vector < VideoCard > videocards;
-        };
-
-        namespace Architecture
-        {
-            VideoArchitecture QueryVideoArchitecture();
-            Factory *CreateGraphicsFactory();
-        }
     }
 }
 
