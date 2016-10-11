@@ -26,65 +26,41 @@
 
 #include "mainloop.h"
 
+#include "api/controller.h"
+
 #include "common/program.h"
 
-//#include "ui.h"
+#include "math/scalar/vec2i.h"
+
+#include "window/windowManager.h"
 
 #include <iostream>
-#include <SFML/Window.hpp>
 
-/*
-int onClosing( uiWindow *w, void *windowAlive )
+void EDK::RegisterControllers()
 {
-    *static_cast<bool *>( windowAlive ) = false;
-    uiQuit();
-    return 1;
+    SystemManager::Get()->GetManagers()->controller->Add<EDK::WindowManager>();
 }
-*/
 
 void EDK::MainLoop( S32 argc, char **argv )
 {
-    /*
-    uiInitOptions o;
-    uiWindow *w;
-
-    memset( &o, 0, sizeof( uiInitOptions ) );
-    uiInit( &o );
-
-    bool windowActive = true;
-
-    w = uiNewWindow( "Hello", 320, 240, 0 );
-    uiWindowSetMargined( w, 1 );
-    uiWindowOnClosing( w, onClosing,  &windowActive );
-
-    uiControlShow( uiControl( w ) );
-    uiControlEnabledToUser( uiControl( w ) );
-    uiMainSteps();
-    */
-
-    sf::Window window( sf::VideoMode( 800, 600 ), "SFML window" );
-
     Program gameInstance( argc, argv );
 
     gameInstance.Init();
 
-    //while ( gameInstance.IsRunning() && windowActive )
+    RegisterControllers();
+    
+    //
+    // TEMP section
+    //
+    
+    EDK::WindowManager *windowManager = SystemManager::Get()->GetManagers()->controller->Get<EDK::WindowManager>();
+    
+    windowManager->CreateNewWindow( Vec2I( 800,600) );
+
+    // TEMP
+
     while ( gameInstance.IsRunning() )
     {
-        // Event processing
-        sf::Event event;
-
-        while ( window.pollEvent( event ) )
-        {
-            // Request for closing the window
-            if ( event.type == sf::Event::Closed )
-            {
-                window.close();
-            }
-        }
-
         gameInstance.Update();
-
-        //uiMainStep( 0 );
     }
 }

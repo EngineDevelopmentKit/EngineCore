@@ -35,7 +35,7 @@ workspace "EngineDevelopmentKit"
     
     flags {
         "Unicode",
-        "C++11"
+        "C++14"
       }
      
     filter "platforms:x86"

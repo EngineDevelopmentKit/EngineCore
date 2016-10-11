@@ -49,6 +49,8 @@
 * @sa  Manager
 */
 
+class Vec2I;
+
 namespace EDK
 {
     class WindowManager
@@ -76,7 +78,7 @@ namespace EDK
         * @param   style   (Optional) the style.
         */
 
-        U8 CreateNewWindow( U32 style = Window::Style::Default );
+        U8 CreateNewWindow( const Vec2I &size, Window::Style style = Window::Style::Default );
 
         /**
         * Destroys the window described by the given ID.
@@ -156,7 +158,7 @@ namespace EDK
 
         Vec2I GetSize( U8 windowID = 0 );
 
-        Vec2I GetClientSize( U8 windowID = 0 );
+        //Vec2I GetClientSize( U8 windowID = 0 );
 
         /**
         * Sets a position on the given window.

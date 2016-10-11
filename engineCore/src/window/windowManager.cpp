@@ -28,6 +28,7 @@
 #include "warnings/nonConstRValue.h"
 
 #include "window/windowManager.h"
+#include "window/impl/sfmlWindow.h"
 
 #include "manager/configurationManager.h"
 
@@ -35,6 +36,8 @@
 #include "common/util.h"
 
 #include "warnings/pop.h"
+
+#include <iostream>
 
 using namespace EDK;
 
@@ -47,8 +50,11 @@ WindowManager::WindowManager()
 
 void WindowManager::OnInit()
 {
-    mTitle = GetManagers()->configuration->GetString( "WindowTitle" );
-    mIcon = GetManagers()->configuration->GetString( "IconPath" );
+    //mTitle = GetManagers()->configuration->GetString( "WindowTitle" );
+    //mIcon = GetManagers()->configuration->GetString( "IconPath" );
+    
+    mTitle = "Test window";
+    mIcon = "";
 }
 
 void WindowManager::OnRelease()
@@ -70,18 +76,22 @@ void WindowManager::OnUpdate()
     }
 }
 
-U8 WindowManager::CreateNewWindow( U32 style /*= WindowStyle::DEFAULT */ )
+U8 WindowManager::CreateNewWindow( const Vec2I &size, Window::Style style /*= WindowStyle::DEFAULT */ )
 {
+    
     // TODO, switch to plugin!
-    IWindow *const win = new WindowImpl();
+    IWindow *const win = new SFMLWindow();
 
     std::lock_guard< std::recursive_mutex > lock( mMutex );
 
-    bool fullScreen = GetManagers()->configuration->GetBool( "FullScreen", "RenderConfig" );
-    win->SetFullScreen( fullScreen );
+    //bool fullScreen = GetManagers()->configuration->GetBool( "FullScreen", "RenderConfig" );
+    bool fullScreen = false;
+    win->SetFullScreenMode( fullScreen );
 
-    win->Init( GetManagers(), mTitle, Vec2I( GetManagers()->configuration->GetInt( "ScreenWidth", "RenderConfig" ),
-                                             GetManagers()->configuration->GetInt( "ScreenHeight", "RenderConfig" ) ), style );
+    //win->Open( Vec2I( GetManagers()->configuration->GetInt( "ScreenWidth", "RenderConfig" ),
+    //                  GetManagers()->configuration->GetInt( "ScreenHeight", "RenderConfig" ) ),  mTitle );
+    
+    win->Open( size, mTitle, style );
 
     win->SetIcon( mIcon );
     win->SetCursorVisible( mCursorVisible );
@@ -172,7 +182,8 @@ Vec2I WindowManager::GetSize( U8 windowID /*= 0*/ )
     return Vec2I( 0, 0 );
 }
 
-Vec2I WindowManager::GetClientSize( U8 windowID /*= 0*/ )
+/*
+Vec2I WindowManager::GetClientSize( U8 windowID )
 {
     const U8 ID = windowID == 0 ? GetMainWindow() : windowID;
 
@@ -185,6 +196,7 @@ Vec2I WindowManager::GetClientSize( U8 windowID /*= 0*/ )
 
     return Vec2I( 0, 0 );
 }
+*/
 
 void WindowManager::SetSize( const Vec2I &size, U8 windowID /*= 0*/ )
 {
@@ -251,7 +263,7 @@ void WindowManager::SetFullScreen( bool fullscreen, U8 windowID /*= 0*/ )
 
     if ( CheckIsValid( ID ) )
     {
-        mWindows.at( ID )->SetFullScreen( fullscreen );
+        mWindows.at( ID )->SetFullScreenMode( fullscreen );
     }
 }
 

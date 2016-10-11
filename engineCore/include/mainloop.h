@@ -33,6 +33,7 @@
 
 namespace EDK
 {
+    void RegisterControllers();
     void MainLoop( S32 argc, char **argv );
 }
 

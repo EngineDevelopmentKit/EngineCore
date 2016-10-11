@@ -32,6 +32,7 @@
 
 #include "math/scalar/vec2i.h"
 
+#include "window/windowStyle.h"
 #include "window/abstract/windowHandle.h"
 
 #include <string>
@@ -42,13 +43,10 @@ namespace EDK
     {
     public:
 
-        IWindow();
         virtual ~IWindow() {}
 
-        virtual void Show() = 0;
-        virtual void Hide() = 0;
         virtual void Close() = 0;
-        virtual void Open( const Vec2I &size, const std::string &title ) = 0;
+        virtual void Open( const Vec2I &size, const std::string &title, Window::Style style = Window::Style::Default ) = 0;
 
         virtual bool IsOpen() const = 0;
 
@@ -57,11 +55,16 @@ namespace EDK
 
         virtual void SetSize( const Vec2I &v ) = 0;
         virtual void SetPosition( const Vec2I &v ) = 0;
-
-        virtual void SetMarginedMode( S32 mode ) = 0;
-        virtual void SetFullScreenMode( S32 mode ) = 0;
-        virtual void SetBorderlessMode( S32 mode ) = 0;
-
+   
+   
+        virtual void SetVisible( bool mode ) = 0;
+        virtual void SetCursorVisible( bool mode ) = 0;
+        virtual void SetFullScreenMode( bool mode ) = 0;
+        virtual void SetBorderlessMode( bool mode ) = 0;
+        
+        virtual void SetIcon( const std::string &path ) = 0;
+        virtual void SetTitle( const std::string &title ) = 0;
+        
         virtual void Release() = 0;
         virtual void ProcessEvents() = 0;
 
