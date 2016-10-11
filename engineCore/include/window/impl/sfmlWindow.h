@@ -80,6 +80,8 @@ namespace EDK
         virtual void OnClose() override;
         virtual void OnResize() override;
         virtual void OnReposition() override;
+        virtual void OnWindowRegister() override;
+        virtual void OnWindowHandleChange() override;
     
     private:
         

@@ -77,7 +77,8 @@ namespace EDK
         virtual void OnClose() = 0;
         virtual void OnResize() = 0;
         virtual void OnReposition() = 0;
-
+        virtual void OnWindowRegister() = 0;
+        virtual void OnWindowHandleChange() = 0;
     };
 }
 

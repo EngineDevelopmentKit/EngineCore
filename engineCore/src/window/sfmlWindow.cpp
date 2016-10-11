@@ -156,6 +156,17 @@ void EDK::SFMLWindow::OnReposition()
     
 }
 
+void EDK::SFMLWindow::OnWindowRegister()
+{
+    
+}
+
+void EDK::SFMLWindow::OnWindowHandleChange()
+{
+    
+}
+    
+
 U32 EDK::SFMLWindow::EngineEnumToSfmlEnum( Window::Style style ) const
 {
     switch ( style )
