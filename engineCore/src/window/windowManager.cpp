@@ -72,6 +72,8 @@ void WindowManager::OnRelease()
         IWindow *win = it->second;
         SAFE_RELEASE_DELETE( win );
     }
+    
+    Unobserve< WindowManager, OnWindowCloseEvent>( &WindowManager::OnWindowClose );
 
     mWindows.clear();
 }
