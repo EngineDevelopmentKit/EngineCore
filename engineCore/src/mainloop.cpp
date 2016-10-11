@@ -45,9 +45,9 @@ void EDK::MainLoop( S32 argc, char **argv )
 {
     Program gameInstance( argc, argv );
 
-    gameInstance.Init();
-
     RegisterControllers();
+
+    gameInstance.Init();
     
     //
     // TEMP section
@@ -55,7 +55,7 @@ void EDK::MainLoop( S32 argc, char **argv )
     
     EDK::WindowManager *windowManager = SystemManager::Get()->GetManagers()->controller->Get<EDK::WindowManager>();
     
-    windowManager->CreateNewWindow( Vec2I( 800,600) );
+    windowManager->CreateNewWindow( Vec2I( 800,600), Window::Style::Closable );
 
     // TEMP
 

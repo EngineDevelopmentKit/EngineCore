@@ -32,6 +32,8 @@
 
 #include "math/scalar/vec2i.h"
 
+#include "events/abstract/IEvent.h"
+
 #include "window/windowStyle.h"
 #include "window/abstract/windowHandle.h"
 
@@ -39,6 +41,41 @@
 
 namespace EDK
 {
+    class OnWindowShowEvent : public IEvent
+    {
+            
+    };
+    
+    class OnWindowHideEvent : public IEvent
+    {
+            
+    };
+    
+    class OnWindowCloseEvent : public IEvent
+    {
+            
+    };
+    
+    class OnWindowOpenEvent : public IEvent
+    {
+            
+    };
+    
+    class OnWindowResizeEvent : public IEvent
+    {
+            
+    };
+    
+    class OnWindowRepositionEvent : public IEvent
+    {
+            
+    };
+     
+    class OnWindowHandleChangeEvent : public IEvent
+    {
+            
+    };
+    
     class IWindow
     {
     public:
@@ -55,12 +92,10 @@ namespace EDK
 
         virtual void SetSize( const Vec2I &v ) = 0;
         virtual void SetPosition( const Vec2I &v ) = 0;
-   
-   
+        virtual void SetStyle( Window::Style style ) = 0;
+          
         virtual void SetVisible( bool mode ) = 0;
         virtual void SetCursorVisible( bool mode ) = 0;
-        virtual void SetFullScreenMode( bool mode ) = 0;
-        virtual void SetBorderlessMode( bool mode ) = 0;
         
         virtual void SetIcon( const std::string &path ) = 0;
         virtual void SetTitle( const std::string &title ) = 0;
@@ -70,15 +105,6 @@ namespace EDK
 
         virtual NativeWindowHandle GetNativeWindowHandle() const = 0;
 
-    protected:
-
-        virtual void OnShow() = 0;
-        virtual void OnHide() = 0;
-        virtual void OnClose() = 0;
-        virtual void OnResize() = 0;
-        virtual void OnReposition() = 0;
-        virtual void OnWindowRegister() = 0;
-        virtual void OnWindowHandleChange() = 0;
     };
 }
 

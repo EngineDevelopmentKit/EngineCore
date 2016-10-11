@@ -45,7 +45,7 @@ namespace EDK
     {
     public:
 
-        SFMLWindow();
+        SFMLWindow( U8 id );
         virtual ~SFMLWindow() ;
 
         
@@ -59,11 +59,10 @@ namespace EDK
 
         virtual void SetSize( const Vec2I &v ) override;
         virtual void SetPosition( const Vec2I &v ) override;
-
+        virtual void SetStyle( Window::Style style ) override;  
+        
         virtual void SetVisible( bool mode ) override;
         virtual void SetCursorVisible( bool mode ) override;
-        virtual void SetFullScreenMode( bool mode ) override;
-        virtual void SetBorderlessMode( bool mode ) override;
         
         virtual void SetIcon( const std::string &path ) override;
     	virtual void SetTitle( const std::string &title ) override;
@@ -72,21 +71,13 @@ namespace EDK
         virtual void ProcessEvents() override;
 
         virtual NativeWindowHandle GetNativeWindowHandle() const override;
-
-    protected:
-
-        virtual void OnShow() override;
-        virtual void OnHide() override;
-        virtual void OnClose() override;
-        virtual void OnResize() override;
-        virtual void OnReposition() override;
-        virtual void OnWindowRegister() override;
-        virtual void OnWindowHandleChange() override;
     
     private:
         
         U32 EngineEnumToSfmlEnum( Window::Style style ) const;
         
+        U8 mWindowID;
+        std::string mTitle;
         sf::Window mWindowImpl;
     };
 }

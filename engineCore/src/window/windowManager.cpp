@@ -30,6 +30,8 @@
 #include "window/windowManager.h"
 #include "window/impl/sfmlWindow.h"
 
+#include "manager/eventManager.h"
+#include "manager/applicationManager.h"
 #include "manager/configurationManager.h"
 
 #include "common/file.h"
@@ -44,7 +46,7 @@ using namespace EDK;
 WindowManager::WindowManager()
     : mMainWindow( 0 ),
       mWindowCount( 0 ),
-      mCursorVisible( false )
+      mCursorVisible( true )
 {
 }
 
@@ -54,7 +56,13 @@ void WindowManager::OnInit()
     //mIcon = GetManagers()->configuration->GetString( "IconPath" );
     
     mTitle = "Test window";
-    mIcon = "";
+    mIcon = "";  
+}
+
+
+void WindowManager::OnPostInit()
+{
+    Observe< WindowManager, OnWindowCloseEvent>( &WindowManager::OnWindowClose );
 }
 
 void WindowManager::OnRelease()
@@ -78,25 +86,16 @@ void WindowManager::OnUpdate()
 
 U8 WindowManager::CreateNewWindow( const Vec2I &size, Window::Style style /*= WindowStyle::DEFAULT */ )
 {
+    std::lock_guard< std::recursive_mutex > lock( mMutex );
+    
+    const U8 windowID = GetNewID();
     
     // TODO, switch to plugin!
-    IWindow *const win = new SFMLWindow();
+    IWindow *const win = new SFMLWindow( windowID );
 
-    std::lock_guard< std::recursive_mutex > lock( mMutex );
-
-    //bool fullScreen = GetManagers()->configuration->GetBool( "FullScreen", "RenderConfig" );
-    bool fullScreen = false;
-    win->SetFullScreenMode( fullScreen );
-
-    //win->Open( Vec2I( GetManagers()->configuration->GetInt( "ScreenWidth", "RenderConfig" ),
-    //                  GetManagers()->configuration->GetInt( "ScreenHeight", "RenderConfig" ) ),  mTitle );
-    
     win->Open( size, mTitle, style );
-
     win->SetIcon( mIcon );
     win->SetCursorVisible( mCursorVisible );
-
-    const U8 windowID = GetNewID();
 
     mWindows[windowID] = win;
 
@@ -255,7 +254,8 @@ void WindowManager::SetCursorVisible( bool visible )
     }
 }
 
-void WindowManager::SetFullScreen( bool fullscreen, U8 windowID /*= 0*/ )
+/*
+void WindowManager::SetFullScreen( bool fullscreen, U8 windowID  )
 {
     const U8 ID = windowID == 0 ? GetMainWindow() : windowID;
 
@@ -266,6 +266,7 @@ void WindowManager::SetFullScreen( bool fullscreen, U8 windowID /*= 0*/ )
         mWindows.at( ID )->SetFullScreenMode( fullscreen );
     }
 }
+*/
 
 void WindowManager::SetVisible( bool visible, U8 windowID /*= 0*/ )
 {
@@ -338,4 +339,9 @@ U8 WindowManager::GetNewID()
 bool WindowManager::CheckIsValid( U8 windowID ) const
 {
     return mWindows.find( windowID ) != mWindows.end();
+}
+
+void WindowManager::OnWindowClose( const OnWindowCloseEvent &e )
+{
+    GetManagers()->application->Quit();
 }

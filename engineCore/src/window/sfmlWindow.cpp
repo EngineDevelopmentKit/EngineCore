@@ -23,6 +23,9 @@
 *
 * @endcond
 */
+
+#include "api/event.h"
+
 #include "common/types.h"
 
 #include "math/scalar/vec2i.h"
@@ -31,7 +34,7 @@
 
 #include <string>
 
-EDK::SFMLWindow::SFMLWindow()
+EDK::SFMLWindow::SFMLWindow( U8 id ) : mWindowID( id )
 {
     
 }
@@ -44,11 +47,18 @@ EDK::SFMLWindow::~SFMLWindow()
 void EDK::SFMLWindow::Close()
 {
     mWindowImpl.close();
+    
+    Event::Post( OnWindowCloseEvent() );
 }
 
 void EDK::SFMLWindow::Open( const Vec2I &size, const std::string &title, Window::Style style ) 
 {
-    mWindowImpl.create( sf::VideoMode( size[0], size[1] ), title, EngineEnumToSfmlEnum( style ) );
+    mTitle = title;
+    
+    sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+    mWindowImpl.create( sf::VideoMode( size[0], size[1], desktop.bitsPerPixel ), title, EngineEnumToSfmlEnum( style ) );
+    
+    Event::Post( OnWindowOpenEvent() );
 }
 
 bool EDK::SFMLWindow::IsOpen() const 
@@ -73,46 +83,64 @@ Vec2I EDK::SFMLWindow::GetPosition() const
 void EDK::SFMLWindow::SetSize( const Vec2I &v ) 
 {
     mWindowImpl.setSize( sf::Vector2u( v[0], v[1] ) );
+    
+    Event::Post( OnWindowResizeEvent() );
 }
 
 void EDK::SFMLWindow::SetPosition( const Vec2I &v ) 
 {
     mWindowImpl.setPosition( sf::Vector2i( v[0], v[1] ) );
+    
+    Event::Post( OnWindowRepositionEvent() );
+}
+
+void EDK::SFMLWindow::SetStyle( Window::Style style )
+{
+    const Vec2I size = GetSize();
+
+    sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+    mWindowImpl.create( sf::VideoMode( size[0], size[1], desktop.bitsPerPixel ), mTitle, EngineEnumToSfmlEnum( style ) );
+    
+    Event::Post( OnWindowHandleChangeEvent() );
 }
 
 void EDK::SFMLWindow::SetVisible( bool mode ) 
 {
     mWindowImpl.setVisible( mode );
+    
+    if ( mode )
+    {
+        Event::Post( OnWindowShowEvent() );
+    }
+    else
+    {
+        Event::Post( OnWindowHideEvent() );
+    }
 }
 
 void EDK::SFMLWindow::SetCursorVisible( bool mode ) 
 {
     mWindowImpl.setMouseCursorVisible( mode );
 }
-
-void EDK::SFMLWindow::SetFullScreenMode( bool mode ) 
-{
-    
-}
-
-void EDK::SFMLWindow::SetBorderlessMode( bool mode ) 
-{
-    
-}
         
 void EDK::SFMLWindow::SetIcon( const std::string &path ) 
 {
-    
+    // TODO
 }
 
 void EDK::SFMLWindow::SetTitle( const std::string &title ) 
 {
+    mTitle = title;
     
+    mWindowImpl.setTitle( title );
 }
         
 void EDK::SFMLWindow::Release()
 {
-    
+    if ( IsOpen() )
+    {
+        Close();
+    }
 }
 void EDK::SFMLWindow::ProcessEvents() 
 {
@@ -122,50 +150,16 @@ void EDK::SFMLWindow::ProcessEvents()
    {
        // Request for closing the window
        if (event.type == sf::Event::Closed)
+       {
            Close();
+       }
    }
 }
 
 EDK::NativeWindowHandle EDK::SFMLWindow::GetNativeWindowHandle() const 
 { 
-
-}
-
-void EDK::SFMLWindow::OnShow() 
-{
-    
-}
-
-void EDK::SFMLWindow::OnHide() 
-{
-    
-}
-
-void EDK::SFMLWindow::OnClose() 
-{
-    
-}
-
-void EDK::SFMLWindow::OnResize()
-{
-    
-}
-
-void EDK::SFMLWindow::OnReposition() 
-{
-    
-}
-
-void EDK::SFMLWindow::OnWindowRegister()
-{
-    
-}
-
-void EDK::SFMLWindow::OnWindowHandleChange()
-{
-    
-}
-    
+    return static_cast<NativeWindowHandle>( mWindowImpl.getSystemHandle() );
+}    
 
 U32 EDK::SFMLWindow::EngineEnumToSfmlEnum( Window::Style style ) const
 {

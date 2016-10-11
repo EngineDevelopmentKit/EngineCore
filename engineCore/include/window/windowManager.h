@@ -64,6 +64,7 @@ namespace EDK
         /// @{
 
         virtual void OnInit() override;
+        virtual void OnPostInit() override;
         virtual void OnRelease() override;
         virtual void OnUpdate() override;
 
@@ -189,7 +190,7 @@ namespace EDK
         * @param   fullscreen  true to set fullscreen.
         */
 
-        void SetFullScreen( bool fullscreen, U8 windowID = 0 );
+        //void SetFullScreen( bool fullscreen, U8 windowID = 0 );
 
         /**
         * Sets the given window visible.
@@ -227,6 +228,9 @@ namespace EDK
 
         /// @}
 
+    protected:
+    
+        void OnWindowClose( const OnWindowCloseEvent &e );
 
     private:
 
