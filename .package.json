@@ -12,6 +12,14 @@
             {   
                 "name": "Zefiros-Software/SFML",
                 "version": "@head"
+            },
+            {
+                "name": "Zefiros-Software/bx",
+                "version": "@head"
+            },
+            {
+                "name": "Zefiros-Software/bgfx",
+                "version": "@head"
             }
         ]
     }
