@@ -34,6 +34,11 @@
 
 #include "window/windowManager.h"
 
+// TEMP
+#include <bgfx/bgfx.h>
+#include <bgfx/bgfxplatform.h>
+// END TEMP
+
 #include <iostream>
 
 void EDK::RegisterControllers()
@@ -55,12 +60,70 @@ void EDK::MainLoop( S32 argc, char **argv )
     
     EDK::WindowManager *windowManager = SystemManager::Get()->GetManagers()->controller->Get<EDK::WindowManager>();
     
-    windowManager->CreateNewWindow( Vec2I( 800,600), Window::Style::Closable );
+    U8 windowID = windowManager->CreateNewWindow( Vec2I( 800,600), Window::Style::Closable );
 
+    uint32_t m_width;
+	uint32_t m_height;
+	uint32_t m_debug;
+	uint32_t m_reset;
+    
+    m_width  = 800;
+	m_height = 600;
+	m_debug  = BGFX_DEBUG_TEXT;
+	m_reset  = BGFX_RESET_VSYNC;
+    
+    bgfx::PlatformData pd;
+    pd.ndt          = NULL;
+	pd.nwh          = windowManager->GetHandle( windowID );
+	pd.context      = NULL;
+	pd.backBuffer   = NULL;
+	pd.backBufferDS = NULL;
+	bgfx::setPlatformData(pd);
+
+    bgfx::init( bgfx::RendererType::OpenGL );
+	bgfx::reset(m_width, m_height, m_reset);
+    
+    // Enable debug text.
+	bgfx::setDebug(m_debug);
+    
+    // Set view 0 clear state.
+    bgfx::setViewClear(
+                  0
+				, BGFX_CLEAR_COLOR|BGFX_CLEAR_DEPTH
+				, 0x303030ff
+				, 1.0f
+				, 0
+				);
+                
     // TEMP
 
     while ( gameInstance.IsRunning() )
     {
         gameInstance.Update();
+        
+        // TEMP
+        // Set view 0 default viewport.
+			bgfx::setViewRect(0, 0, 0, uint16_t(m_width), uint16_t(m_height) );
+
+			// This dummy draw call is here to make sure that view 0 is cleared
+			// if no other draw calls are submitted to view 0.
+			bgfx::touch(0);
+
+			// Use debug font to print information about this example.
+			bgfx::dbgTextClear();
+			bgfx::dbgTextPrintf(0, 1, 0x4f, "bgfx/examples/00-helloworld");
+			bgfx::dbgTextPrintf(0, 2, 0x6f, "Description: Initialization and debug text.");
+
+			// Advance to next frame. Rendering thread will be kicked to
+			// process submitted rendering primitives.
+			bgfx::frame();
+        
+        // END TEMP
     }
+    
+    // TEMP
+    
+    bgfx::shutdown();
+    
+    // END TEMP
 }
