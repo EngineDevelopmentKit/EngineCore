@@ -31,15 +31,16 @@
 
 #include "common/types.h"
 
+#include "gfx/abstract/gfxAdapter.h"
+
+#include "manager/abstract/abstractManager.h"
+
 #include <vector>
 
 namespace EDK
 {
     namespace Graphics
     {
-        class Factory;
-        class VideoCard;
-
         enum Interface
         {
             Direct3D9   = 0x01,
@@ -53,25 +54,14 @@ namespace EDK
             OpenGLES3_1 = 0x100
         };
 
-        enum BackEndPriority
-        {
-            FirstInPriority = 1,
-            LastInPriority = 2
-        };
-
         struct VideoArchitecture
         {
             U64 capabilities;
             U64 supportedInterfaces;
 
-            std::vector < VideoCard > videocards;
+            std::vector< VideoCard > videocards;
+            std::vector< Interface > exposedInterfaces;
         };
-
-        namespace Architecture
-        {
-            VideoArchitecture QueryVideoArchitecture();
-            Factory *CreateGraphicsFactory();
-        }
     }
 }
 

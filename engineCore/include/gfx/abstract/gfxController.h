@@ -24,53 +24,32 @@
 * @endcond
 */
 
+
 #pragma once
-#ifndef __EDK_BGFX_TEXTURE_H__
-#define __EDK_BGFX_TEXTURE_H__
+#ifndef __EDK_GFX_CONTROLLER_H__
+#define __EDK_GFX_CONTROLLER_H__
 
-#include "gfx/abstract/gfxSwapChain.h"
+#include "common/types.h"
 
-#include <bgfx/bgfx.h>
+#include "gfx/abstract/gfxArchitecture.h"
 
-template< typename tBase >
-class AbstractObjectPool;
+#include "manager/abstract/abstractManager.h"
+
+#include <vector>
 
 namespace EDK
 {
     namespace Graphics
     {
-        class BgfxFactory;
+        class Factory;
+        class VideoCard;
 
-        class BgfxSwapChain : public SwapChain
+        class Controller : public AbstractManager
         {
-            friend class BgfxFactory;
         public:
 
-            BgfxSwapChain();
-
-            virtual SwapChainDesc QueryDesc() const override;
-
-            virtual const FrameBuffer *GetFrameBuffer() const override;
-
-            virtual void Release() override;
-
-            virtual void Present() override;
-
-        public:
-
-            // Required by the object pool
-            virtual void OnInit() override;
-            virtual void OnRelease() override;
-
-        protected:
-
-            void Init( FrameBuffer *frameBuffer, const SwapChainDesc &desc );
-
-        private:
-
-            SwapChainDesc mDesc;
-            FrameBuffer *mFrameBuffer;
-            AbstractObjectPool< SwapChain > *mPool;
+            virtual VideoArchitecture QueryVideoArchitecture() = 0;
+            virtual Factory *CreateGraphicsFactory( const VideoCard &card, Interface igfx ) = 0;
         };
     }
 }

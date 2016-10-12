@@ -32,6 +32,8 @@
 
 #include "gfx/abstract/gfxFormat.h"
 
+#include "window/abstract/windowHandle.h"
+
 namespace EDK
 {
     namespace Graphics
@@ -44,6 +46,7 @@ namespace EDK
             bool fullscreen;
             Vec2I size;
             DataFormat format;
+            NativeWindowHandle hwnd;
 
             struct MultiSample
             {
@@ -67,6 +70,12 @@ namespace EDK
             virtual void Release() = 0;
 
             virtual void Present() = 0;
+
+        public:
+
+            // Required by the object pool
+            virtual void OnInit() = 0;
+            virtual void OnRelease() = 0;
         };
     }
 }
