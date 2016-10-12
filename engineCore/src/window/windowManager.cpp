@@ -29,6 +29,7 @@
 
 #include "window/windowManager.h"
 #include "window/impl/sfmlWindow.h"
+#include "window/abstract/windowEvents.h"
 
 #include "manager/eventManager.h"
 #include "manager/applicationManager.h"
@@ -54,9 +55,9 @@ void WindowManager::OnInit()
 {
     //mTitle = GetManagers()->configuration->GetString( "WindowTitle" );
     //mIcon = GetManagers()->configuration->GetString( "IconPath" );
-    
+
     mTitle = "Test window";
-    mIcon = "";  
+    mIcon = "";
 }
 
 
@@ -72,7 +73,7 @@ void WindowManager::OnRelease()
         IWindow *win = it->second;
         SAFE_RELEASE_DELETE( win );
     }
-    
+
     Unobserve< WindowManager, OnWindowCloseEvent>( &WindowManager::OnWindowClose );
 
     mWindows.clear();
@@ -89,9 +90,9 @@ void WindowManager::OnUpdate()
 U8 WindowManager::CreateNewWindow( const Vec2I &size, Window::Style style /*= WindowStyle::DEFAULT */ )
 {
     std::lock_guard< std::recursive_mutex > lock( mMutex );
-    
+
     const U8 windowID = GetNewID();
-    
+
     // TODO, switch to plugin!
     IWindow *const win = new SFMLWindow( windowID );
 

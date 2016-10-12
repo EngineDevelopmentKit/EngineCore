@@ -53,6 +53,8 @@ class Vec2I;
 
 namespace EDK
 {
+    struct OnWindowCloseEvent;
+
     class WindowManager
         : public AbstractManager
     {
@@ -229,7 +231,7 @@ namespace EDK
         /// @}
 
     protected:
-    
+
         void OnWindowClose( const OnWindowCloseEvent &e );
 
     private:

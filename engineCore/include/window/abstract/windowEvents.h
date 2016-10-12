@@ -25,49 +25,62 @@
 */
 
 #pragma once
-#ifndef __EDK_WINDOW_H__
-#define __EDK_WINDOW_H__
+#ifndef __EDK_WINDOWEVENTS_H__
+#define __EDK_WINDOWEVENTS_H__
 
 #include "common/types.h"
 
-#include "math/scalar/vec2i.h"
-
-#include "window/windowStyle.h"
-#include "window/abstract/windowHandle.h"
-
-#include <string>
+#include "events/abstract/IEvent.h"
 
 namespace EDK
 {
-    class IWindow
+    struct OnWindowShowEvent : public IEvent
     {
-    public:
+        U8 windowID;
 
-        virtual ~IWindow() {}
+        inline OnWindowShowEvent( U8 id ) : windowID( id ) {}
+    };
 
-        virtual void Close() = 0;
-        virtual void Open( const Vec2I &size, const std::string &title, Window::Style style = Window::Style::Default ) = 0;
+    struct OnWindowHideEvent : public IEvent
+    {
+        U8 windowID;
 
-        virtual bool IsOpen() const = 0;
+        inline OnWindowHideEvent( U8 id ) : windowID( id ) {}
+    };
 
-        virtual Vec2I GetSize() const = 0;
-        virtual Vec2I GetPosition() const = 0;
+    struct OnWindowCloseEvent : public IEvent
+    {
+        U8 windowID;
 
-        virtual void SetSize( const Vec2I &v ) = 0;
-        virtual void SetPosition( const Vec2I &v ) = 0;
-        virtual void SetStyle( Window::Style style ) = 0;
+        inline OnWindowCloseEvent( U8 id ) : windowID( id ) {}
+    };
 
-        virtual void SetVisible( bool mode ) = 0;
-        virtual void SetCursorVisible( bool mode ) = 0;
+    struct OnWindowOpenEvent : public IEvent
+    {
+        U8 windowID;
 
-        virtual void SetIcon( const std::string &path ) = 0;
-        virtual void SetTitle( const std::string &title ) = 0;
+        inline OnWindowOpenEvent( U8 id ) : windowID( id ) {}
+    };
 
-        virtual void Release() = 0;
-        virtual void ProcessEvents() = 0;
+    struct OnWindowResizeEvent : public IEvent
+    {
+        U8 windowID;
 
-        virtual NativeWindowHandle GetNativeWindowHandle() const = 0;
+        inline OnWindowResizeEvent( U8 id ) : windowID( id ) {}
+    };
 
+    struct OnWindowRepositionEvent : public IEvent
+    {
+        U8 windowID;
+
+        inline OnWindowRepositionEvent( U8 id ) : windowID( id ) {}
+    };
+
+    struct OnWindowHandleChangeEvent : public IEvent
+    {
+        U8 windowID;
+
+        inline OnWindowHandleChangeEvent( U8 id ) : windowID( id ) {}
     };
 }
 
