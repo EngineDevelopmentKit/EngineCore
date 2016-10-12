@@ -25,16 +25,16 @@
 */
 
 #pragma once
-#ifndef __EDK_WINDOWMANAGER_H__
-#define __EDK_WINDOWMANAGER_H__
+#ifndef __EDK_SFML_WINDOWMANAGER_H__
+#define __EDK_SFML_WINDOWMANAGER_H__
 
 #include "threading/spinlock.h"
 
-#include "window/windowStyle.h"
-#include "window/abstract/window.h"
-#include "window/abstract/windowHandle.h"
 
-#include "manager/abstract/abstractManager.h"
+#include "window/abstract/window.h"
+#include "window/abstract/windowStyle.h"
+#include "window/abstract/windowHandle.h"
+#include "window/abstract/windowManager.h"
 
 #include <stack>
 #include <mutex>
@@ -55,12 +55,12 @@ namespace EDK
 {
     struct OnWindowCloseEvent;
 
-    class WindowManager
+    class SFMLWindowManager
         : public AbstractManager
     {
     public:
 
-        WindowManager();
+        SFMLWindowManager();
 
         /// @name Events
         /// @{

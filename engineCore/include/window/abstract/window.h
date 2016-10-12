@@ -32,7 +32,7 @@
 
 #include "math/scalar/vec2i.h"
 
-#include "window/windowStyle.h"
+#include "window/abstract/windowStyle.h"
 #include "window/abstract/windowHandle.h"
 
 #include <string>
