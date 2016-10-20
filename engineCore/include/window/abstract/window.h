@@ -32,50 +32,13 @@
 
 #include "math/scalar/vec2i.h"
 
-#include "events/abstract/IEvent.h"
-
-#include "window/windowStyle.h"
+#include "window/abstract/windowStyle.h"
 #include "window/abstract/windowHandle.h"
 
 #include <string>
 
 namespace EDK
 {
-    class OnWindowShowEvent : public IEvent
-    {
-            
-    };
-    
-    class OnWindowHideEvent : public IEvent
-    {
-            
-    };
-    
-    class OnWindowCloseEvent : public IEvent
-    {
-            
-    };
-    
-    class OnWindowOpenEvent : public IEvent
-    {
-            
-    };
-    
-    class OnWindowResizeEvent : public IEvent
-    {
-            
-    };
-    
-    class OnWindowRepositionEvent : public IEvent
-    {
-            
-    };
-     
-    class OnWindowHandleChangeEvent : public IEvent
-    {
-            
-    };
-    
     class IWindow
     {
     public:
@@ -93,13 +56,13 @@ namespace EDK
         virtual void SetSize( const Vec2I &v ) = 0;
         virtual void SetPosition( const Vec2I &v ) = 0;
         virtual void SetStyle( Window::Style style ) = 0;
-          
+
         virtual void SetVisible( bool mode ) = 0;
         virtual void SetCursorVisible( bool mode ) = 0;
-        
+
         virtual void SetIcon( const std::string &path ) = 0;
         virtual void SetTitle( const std::string &title ) = 0;
-        
+
         virtual void Release() = 0;
         virtual void ProcessEvents() = 0;
 

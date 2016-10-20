@@ -25,57 +25,52 @@
 */
 
 #pragma once
-#ifndef __EDK_GFX_TEXTURE_H__
-#define __EDK_GFX_TEXTURE_H__
+#ifndef __EDK_BGFX_TEXTURE_H__
+#define __EDK_BGFX_TEXTURE_H__
 
-#include "math/scalar/vec2i.h"
+#include "gfx/abstract/gfxSwapChain.h"
 
-#include "gfx/abstract/gfxFormat.h"
+#include <bgfx/bgfx.h>
 
-#include "window/abstract/windowHandle.h"
+template< typename tBase >
+class AbstractObjectPool;
 
 namespace EDK
 {
     namespace Graphics
     {
-        class Factory;
-        class FrameBuffer;
+        class BgfxFactory;
 
-        struct SwapChainDesc
+        class BgfxSwapChain : public SwapChain
         {
-            bool fullscreen;
-            Vec2I size;
-            DataFormat format;
-            NativeWindowHandle hwnd;
-
-            struct MultiSample
-            {
-                bool enableMultiSample;
-                U32  sampleCount;
-
-            } multisample;
-        };
-
-        class SwapChain
-        {
-            friend class Factory;
+            friend class BgfxFactory;
         public:
 
-            virtual ~SwapChain() {}
+            BgfxSwapChain();
 
-            virtual SwapChainDesc QueryDesc() const = 0;
+            virtual SwapChainDesc QueryDesc() const override;
 
-            virtual const FrameBuffer *GetFrameBuffer() const = 0;
+            virtual const FrameBuffer *GetFrameBuffer() const override;
 
-            virtual void Release() = 0;
+            virtual void Release() override;
 
-            virtual void Present() = 0;
+            virtual void Present() override;
 
         public:
 
             // Required by the object pool
-            virtual void OnInit() = 0;
-            virtual void OnRelease() = 0;
+            virtual void OnInit() override;
+            virtual void OnRelease() override;
+
+        protected:
+
+            void Init( FrameBuffer *frameBuffer, const SwapChainDesc &desc );
+
+        private:
+
+            SwapChainDesc mDesc;
+            FrameBuffer *mFrameBuffer;
+            AbstractObjectPool< SwapChain > *mPool;
         };
     }
 }

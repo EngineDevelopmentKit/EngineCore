@@ -24,58 +24,32 @@
 * @endcond
 */
 
+
 #pragma once
-#ifndef __EDK_GFX_TEXTURE_H__
-#define __EDK_GFX_TEXTURE_H__
+#ifndef __EDK_GFX_CONTROLLER_H__
+#define __EDK_GFX_CONTROLLER_H__
 
-#include "math/scalar/vec2i.h"
+#include "common/types.h"
 
-#include "gfx/abstract/gfxFormat.h"
+#include "gfx/abstract/gfxArchitecture.h"
 
-#include "window/abstract/windowHandle.h"
+#include "manager/abstract/abstractManager.h"
+
+#include <vector>
 
 namespace EDK
 {
     namespace Graphics
     {
         class Factory;
-        class FrameBuffer;
+        class VideoCard;
 
-        struct SwapChainDesc
+        class Controller : public AbstractManager
         {
-            bool fullscreen;
-            Vec2I size;
-            DataFormat format;
-            NativeWindowHandle hwnd;
-
-            struct MultiSample
-            {
-                bool enableMultiSample;
-                U32  sampleCount;
-
-            } multisample;
-        };
-
-        class SwapChain
-        {
-            friend class Factory;
         public:
 
-            virtual ~SwapChain() {}
-
-            virtual SwapChainDesc QueryDesc() const = 0;
-
-            virtual const FrameBuffer *GetFrameBuffer() const = 0;
-
-            virtual void Release() = 0;
-
-            virtual void Present() = 0;
-
-        public:
-
-            // Required by the object pool
-            virtual void OnInit() = 0;
-            virtual void OnRelease() = 0;
+            virtual VideoArchitecture QueryVideoArchitecture() = 0;
+            virtual Factory *CreateGraphicsFactory( const VideoCard &card, Interface igfx ) = 0;
         };
     }
 }

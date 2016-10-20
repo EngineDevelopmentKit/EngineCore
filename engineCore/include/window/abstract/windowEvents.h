@@ -25,59 +25,63 @@
 */
 
 #pragma once
-#ifndef __EDK_GFX_TEXTURE_H__
-#define __EDK_GFX_TEXTURE_H__
+#ifndef __EDK_WINDOWEVENTS_H__
+#define __EDK_WINDOWEVENTS_H__
 
-#include "math/scalar/vec2i.h"
+#include "common/types.h"
 
-#include "gfx/abstract/gfxFormat.h"
-
-#include "window/abstract/windowHandle.h"
+#include "events/abstract/IEvent.h"
 
 namespace EDK
 {
-    namespace Graphics
+    struct OnWindowShowEvent : public IEvent
     {
-        class Factory;
-        class FrameBuffer;
+        U8 windowID;
 
-        struct SwapChainDesc
-        {
-            bool fullscreen;
-            Vec2I size;
-            DataFormat format;
-            NativeWindowHandle hwnd;
+        inline OnWindowShowEvent( U8 id ) : windowID( id ) {}
+    };
 
-            struct MultiSample
-            {
-                bool enableMultiSample;
-                U32  sampleCount;
+    struct OnWindowHideEvent : public IEvent
+    {
+        U8 windowID;
 
-            } multisample;
-        };
+        inline OnWindowHideEvent( U8 id ) : windowID( id ) {}
+    };
 
-        class SwapChain
-        {
-            friend class Factory;
-        public:
+    struct OnWindowCloseEvent : public IEvent
+    {
+        U8 windowID;
 
-            virtual ~SwapChain() {}
+        inline OnWindowCloseEvent( U8 id ) : windowID( id ) {}
+    };
 
-            virtual SwapChainDesc QueryDesc() const = 0;
+    struct OnWindowOpenEvent : public IEvent
+    {
+        U8 windowID;
 
-            virtual const FrameBuffer *GetFrameBuffer() const = 0;
+        inline OnWindowOpenEvent( U8 id ) : windowID( id ) {}
+    };
 
-            virtual void Release() = 0;
+    struct OnWindowResizeEvent : public IEvent
+    {
+        U8 windowID;
 
-            virtual void Present() = 0;
+        inline OnWindowResizeEvent( U8 id ) : windowID( id ) {}
+    };
 
-        public:
+    struct OnWindowRepositionEvent : public IEvent
+    {
+        U8 windowID;
 
-            // Required by the object pool
-            virtual void OnInit() = 0;
-            virtual void OnRelease() = 0;
-        };
-    }
+        inline OnWindowRepositionEvent( U8 id ) : windowID( id ) {}
+    };
+
+    struct OnWindowHandleChangeEvent : public IEvent
+    {
+        U8 windowID;
+
+        inline OnWindowHandleChangeEvent( U8 id ) : windowID( id ) {}
+    };
 }
 
 #endif

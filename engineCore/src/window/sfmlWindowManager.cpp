@@ -27,8 +27,9 @@
 #include "warnings/push.h"
 #include "warnings/nonConstRValue.h"
 
-#include "window/windowManager.h"
 #include "window/impl/sfmlWindow.h"
+#include "window/impl/sfmlWindowManager.h"
+#include "window/abstract/windowEvents.h"
 
 #include "manager/eventManager.h"
 #include "manager/applicationManager.h"
@@ -43,42 +44,42 @@
 
 using namespace EDK;
 
-WindowManager::WindowManager()
+SFMLWindowManager::SFMLWindowManager()
     : mMainWindow( 0 ),
       mWindowCount( 0 ),
       mCursorVisible( true )
 {
 }
 
-void WindowManager::OnInit()
+void SFMLWindowManager::OnInit()
 {
     //mTitle = GetManagers()->configuration->GetString( "WindowTitle" );
     //mIcon = GetManagers()->configuration->GetString( "IconPath" );
-    
+
     mTitle = "Test window";
-    mIcon = "";  
+    mIcon = "";
 }
 
 
-void WindowManager::OnPostInit()
+void SFMLWindowManager::OnPostInit()
 {
-    Observe< WindowManager, OnWindowCloseEvent>( &WindowManager::OnWindowClose );
+    Observe< SFMLWindowManager, OnWindowCloseEvent>( &SFMLWindowManager::OnWindowClose );
 }
 
-void WindowManager::OnRelease()
+void SFMLWindowManager::OnRelease()
 {
     for ( auto it = mWindows.begin(); it != mWindows.end(); ++it )
     {
         IWindow *win = it->second;
         SAFE_RELEASE_DELETE( win );
     }
-    
-    Unobserve< WindowManager, OnWindowCloseEvent>( &WindowManager::OnWindowClose );
+
+    Unobserve< SFMLWindowManager, OnWindowCloseEvent>( &SFMLWindowManager::OnWindowClose );
 
     mWindows.clear();
 }
 
-void WindowManager::OnUpdate()
+void SFMLWindowManager::OnUpdate()
 {
     for ( auto it = mWindows.begin(); it != mWindows.end(); ++it )
     {
@@ -86,12 +87,12 @@ void WindowManager::OnUpdate()
     }
 }
 
-U8 WindowManager::CreateNewWindow( const Vec2I &size, Window::Style style /*= WindowStyle::DEFAULT */ )
+U8 SFMLWindowManager::CreateNewWindow( const Vec2I &size, Window::Style style /*= WindowStyle::DEFAULT */ )
 {
     std::lock_guard< std::recursive_mutex > lock( mMutex );
-    
+
     const U8 windowID = GetNewID();
-    
+
     // TODO, switch to plugin!
     IWindow *const win = new SFMLWindow( windowID );
 
@@ -109,7 +110,7 @@ U8 WindowManager::CreateNewWindow( const Vec2I &size, Window::Style style /*= Wi
     return windowID;
 }
 
-void WindowManager::DestroyWindow( U8 windowID /*= 0*/ )
+void SFMLWindowManager::DestroyWindow( U8 windowID /*= 0*/ )
 {
     std::lock_guard< std::recursive_mutex > lock( mMutex );
 
@@ -127,14 +128,14 @@ void WindowManager::DestroyWindow( U8 windowID /*= 0*/ )
     mFreeIDs.push( windowID );
 }
 
-bool WindowManager::IsValid( U8 windowID /*= 0*/ ) const
+bool SFMLWindowManager::IsValid( U8 windowID /*= 0*/ ) const
 {
     std::lock_guard< std::recursive_mutex > lock( mMutex );
 
     return CheckIsValid( windowID );
 }
 
-NativeWindowHandle WindowManager::GetHandle( U8 windowID  /*= 0*/ ) const
+NativeWindowHandle SFMLWindowManager::GetHandle( U8 windowID  /*= 0*/ ) const
 {
     const U8 ID = windowID == 0 ? GetMainWindow() : windowID;
 
@@ -148,28 +149,28 @@ NativeWindowHandle WindowManager::GetHandle( U8 windowID  /*= 0*/ ) const
     return WindowHandleNull;
 }
 
-void WindowManager::SetMainWindow( U8 windowID )
+void SFMLWindowManager::SetMainWindow( U8 windowID )
 {
     std::lock_guard< SpinLock > lock( mMainWindowLock );
 
     mMainWindow = windowID;
 }
 
-U8 WindowManager::GetMainWindow() const
+U8 SFMLWindowManager::GetMainWindow() const
 {
     std::lock_guard< SpinLock > lock( mMainWindowLock );
 
     return mMainWindow;
 }
 
-U8 WindowManager::GetWindowCount() const
+U8 SFMLWindowManager::GetWindowCount() const
 {
     std::lock_guard< std::recursive_mutex > lock( mMutex );
 
     return mWindowCount;
 }
 
-Vec2I WindowManager::GetSize( U8 windowID /*= 0*/ )
+Vec2I SFMLWindowManager::GetSize( U8 windowID /*= 0*/ )
 {
     const U8 ID = windowID == 0 ? GetMainWindow() : windowID;
 
@@ -184,7 +185,7 @@ Vec2I WindowManager::GetSize( U8 windowID /*= 0*/ )
 }
 
 /*
-Vec2I WindowManager::GetClientSize( U8 windowID )
+Vec2I SFMLWindowManager::GetClientSize( U8 windowID )
 {
     const U8 ID = windowID == 0 ? GetMainWindow() : windowID;
 
@@ -199,7 +200,7 @@ Vec2I WindowManager::GetClientSize( U8 windowID )
 }
 */
 
-void WindowManager::SetSize( const Vec2I &size, U8 windowID /*= 0*/ )
+void SFMLWindowManager::SetSize( const Vec2I &size, U8 windowID /*= 0*/ )
 {
     const U8 ID = windowID == 0 ? GetMainWindow() : windowID;
 
@@ -211,7 +212,7 @@ void WindowManager::SetSize( const Vec2I &size, U8 windowID /*= 0*/ )
     }
 }
 
-Vec2I WindowManager::GetPosition( U8 windowID /*= 0*/ )
+Vec2I SFMLWindowManager::GetPosition( U8 windowID /*= 0*/ )
 {
     const U8 ID = windowID == 0 ? GetMainWindow() : windowID;
 
@@ -225,7 +226,7 @@ Vec2I WindowManager::GetPosition( U8 windowID /*= 0*/ )
     return Vec2I( 0, 0 );
 }
 
-void WindowManager::SetPosition( const Vec2I &position, U8 windowID /*= 0*/ )
+void SFMLWindowManager::SetPosition( const Vec2I &position, U8 windowID /*= 0*/ )
 {
     const U8 ID = windowID == 0 ? GetMainWindow() : windowID;
 
@@ -237,7 +238,7 @@ void WindowManager::SetPosition( const Vec2I &position, U8 windowID /*= 0*/ )
     }
 }
 
-void WindowManager::SetCursorVisible( bool visible )
+void SFMLWindowManager::SetCursorVisible( bool visible )
 {
     std::lock_guard< std::recursive_mutex > lock( mMutex );
 
@@ -257,7 +258,7 @@ void WindowManager::SetCursorVisible( bool visible )
 }
 
 /*
-void WindowManager::SetFullScreen( bool fullscreen, U8 windowID  )
+void SFMLWindowManager::SetFullScreen( bool fullscreen, U8 windowID  )
 {
     const U8 ID = windowID == 0 ? GetMainWindow() : windowID;
 
@@ -270,7 +271,7 @@ void WindowManager::SetFullScreen( bool fullscreen, U8 windowID  )
 }
 */
 
-void WindowManager::SetVisible( bool visible, U8 windowID /*= 0*/ )
+void SFMLWindowManager::SetVisible( bool visible, U8 windowID /*= 0*/ )
 {
     const U8 ID = windowID == 0 ? GetMainWindow() : windowID;
 
@@ -282,7 +283,7 @@ void WindowManager::SetVisible( bool visible, U8 windowID /*= 0*/ )
     }
 }
 
-void WindowManager::SetIcon( const std::string &iconPath )
+void SFMLWindowManager::SetIcon( const std::string &iconPath )
 {
     std::lock_guard< std::recursive_mutex > lock( mMutex );
 
@@ -303,7 +304,7 @@ void WindowManager::SetIcon( const std::string &iconPath )
     }
 }
 
-void WindowManager::SetTitle( const std::string &title )
+void SFMLWindowManager::SetTitle( const std::string &title )
 {
     std::lock_guard< std::recursive_mutex > lock( mMutex );
 
@@ -322,7 +323,7 @@ void WindowManager::SetTitle( const std::string &title )
     }
 }
 
-U8 WindowManager::GetNewID()
+U8 SFMLWindowManager::GetNewID()
 {
     std::lock_guard< std::recursive_mutex > lock( mMutex );
 
@@ -338,12 +339,12 @@ U8 WindowManager::GetNewID()
     }
 }
 
-bool WindowManager::CheckIsValid( U8 windowID ) const
+bool SFMLWindowManager::CheckIsValid( U8 windowID ) const
 {
     return mWindows.find( windowID ) != mWindows.end();
 }
 
-void WindowManager::OnWindowClose( const OnWindowCloseEvent &e )
+void SFMLWindowManager::OnWindowClose( const OnWindowCloseEvent &e )
 {
     GetManagers()->application->Quit();
 }

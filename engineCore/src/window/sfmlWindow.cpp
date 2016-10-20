@@ -31,67 +31,68 @@
 #include "math/scalar/vec2i.h"
 
 #include "window/impl/sfmlWindow.h"
+#include "window/abstract/windowEvents.h"
 
 #include <string>
 
 EDK::SFMLWindow::SFMLWindow( U8 id ) : mWindowID( id )
 {
-    
+
 }
 
-EDK::SFMLWindow::~SFMLWindow() 
+EDK::SFMLWindow::~SFMLWindow()
 {
-    
+
 }
 
 void EDK::SFMLWindow::Close()
 {
     mWindowImpl.close();
-    
-    Event::Post( OnWindowCloseEvent() );
+
+    Event::Post( OnWindowCloseEvent( mWindowID ) );
 }
 
-void EDK::SFMLWindow::Open( const Vec2I &size, const std::string &title, Window::Style style ) 
+void EDK::SFMLWindow::Open( const Vec2I &size, const std::string &title, Window::Style style )
 {
     mTitle = title;
-    
+
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
     mWindowImpl.create( sf::VideoMode( size[0], size[1], desktop.bitsPerPixel ), title, EngineEnumToSfmlEnum( style ) );
-    
-    Event::Post( OnWindowOpenEvent() );
+
+    Event::Post( OnWindowOpenEvent( mWindowID ) );
 }
 
-bool EDK::SFMLWindow::IsOpen() const 
-{ 
+bool EDK::SFMLWindow::IsOpen() const
+{
     return mWindowImpl.isOpen();
 }
 
 Vec2I EDK::SFMLWindow::GetSize() const
-{ 
+{
     sf::Vector2u size = mWindowImpl.getSize();
-    
-    return Vec2I( (S32)size.x, (S32)size.y );
+
+    return Vec2I( ( S32 )size.x, ( S32 )size.y );
 }
 
-Vec2I EDK::SFMLWindow::GetPosition() const 
-{ 
+Vec2I EDK::SFMLWindow::GetPosition() const
+{
     sf::Vector2i pos = mWindowImpl.getPosition();
-    
-    return Vec2I( (S32)pos.x, (S32)pos.y );
+
+    return Vec2I( ( S32 )pos.x, ( S32 )pos.y );
 }
 
-void EDK::SFMLWindow::SetSize( const Vec2I &v ) 
+void EDK::SFMLWindow::SetSize( const Vec2I &v )
 {
     mWindowImpl.setSize( sf::Vector2u( v[0], v[1] ) );
-    
-    Event::Post( OnWindowResizeEvent() );
+
+    Event::Post( OnWindowResizeEvent( mWindowID ) );
 }
 
-void EDK::SFMLWindow::SetPosition( const Vec2I &v ) 
+void EDK::SFMLWindow::SetPosition( const Vec2I &v )
 {
     mWindowImpl.setPosition( sf::Vector2i( v[0], v[1] ) );
-    
-    Event::Post( OnWindowRepositionEvent() );
+
+    Event::Post( OnWindowRepositionEvent( mWindowID ) );
 }
 
 void EDK::SFMLWindow::SetStyle( Window::Style style )
@@ -100,41 +101,41 @@ void EDK::SFMLWindow::SetStyle( Window::Style style )
 
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
     mWindowImpl.create( sf::VideoMode( size[0], size[1], desktop.bitsPerPixel ), mTitle, EngineEnumToSfmlEnum( style ) );
-    
-    Event::Post( OnWindowHandleChangeEvent() );
+
+    Event::Post( OnWindowHandleChangeEvent( mWindowID ) );
 }
 
-void EDK::SFMLWindow::SetVisible( bool mode ) 
+void EDK::SFMLWindow::SetVisible( bool mode )
 {
     mWindowImpl.setVisible( mode );
-    
+
     if ( mode )
     {
-        Event::Post( OnWindowShowEvent() );
+        Event::Post( OnWindowShowEvent( mWindowID ) );
     }
     else
     {
-        Event::Post( OnWindowHideEvent() );
+        Event::Post( OnWindowHideEvent( mWindowID ) );
     }
 }
 
-void EDK::SFMLWindow::SetCursorVisible( bool mode ) 
+void EDK::SFMLWindow::SetCursorVisible( bool mode )
 {
     mWindowImpl.setMouseCursorVisible( mode );
 }
-        
-void EDK::SFMLWindow::SetIcon( const std::string &path ) 
+
+void EDK::SFMLWindow::SetIcon( const std::string &path )
 {
     // TODO
 }
 
-void EDK::SFMLWindow::SetTitle( const std::string &title ) 
+void EDK::SFMLWindow::SetTitle( const std::string &title )
 {
     mTitle = title;
-    
+
     mWindowImpl.setTitle( title );
 }
-        
+
 void EDK::SFMLWindow::Release()
 {
     if ( IsOpen() )
@@ -142,51 +143,52 @@ void EDK::SFMLWindow::Release()
         Close();
     }
 }
-void EDK::SFMLWindow::ProcessEvents() 
+void EDK::SFMLWindow::ProcessEvents()
 {
     // Event processing
-   sf::Event event;
-   while (mWindowImpl.pollEvent(event))
-   {
-       // Request for closing the window
-       if (event.type == sf::Event::Closed)
-       {
-           Close();
-       }
-   }
+    sf::Event event;
+
+    while ( mWindowImpl.pollEvent( event ) )
+    {
+        // Request for closing the window
+        if ( event.type == sf::Event::Closed )
+        {
+            Close();
+        }
+    }
 }
 
-EDK::NativeWindowHandle EDK::SFMLWindow::GetNativeWindowHandle() const 
-{ 
+EDK::NativeWindowHandle EDK::SFMLWindow::GetNativeWindowHandle() const
+{
     return static_cast<NativeWindowHandle>( mWindowImpl.getSystemHandle() );
-}    
+}
 
 U32 EDK::SFMLWindow::EngineEnumToSfmlEnum( Window::Style style ) const
 {
     switch ( style )
     {
-        case Window::Style::Plain:
-        
-            return sf::Style::None;
-            
-        case Window::Style::CaptionBar:
-        
-            return sf::Style::Titlebar;
-            
-        case Window::Style::Resizable:
-        
-            return sf::Style::Resize;
-            
-        case Window::Style::Closable:
-        
-            return sf::Style::Close;
-            
-        case Window::Style::Fullscreen:
-        
-            return sf::Style::Fullscreen;
-            
-        default:
-        
-            return sf::Style::Default;
-    } 
+    case Window::Style::Plain:
+
+        return sf::Style::None;
+
+    case Window::Style::CaptionBar:
+
+        return sf::Style::Titlebar;
+
+    case Window::Style::Resizable:
+
+        return sf::Style::Resize;
+
+    case Window::Style::Closable:
+
+        return sf::Style::Close;
+
+    case Window::Style::Fullscreen:
+
+        return sf::Style::Fullscreen;
+
+    default:
+
+        return sf::Style::Default;
+    }
 }
