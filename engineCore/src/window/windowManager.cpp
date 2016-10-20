@@ -145,7 +145,7 @@ NativeWindowHandle WindowManager::GetHandle( U8 windowID  /*= 0*/ ) const
         return mWindows.at( ID )->GetNativeWindowHandle();
     }
 
-    return nullptr;
+    return WindowHandleNull;
 }
 
 void WindowManager::SetMainWindow( U8 windowID )

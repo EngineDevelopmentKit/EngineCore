@@ -38,6 +38,7 @@ struct HWND__;
 
 namespace EDK
 {
+#   define WindowHandleNull nullptr
     typedef HWND__ *NativeWindowHandle;
 }
 
@@ -45,6 +46,7 @@ namespace EDK
 
 namespace EDK
 {
+#   define WindowHandleNull 0
     typedef U64 NativeWindowHandle;
 }
 
@@ -52,6 +54,7 @@ namespace EDK
 
 namespace EDK
 {
+#   define WindowHandleNull nullptr
     typedef void *NativeWindowHandle;
 }
 
@@ -59,6 +62,7 @@ namespace EDK
 
 namespace EDK
 {
+#   define WindowHandleNull nullptr
     typedef void *NativeWindowHandle;
 }
 
@@ -66,6 +70,7 @@ namespace EDK
 
 namespace EDK
 {
+#   define WindowHandleNull nullptr
     typedef void *NativeWindowHandle;
 }
 
