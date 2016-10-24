@@ -128,7 +128,7 @@ void EDK::MainLoop( S32 argc, char **argv )
 
     // TEMP
 
-    // bgfx::shutdown();
+    bgfx::shutdown();
 
     // END TEMP
 }
