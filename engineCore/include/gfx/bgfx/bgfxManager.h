@@ -28,6 +28,8 @@
 #ifndef __EDK_BGFX_GRAPHICSMANAGER_H__
 #define __EDK_BGFX_GRAPHICSMANAGER_H__
 
+#include "gfx/abstract/gfxManager.h"
+
 #include <mutex>
 
 /// @addtogroup Windows
@@ -44,29 +46,41 @@ class AbstractObjectPool;
 
 namespace EDK
 {
-    class BgfxGraphicsManager
-        : public AbstractManager
+    namespace Graphics
     {
-    public:
+        U32 GetBgfxRenderType( const Interface interf );
 
-        BgfxGraphicsManager();
+        class BgfxManager
+            : public Graphics::Manager
+        {
+        public:
 
-        virtual void OnInit() override;
-        virtual void OnPostInit() override;
-        virtual void OnRelease() override;
-        virtual void OnUpdate() override;
-  
-        void Release() override;
-        SwapChain *CreateSwapChain( const SwapChainDesc &desc ) override;
-  
-    private:
+            BgfxManager();
 
-        mutable std::mutex mMutex;
-        Graphics::Factory *mFactory;
-    };
+            virtual void OnInit() override;
+            virtual void OnPostInit() override;
+            virtual void OnRelease() override;
+            virtual void OnUpdate() override;
 
-    /// @}
+            SwapChain *CreateSwapChain( const SwapChainDesc &desc ) override;
+
+        protected:
+
+            void Reinitialize( const SwapChainDesc &desc, const VideoCard &card, const Interface interface );
+
+            void OnVideoSwitch( const VideoSwitchEvent &e );
+
+        private:
+
+            SwapChain *mMainwindow;
+            mutable std::mutex mMutex;
+            bool mHasValidInterfaceLink;
+
+            AbstractObjectPool< SwapChain > *mSwapChainPool;
+        };
+
+    }
 }
 
-#endif 
+#endif
 

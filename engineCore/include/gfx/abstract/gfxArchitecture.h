@@ -48,10 +48,8 @@ namespace EDK
             Direct3D12  = 0x04,
             Metal       = 0x08,
             Vulkan      = 0x10,
-            OpenGL2_1   = 0x20,
-            OpenGL3_1   = 0x40,
-            OpenGLES2   = 0x80,
-            OpenGLES3_1 = 0x100
+            OpenGL      = 0x20,
+            OpenGLES    = 0x40
         };
 
         struct VideoArchitecture

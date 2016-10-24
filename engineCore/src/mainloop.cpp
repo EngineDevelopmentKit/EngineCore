@@ -26,6 +26,7 @@
 
 #include "mainloop.h"
 
+#include "api/event.h"
 #include "api/controller.h"
 
 #include "common/program.h"
@@ -34,6 +35,8 @@
 
 #include "window/impl/sfmlWindowManager.h"
 
+#include "gfx/bgfx/bgfxManager.h"
+
 // TEMP
 #include <bgfx/bgfx.h>
 #include <bgfx/bgfxplatform.h>
@@ -41,9 +44,12 @@
 
 #include <iostream>
 
+using namespace EDK::Graphics;
+
 void EDK::RegisterControllers()
 {
     Controller::Add<EDK::SFMLWindowManager>();
+    Controller::Add<EDK::Graphics::BgfxManager>();
 }
 
 void EDK::MainLoop( S32 argc, char **argv )
@@ -67,34 +73,38 @@ void EDK::MainLoop( S32 argc, char **argv )
     uint32_t m_debug  = BGFX_DEBUG_TEXT;
     uint32_t m_reset  = BGFX_RESET_VSYNC;
 
-    bgfx::PlatformData pd;
-    pd.ndt          = NULL;
-    pd.nwh          = windowManager->GetHandle( windowID );
-    pd.context      = NULL;
-    pd.backBuffer   = NULL;
-    pd.backBufferDS = NULL;
-    bgfx::setPlatformData( pd );
+    EDK::VideoSwitchEvent videoEvent;
+    videoEvent.interface = EDK::Graphics::Interface::Direct3D11;
+    videoEvent.mainwindow.hwnd = windowManager->GetHandle( windowID );
 
-    bgfx::init( bgfx::RendererType::Direct3D11 );
-    bgfx::reset( m_width, m_height, m_reset );
+    Event::Post( videoEvent );
 
-    // Enable debug text.
-    bgfx::setDebug( m_debug );
-
-    // Set view 0 clear state.
-    bgfx::setViewClear(
-        0
-        , BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH
-        , 0x303030ff
-        , 1.0f
-        , 0
-    );
-
+    bool init_bgfx = true;
     // TEMP
 
     while ( gameInstance.IsRunning() )
     {
         gameInstance.Update();
+
+        if ( init_bgfx )
+        {
+
+            bgfx::reset( m_width, m_height, m_reset );
+
+            // Enable debug text.
+            bgfx::setDebug( m_debug );
+
+            // Set view 0 clear state.
+            bgfx::setViewClear(
+                0
+                , BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH
+                , 0x303030ff
+                , 1.0f
+                , 0
+            );
+
+            init_bgfx = false;
+        }
 
         // TEMP
         // Set view 0 default viewport.
@@ -118,7 +128,7 @@ void EDK::MainLoop( S32 argc, char **argv )
 
     // TEMP
 
-    bgfx::shutdown();
+    // bgfx::shutdown();
 
     // END TEMP
 }

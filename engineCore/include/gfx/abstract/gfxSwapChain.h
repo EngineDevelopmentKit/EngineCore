@@ -38,7 +38,6 @@ namespace EDK
 {
     namespace Graphics
     {
-        class Factory;
         class FrameBuffer;
 
         struct SwapChainDesc
@@ -59,7 +58,6 @@ namespace EDK
 
         class SwapChain
         {
-            friend class Factory;
         public:
 
             virtual ~SwapChain() {}

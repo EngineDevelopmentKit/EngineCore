@@ -39,11 +39,11 @@ namespace EDK
 {
     namespace Graphics
     {
-        class BgfxFactory;
+        class BgfxManager;
 
         class BgfxSwapChain : public SwapChain
         {
-            friend class BgfxFactory;
+            friend class BgfxManager;
         public:
 
             BgfxSwapChain();
