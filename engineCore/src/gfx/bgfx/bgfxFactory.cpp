@@ -33,14 +33,12 @@ EDK::Graphics::SwapChain *EDK::Graphics::BgfxFactory::CreateSwapChain( const Swa
         if ( !mGeneratedMainWindow )
         {
             bgfx::PlatformData pd;
-            pd.ndt = NULL;
+            pd.ndt = desc.ndh;
             pd.nwh = desc.hwnd;
             pd.context = NULL;
             pd.backBuffer = NULL;
             pd.backBufferDS = NULL;
             bgfx::setPlatformData( pd );
-
-
 
             mGeneratedMainWindow = true;
         }

@@ -2,8 +2,6 @@
 #ifndef __EDK_GFX_FACTORY_H__
 #define __EDK_GFX_FACTORY_H__
 
-
-
 namespace EDK
 {
     namespace Graphics

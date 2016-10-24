@@ -4,8 +4,6 @@
 
 #include "gfx/abstract/gfxFactory.h"
 
-template< typename tBase >
-class AbstractObjectPool;
 
 namespace EDK
 {
@@ -18,12 +16,7 @@ namespace EDK
         {
         public:
 
-            BgfxFactory( const VideoCard &card, Interface igfx );
-
-            virtual void Release() override;
-
-            virtual SwapChain *CreateSwapChain( const SwapChainDesc &desc ) override;
-
+            
 
         protected:
 

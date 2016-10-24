@@ -47,6 +47,7 @@ namespace EDK
             Vec2I size;
             DataFormat format;
             NativeWindowHandle hwnd;
+            NativeDisplayHandle ndh;
 
             struct MultiSample
             {

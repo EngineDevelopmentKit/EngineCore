@@ -25,60 +25,48 @@
 */
 
 #pragma once
-#ifndef __EDK_WINDOWHANDLE_H__
-#define __EDK_WINDOWHANDLE_H__
+#ifndef __EDK_BGFX_GRAPHICSMANAGER_H__
+#define __EDK_BGFX_GRAPHICSMANAGER_H__
 
-#include "common/types.h"
+#include <mutex>
 
-#include "preproc/os.h"
+/// @addtogroup Windows
+/// @{
 
-#if OS_IS_WINDOWS
+/**
+* Manager for the graphics handles.
+*
+* @sa  Manager
+*/
 
-struct HWND__;
-
-namespace EDK
-{
-#   define WindowHandleNull nullptr
-    typedef HWND__ *NativeWindowHandle;
-    typedef void *NativeDisplayHandle;
-}
-
-#elif OS_IS_LINUX
+template< typename tBase >
+class AbstractObjectPool;
 
 namespace EDK
 {
-#   define WindowHandleNull 0
-    typedef U64 NativeWindowHandle;
-    typedef void *NativeDisplayHandle;
+    class BgfxGraphicsManager
+        : public AbstractManager
+    {
+    public:
+
+        BgfxGraphicsManager();
+
+        virtual void OnInit() override;
+        virtual void OnPostInit() override;
+        virtual void OnRelease() override;
+        virtual void OnUpdate() override;
+  
+        void Release() override;
+        SwapChain *CreateSwapChain( const SwapChainDesc &desc ) override;
+  
+    private:
+
+        mutable std::mutex mMutex;
+        Graphics::Factory *mFactory;
+    };
+
+    /// @}
 }
 
-#elif OS_IS_MACOS
+#endif 
 
-namespace EDK
-{
-#   define WindowHandleNull nullptr
-    typedef void *NativeWindowHandle;
-    typedef void *NativeDisplayHandle;
-}
-
-#elif OS_IS_ANDROID
-
-namespace EDK
-{
-#   define WindowHandleNull nullptr
-    typedef void *NativeWindowHandle;
-    typedef void *NativeDisplayHandle;
-}
-
-#elif OS_IS_IOS
-
-namespace EDK
-{
-#   define WindowHandleNull nullptr
-    typedef void *NativeWindowHandle;
-    typedef void *NativeDisplayHandle;
-}
-
-#endif
-
-#endif
