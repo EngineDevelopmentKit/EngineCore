@@ -132,7 +132,7 @@ workspace "EngineDevelopmentKit"
           } 
 
         filter "action:vs*"
-		    kind "WindowedApp"
+            kind "WindowedApp"
 
         filter "action:android"
             kind "SharedLib"
