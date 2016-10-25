@@ -35,7 +35,7 @@ workspace "EngineDevelopmentKit"
     characterset "Unicode"
     warnings "Extra"
     
-    flags "C++14"
+    flags "C++11"
      
     filter "platforms:x86"
         targetdir "bin/x86/"
