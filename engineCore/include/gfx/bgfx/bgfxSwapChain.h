@@ -48,13 +48,11 @@ namespace EDK
 
             BgfxSwapChain();
 
+            virtual void Present() const override;
+
             virtual SwapChainDesc QueryDesc() const override;
 
             virtual const FrameBuffer *GetFrameBuffer() const override;
-
-            virtual void Release() override;
-
-            virtual void Present() override;
 
         public:
 
@@ -70,7 +68,6 @@ namespace EDK
 
             SwapChainDesc mDesc;
             FrameBuffer *mFrameBuffer;
-            AbstractObjectPool< SwapChain > *mPool;
         };
     }
 }

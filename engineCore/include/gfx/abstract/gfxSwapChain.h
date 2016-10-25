@@ -40,20 +40,23 @@ namespace EDK
     {
         class FrameBuffer;
 
+        enum SwapChainFlags
+        {
+            MSAA_2x  = 0x01,
+            MSAA_4x  = 0x02,
+            MSAA_8x  = 0x04,
+            MSAA_16x = 0x08,
+            fullscreen = 0x10,
+            vsync    = 0x20
+        };
+
         struct SwapChainDesc
         {
-            bool fullscreen;
             Vec2I size;
             DataFormat format;
+            U32 swapChainFlags;
             NativeWindowHandle hwnd;
             NativeDisplayHandle ndh;
-
-            struct MultiSample
-            {
-                bool enableMultiSample;
-                U32  sampleCount;
-
-            } multisample;
         };
 
         class SwapChain
@@ -62,13 +65,11 @@ namespace EDK
 
             virtual ~SwapChain() {}
 
+            virtual void Present() const = 0;
+
             virtual SwapChainDesc QueryDesc() const = 0;
 
             virtual const FrameBuffer *GetFrameBuffer() const = 0;
-
-            virtual void Release() = 0;
-
-            virtual void Present() = 0;
 
         public:
 

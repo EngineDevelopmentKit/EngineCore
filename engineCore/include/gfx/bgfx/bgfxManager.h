@@ -49,6 +49,7 @@ namespace EDK
     namespace Graphics
     {
         U32 GetBgfxRenderType( const Interface interf );
+        U32 GetBgfxResetFlags( const U32 swapChainFlags );
 
         class BgfxManager
             : public Graphics::Manager
@@ -62,11 +63,11 @@ namespace EDK
             virtual void OnRelease() override;
             virtual void OnUpdate() override;
 
-            SwapChain *CreateSwapChain( const SwapChainDesc &desc ) override;
+            virtual const SwapChain *GetMainWindow() override;
 
         protected:
 
-            void Reinitialize( const SwapChainDesc &desc, const VideoCard &card, const Interface interface );
+            void Reinitialize( const SwapChainDesc &desc, const VideoCard &card, const Interface interf );
 
             void OnVideoSwitch( const VideoSwitchEvent &e );
 
@@ -76,7 +77,19 @@ namespace EDK
             mutable std::mutex mMutex;
             bool mHasValidInterfaceLink;
 
+            struct VideoState
+            {
+                VideoState();
+
+                bool dirty;
+                VideoCard card;
+                Interface interf;
+                SwapChainDesc desc;
+
+            } mVideoState;
+
             AbstractObjectPool< SwapChain > *mSwapChainPool;
+
         };
 
     }

@@ -68,14 +68,17 @@ void EDK::MainLoop( S32 argc, char **argv )
 
     U8 windowID = windowManager->CreateNewWindow( Vec2I( 800, 600 ), Window::Style::Closable );
 
-    uint32_t m_width  = 800;
+    uint32_t m_width = 800;
     uint32_t m_height = 600;
-    uint32_t m_debug  = BGFX_DEBUG_TEXT;
+    uint32_t m_debug = BGFX_DEBUG_TEXT;
     uint32_t m_reset  = BGFX_RESET_VSYNC;
 
     EDK::VideoSwitchEvent videoEvent;
     videoEvent.interface = EDK::Graphics::Interface::Direct3D11;
     videoEvent.mainwindow.hwnd = windowManager->GetHandle( windowID );
+    videoEvent.mainwindow.format = DataFormat::Format_RGBA_8_U;
+    videoEvent.mainwindow.swapChainFlags = 0;
+    videoEvent.mainwindow.size = Vec2I( 800, 600 );
 
     Event::Post( videoEvent );
 
@@ -88,9 +91,6 @@ void EDK::MainLoop( S32 argc, char **argv )
 
         if ( init_bgfx )
         {
-
-            bgfx::reset( m_width, m_height, m_reset );
-
             // Enable debug text.
             bgfx::setDebug( m_debug );
 
@@ -119,16 +119,8 @@ void EDK::MainLoop( S32 argc, char **argv )
         bgfx::dbgTextPrintf( 0, 1, 0x4f, "bgfx/examples/00-helloworld" );
         bgfx::dbgTextPrintf( 0, 2, 0x6f, "Description: Initialization and debug text." );
 
-        // Advance to next frame. Rendering thread will be kicked to
-        // process submitted rendering primitives.
-        bgfx::frame();
-
         // END TEMP
+
+        Controller::Get<EDK::Graphics::BgfxManager>()->GetMainWindow()->Present();
     }
-
-    // TEMP
-
-    bgfx::shutdown();
-
-    // END TEMP
 }
