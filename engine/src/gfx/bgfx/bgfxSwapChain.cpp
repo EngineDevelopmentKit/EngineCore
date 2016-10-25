@@ -2,9 +2,14 @@
 
 #include "common/util.h"
 
-EDK::Graphics::BgfxSwapChain::BgfxSwapChain() : mFrameBuffer( nullptr ), mPool( nullptr )
+EDK::Graphics::BgfxSwapChain::BgfxSwapChain() : mFrameBuffer( nullptr )
 {
 
+}
+
+void EDK::Graphics::BgfxSwapChain::Present() const
+{
+    bgfx::frame();
 }
 
 EDK::Graphics::SwapChainDesc EDK::Graphics::BgfxSwapChain::QueryDesc() const
@@ -15,16 +20,6 @@ EDK::Graphics::SwapChainDesc EDK::Graphics::BgfxSwapChain::QueryDesc() const
 const EDK::Graphics::FrameBuffer *EDK::Graphics::BgfxSwapChain::GetFrameBuffer() const
 {
     return mFrameBuffer;
-}
-
-void EDK::Graphics::BgfxSwapChain::Release()
-{
-    //SAFE_RELEASE( mFrameBuffer )
-}
-
-void EDK::Graphics::BgfxSwapChain::Present()
-{
-    bgfx::frame();
 }
 
 void EDK::Graphics::BgfxSwapChain::OnInit()

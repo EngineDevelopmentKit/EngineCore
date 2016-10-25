@@ -26,8 +26,7 @@ namespace EDK
 
             virtual ~Manager() {}
 
-            virtual SwapChain *CreateSwapChain( const SwapChainDesc &desc ) = 0;
-
+            virtual const SwapChain *GetMainWindow() = 0;
         };
     }
 }
