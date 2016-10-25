@@ -106,6 +106,8 @@ workspace "EngineDevelopmentKit"
             androidapilevel(21)
             cppstandard "c++11"
 		    stl "libc++"
+
+        filter {}
                 
     project "Engine"
 
@@ -129,10 +131,16 @@ workspace "EngineDevelopmentKit"
             "engine/**.rc"
           } 
 
+        filter "action:vs*"
+		    kind "WindowedApp"
+
         filter "action:android"
+            kind "SharedLib"
             androidapilevel(21)
             cppstandard "c++11"
 		    stl "libc++"
+
+        filter {}
 
 if _ACTION == "android" then
 	project "Packaging"
