@@ -66,12 +66,13 @@ void EDK::MainLoop( S32 argc, char **argv )
 
     EDK::SFMLWindowManager *windowManager = Controller::Get<EDK::SFMLWindowManager>();
 
-    U8 windowID = windowManager->CreateNewWindow( Vec2I( 800, 600 ), Window::Style::Closable );
+    U32 width = 800;
+    U32 height = 600;
+    U32 debug = BGFX_DEBUG_TEXT;
+    U32 reset = BGFX_RESET_VSYNC;
 
-    uint32_t m_width  = 800;
-    uint32_t m_height = 600;
-    uint32_t m_debug  = BGFX_DEBUG_TEXT;
-    uint32_t m_reset  = BGFX_RESET_VSYNC;
+
+    U8 windowID = windowManager->CreateNewWindow( Vec2I( width, height ), Window::Style::Closable );
 
     EDK::VideoSwitchEvent videoEvent;
     videoEvent.interface = EDK::Graphics::Interface::Direct3D11;
@@ -79,36 +80,30 @@ void EDK::MainLoop( S32 argc, char **argv )
 
     Event::Post( videoEvent );
 
-    bool init_bgfx = true;
+    bool initBgfx = true;
     // TEMP
 
     while ( gameInstance.IsRunning() )
     {
         gameInstance.Update();
 
-        if ( init_bgfx )
+        if ( initBgfx )
         {
 
-            bgfx::reset( m_width, m_height, m_reset );
+            bgfx::reset( width, height, reset );
 
             // Enable debug text.
-            bgfx::setDebug( m_debug );
+            bgfx::setDebug( debug );
 
             // Set view 0 clear state.
-            bgfx::setViewClear(
-                0
-                , BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH
-                , 0x303030ff
-                , 1.0f
-                , 0
-            );
+            bgfx::setViewClear( 0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0 );
 
-            init_bgfx = false;
+            initBgfx = false;
         }
 
         // TEMP
         // Set view 0 default viewport.
-        bgfx::setViewRect( 0, 0, 0, uint16_t( m_width ), uint16_t( m_height ) );
+        bgfx::setViewRect( 0, 0, 0, uint16_t( width ), uint16_t( height ) );
 
         // This dummy draw call is here to make sure that view 0 is cleared
         // if no other draw calls are submitted to view 0.

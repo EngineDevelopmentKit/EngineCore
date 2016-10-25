@@ -28,15 +28,14 @@ workspace "EngineDevelopmentKit"
     configurations { "Debug", "Release", "OptimisedDebug" }
     platforms { "x86_64", "x86" }
     
+    startproject "Engine"
     objdir "bin/obj/"
     
     vectorextensions "SSE"
+    characterset "Unicode"
     warnings "Extra"
     
-    flags {
-        "Unicode",
-        "C++14"
-      }
+    flags "C++14"
      
     filter "platforms:x86"
         targetdir "bin/x86/"
@@ -52,72 +51,63 @@ workspace "EngineDevelopmentKit"
         targetsuffix "d"
         defines "DEBUG"
 
-        flags { "Symbols" }
+        symbols "On"
         optimize "Off"
         
     filter "*OptimisedDebug"
         targetsuffix "od"
-        flags "LinkTimeOptimization"
+        symbols "On"
         optimize "Speed"
         
     filter "*Release"
         optimize "Speed"
         defines "NDEBUG"
+
+    filter { "*Release", "system:not linux" }
+        flags "LinkTimeOptimization"
+
+    filter { "*OptimisedDebug", "system:not linux" }
+        flags "LinkTimeOptimization"
        
     filter {}
     
     project "EngineCore"
      
-        targetname( "EngineCore" )
-        kind "StaticLib"     
+        targetname "EngineCore"
+        location "engine/"
+        kind "StaticLib"             
         
-        location( "engineCore/" )
+        zpm.uses { 
+            "Zefiros-Software/CoreLib",
+            "Zefiros-Software/SFML",
+            "Zefiros-Software/bx",
+            "Zefiros-Software/bgfx" 
+            }
         
-        zpm.uses { "Zefiros-Software/CoreLib",
-                   "Zefiros-Software/SFML",
-                   "Zefiros-Software/bx",
-                   "Zefiros-Software/bgfx" }
-        
-        includedirs {
-            "engineCore/include/"
-        }
+        includedirs "engine/include/"
             
         files { 
-           "engineCore/include/**.hpp",
-           "engineCore/include/**.h",
-           "engineCore/src/**.cpp"
+           "engine/include/**.hpp",
+           "engine/include/**.h",
+           "engine/src/**.cpp"
             }
-         
-         -- TEMP TEST
-        
-        --includedirs{ "/Users/koenvisscher/Documents/Code/EngineDevelopmentKit/EngineCore/tt_lib/include"}
-        
-        -- END TEMP
                 
     project "Engine"
 
         kind "WindowedApp"
-        flags "WinMain"
-        targetname( "Engine" )
+        location "engine/"
+        targetname "Engine" 
     
         links "EngineCore"
         
-        zpm.uses { "Zefiros-Software/CoreLib",
-                   "Zefiros-Software/SFML",
-                   "Zefiros-Software/bx",
-                   "Zefiros-Software/bgfx" }
-        
-        location( "engine/" )
-        
-        -- TEMP TEST
-        --linkoptions { "-F /Users/koenvisscher/Documents/Code/EngineDevelopmentKit/EngineCore/tt_lib/Frameworks -framework sfml-window -framework sfml-system"}
-        --includedirs{ "/Users/koenvisscher/Documents/Code/EngineDevelopmentKit/EngineCore/tt_lib/include"}
-        
-        -- END TEMP
-        
-        includedirs {
-                "engineCore/include/"
+        zpm.uses { 
+            "Zefiros-Software/CoreLib",
+            "Zefiros-Software/SFML",
+            "Zefiros-Software/bx",
+            "Zefiros-Software/bgfx" 
             }
+        
+        includedirs "engine/include/"
         
         files { 
             "engine/main.cpp", 

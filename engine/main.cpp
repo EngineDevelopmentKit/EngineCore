@@ -26,32 +26,12 @@
 
 #include "mainloop.h"
 
-#include "preproc/os.h"
-
 #include <stdlib.h>
-
-#if OS_IS_WINDOWS
-
-#include <windows.h>
-
-#pragma warning(suppress: 28251)
-S32 WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pScmdline, S32 iCmdshow )
-{
-    // Suppress warnings
-    ( void )hInstance;
-    ( void )hPrevInstance;
-    ( void )pScmdline;
-    ( void )iCmdshow;
-#else
 
 S32 main( S32 argc, char **argv )
 {
-    S32 __argc = argc;
-    char **__argv = argv;
-#endif
-
     //start the new game instance and run it
-    EDK::MainLoop( __argc, __argv );
+    EDK::MainLoop( argc, argv );
 
     return 0;
 }
