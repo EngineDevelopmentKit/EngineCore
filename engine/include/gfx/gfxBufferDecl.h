@@ -25,57 +25,46 @@
 */
 
 #pragma once
-#ifndef __EDK_GFX_TEXTURE_H__
-#define __EDK_GFX_TEXTURE_H__
+#ifndef __EDK_GFX_ADAPTER_H__
+#define __EDK_GFX_ADAPTER_H__
 
-#include "math/scalar/vec2i.h"
+#include "common/types.h"
 
 #include "gfx/gfxFormat.h"
 
-#include "window/abstract/windowHandle.h"
+#include <string>
+#include <vector>
 
 namespace EDK
 {
     namespace Graphics
     {
-        class FrameBuffer;
-
-        enum SwapChainFlags
+        enum ShaderAttribute
         {
-            MSAA_2x  = 0x01,
-            MSAA_4x  = 0x02,
-            MSAA_8x  = 0x04,
-            MSAA_16x = 0x08,
-            fullscreen = 0x10,
-            vsync    = 0x20
+            Position  = 0x01,
+            Normal    = 0x02,
+            Tangent   = 0x04,
+            Bitangent = 0x08,
+            Color0    = 0x10,
+            Color1    = 0x20,
+            Indices   = 0x40,
+            Weight    = 0x80,
+            TexCoord0 = 0x100,
+            TexCoord1 = 0x200,
+            TexCoord2 = 0x400,
+            TexCoord3 = 0x800,
+            TexCoord4 = 0x1000,
+            TexCoord5 = 0x2000,
+            TexCoord6 = 0x4000,
+            TexCoord7 = 0x8000
         };
 
-        struct SwapChainDesc
+        class BufferLayoutDecl
         {
-            Vec2I size;
-            U32 swapChainFlags;
-            GpuDataFormat format;
-            NativeWindowHandle hwnd;
-            NativeDisplayHandle ndh;
-        };
+            BufferLayoutDecl( const U32 alginment = 0 );
 
-        class SwapChain
-        {
-        public:
-
-            virtual ~SwapChain() {}
-
-            virtual void Present() const = 0;
-
-            virtual SwapChainDesc QueryDesc() const = 0;
-
-            virtual const FrameBuffer *GetFrameBuffer() const = 0;
-
-        public:
-
-            // Required by the object pool
-            virtual void OnInit() = 0;
-            virtual void OnRelease() = 0;
+            void Add( const ShaderAttribute atribute, const GpuDataFormat &format );
+            void Pad( const U32 bytes );
         };
     }
 }

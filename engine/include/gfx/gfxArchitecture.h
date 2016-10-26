@@ -31,7 +31,7 @@
 
 #include "common/types.h"
 
-#include "gfx/abstract/gfxAdapter.h"
+#include "gfx/gfxAdapter.h"
 
 #include "manager/abstract/abstractManager.h"
 

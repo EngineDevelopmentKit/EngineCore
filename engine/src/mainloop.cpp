@@ -76,7 +76,6 @@ void EDK::MainLoop( S32 argc, char **argv )
     EDK::VideoSwitchEvent videoEvent;
     videoEvent.interface = EDK::Graphics::Interface::Direct3D11;
     videoEvent.mainwindow.hwnd = windowManager->GetHandle( windowID );
-    videoEvent.mainwindow.format = DataFormat::Format_RGBA_8_U;
     videoEvent.mainwindow.swapChainFlags = 0u;
     videoEvent.mainwindow.size = Vec2I( width, height );
 

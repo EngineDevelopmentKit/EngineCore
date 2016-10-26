@@ -4,8 +4,9 @@
 
 #include "events/abstract/IEvent.h"
 
+#include "gfx/gfxArchitecture.h"
 #include "gfx/abstract/gfxSwapChain.h"
-#include "gfx/abstract/gfxArchitecture.h"
+
 
 #include "manager/abstract/abstractManager.h"
 
