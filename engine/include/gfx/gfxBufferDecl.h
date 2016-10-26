@@ -25,8 +25,8 @@
 */
 
 #pragma once
-#ifndef __EDK_GFX_ADAPTER_H__
-#define __EDK_GFX_ADAPTER_H__
+#ifndef __EDK_GFX_BUFFER_DECL_H__
+#define __EDK_GFX_BUFFER_DECL_H__
 
 #include "common/types.h"
 
@@ -61,7 +61,7 @@ namespace EDK
 
         class BufferLayoutDecl
         {
-            BufferLayoutDecl( const U32 alginment = 0 );
+            BufferLayoutDecl( const U32 alignment = 0 );
 
             void Add( const ShaderAttribute atribute, const GpuDataFormat &format );
             void Pad( const U32 bytes );
