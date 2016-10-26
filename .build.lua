@@ -9,5 +9,5 @@ project "EngineCore"
 
     zpm.export [[
         includedirs "core/include/"
-        flags "C++14"
+        flags "C++11"
     ]]

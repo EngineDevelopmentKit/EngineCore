@@ -23,10 +23,11 @@
 -- @endcond
 --]]
 
+local vsandroid = require( "akaStiX/vsandroid", "@head" )
+
 workspace "EngineDevelopmentKit"
     
     configurations { "Debug", "Release", "OptimisedDebug" }
-    platforms { "x86_64", "x86" }
     
     startproject "Engine"
     objdir "bin/obj/"
@@ -35,14 +36,17 @@ workspace "EngineDevelopmentKit"
     characterset "Unicode"
     warnings "Extra"
     
-    flags "C++14"
+    flags "C++11"
+
+    filter { "action:vs*" }
+        platforms { "x86_64", "x86" }
      
-    filter "platforms:x86"
+    filter { "action:vs*", "platforms:x86" }
         targetdir "bin/x86/"
         debugdir "bin/x86/"
         architecture "x86"
     
-    filter "platforms:x86_64"
+    filter { "action:vs*", "platforms:x86_64" }
         targetdir "bin/x86_64/"
         debugdir "bin/x86_64/"
         architecture "x86_64"
@@ -62,6 +66,12 @@ workspace "EngineDevelopmentKit"
     filter "*Release"
         optimize "Speed"
         defines "NDEBUG"
+
+    filter "action:android"
+        targetdir "bin/android/"
+        debugdir "bin/android/"
+		system "vsandroid"
+		architecture "arm"
 
     filter { "*Release", "system:not linux" }
         flags "LinkTimeOptimization"
@@ -91,6 +101,13 @@ workspace "EngineDevelopmentKit"
            "engine/include/**.h",
            "engine/src/**.cpp"
             }
+
+        filter "action:android"
+            androidapilevel(21)
+            cppstandard "c++11"
+		    stl "libc++"
+
+        filter {}
                 
     project "Engine"
 
@@ -113,5 +130,33 @@ workspace "EngineDevelopmentKit"
             "engine/main.cpp", 
             "engine/**.rc"
           } 
+
+        filter "action:vs*"
+            kind "WindowedApp"
+
+        filter "action:android"
+            kind "SharedLib"
+            androidapilevel(21)
+            cppstandard "c++11"
+		    stl "libc++"
+
+        filter {}
+
+if _ACTION == "android" then
+	project "Packaging"
+
+		kind "Packaging"
+		
+		links {
+			"Application",
+		}
+		
+		files {
+			"%{sln.location}/res/values/strings.xml",
+            "%{sln.location}/assets/**.*",
+		}
+		
+		symbolspath "%{sln.location}/obj/%{cfg.buildcfg}/Application"
+end
 
     
