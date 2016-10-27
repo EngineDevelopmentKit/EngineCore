@@ -31,6 +31,7 @@
 #include "gfx/abstract/gfxManager.h"
 
 #include <mutex>
+#include <bgfx/bgfx.h>
 
 /// @addtogroup Windows
 /// @{
@@ -50,6 +51,8 @@ namespace EDK
     {
         U32 GetBgfxRenderType( const Interface interf );
         U32 GetBgfxResetFlags( const U32 swapChainFlags );
+        bgfx::Attrib GetBgfxAttrib( const ShaderAttribute attribute );
+        bgfx::VertexDecl GetBgfxVertexDecl( const BufferLayoutDecl &layout );
 
         class BgfxManager
             : public Graphics::Manager
@@ -62,6 +65,8 @@ namespace EDK
             virtual void OnPostInit() override;
             virtual void OnRelease() override;
             virtual void OnUpdate() override;
+
+            virtual const VertexBuffer *CreateVertexBuffer( const VertexBufferDesc &desc ) override;
 
             virtual const SwapChain *GetMainWindow() override;
 

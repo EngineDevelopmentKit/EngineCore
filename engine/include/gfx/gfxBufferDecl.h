@@ -61,10 +61,45 @@ namespace EDK
 
         class BufferLayoutDecl
         {
+        public:
             BufferLayoutDecl( const U32 alignment = 0 );
+
+            struct LayoutItem
+            {
+                LayoutItem();
+                LayoutItem( const U32 paddingBytes );
+                LayoutItem( const ShaderAttribute &attribute, const GpuDataFormat &format );
+
+                enum class LayoutItemView
+                {
+                    None = 0,
+                    Attribute = 1,
+                    Padding = 2
+                } itemView;
+
+                union
+                {
+                    struct
+                    {
+                        ShaderAttribute attribute;
+                        GpuDataFormat format;
+                    };
+                    U32 paddingBytes;
+                } data;
+            };
+
 
             void Add( const ShaderAttribute atribute, const GpuDataFormat &format );
             void Pad( const U32 bytes );
+
+            const std::vector< LayoutItem > &GetItems() const;
+
+        private:
+
+            U32 mStride;
+            U32 mAlignment;
+            U32 mContentFlags;
+            std::vector< LayoutItem > mContent;
         };
     }
 }

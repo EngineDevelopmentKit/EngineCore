@@ -25,51 +25,36 @@
 */
 
 #pragma once
-#ifndef __EDK_GFX_SWAPCHAIN_H__
-#define __EDK_GFX_SWAPCHAIN_H__
+#ifndef __EDK_GFX_VERTEXBUFFER_H__
+#define __EDK_GFX_VERTEXBUFFER_H__
 
 #include "math/scalar/vec2i.h"
 
 #include "gfx/gfxFormat.h"
-
-#include "window/abstract/windowHandle.h"
+#include "gfx/gfxBufferDecl.h"
 
 namespace EDK
 {
     namespace Graphics
     {
-        class FrameBuffer;
-
-        enum SwapChainFlags
+        struct VertexBufferDesc
         {
-            MSAA_2x  = 0x01,
-            MSAA_4x  = 0x02,
-            MSAA_8x  = 0x04,
-            MSAA_16x = 0x08,
-            fullscreen = 0x10,
-            vsync    = 0x20
+            VertexBufferDesc();
+            VertexBufferDesc( const BufferLayoutDecl &layout, void *memory, size_t memSize, U32 flags = 0 );
+
+            U32 flags;
+            void *memory;
+            size_t memSize;
+            BufferLayoutDecl layoutDecl;
         };
 
-        struct SwapChainDesc
-        {
-            Vec2I size;
-            U32 swapChainFlags;
-            GpuDataFormat format;
-            NativeWindowHandle hwnd;
-            NativeDisplayHandle ndh;
-        };
-
-        class SwapChain
+        class VertexBuffer
         {
         public:
 
-            virtual ~SwapChain() {}
+            virtual ~VertexBuffer() {}
 
-            virtual void Present() const = 0;
-
-            virtual SwapChainDesc QueryDesc() const = 0;
-
-            virtual const FrameBuffer *GetFrameBuffer() const = 0;
+            //virtual SwapChainDesc QueryDesc() const = 0;
 
         public:
 

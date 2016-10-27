@@ -6,7 +6,7 @@
 
 #include "gfx/gfxArchitecture.h"
 #include "gfx/abstract/gfxSwapChain.h"
-
+#include "gfx/abstract/gfxVertexBuffer.h"
 
 #include "manager/abstract/abstractManager.h"
 
@@ -26,6 +26,8 @@ namespace EDK
         public:
 
             virtual ~Manager() {}
+
+            virtual const VertexBuffer *CreateVertexBuffer( const VertexBufferDesc &desc ) = 0;
 
             virtual const SwapChain *GetMainWindow() = 0;
         };

@@ -7,7 +7,7 @@
 #include "manager/poolManager.h"
 
 #include <bgfx/bgfxplatform.h>
-#include <bgfx/bgfx.h>
+
 
 EDK::Graphics::BgfxManager::BgfxManager() :
     mMainwindow( nullptr ), mHasValidInterfaceLink( false ), mSwapChainPool( nullptr )
@@ -62,9 +62,61 @@ void EDK::Graphics::BgfxManager::OnUpdate()
     }
 }
 
+const EDK::Graphics::VertexBuffer *EDK::Graphics::BgfxManager::CreateVertexBuffer( const VertexBufferDesc &desc )
+{
+    std::lock_guard<std::mutex> lock( mMutex );
+
+
+}
+
 const EDK::Graphics::SwapChain *EDK::Graphics::BgfxManager::GetMainWindow()
 {
     return mMainwindow;
+}
+
+bgfx::VertexDecl EDK::Graphics::GetBgfxVertexDecl( const BufferLayoutDecl &layout )
+{
+    bgfx::VertexDecl vertexDecl;
+    vertexDecl.begin();
+
+    for ( const BufferLayoutDecl::LayoutItem &item : layout.GetItems() )
+    {
+        if ( item.itemView == BufferLayoutDecl::LayoutItem::LayoutItemView::Padding )
+        {
+            vertexDecl.skip( item.data.paddingBytes );
+        }
+        else if ( item.itemView == BufferLayoutDecl::LayoutItem::LayoutItemView::Attribute )
+        {
+
+        }
+    }
+
+    vertexDecl.end();
+
+    return vertexDecl;
+}
+
+bgfx::Attrib EDK::Graphics::GetBgfxAttrib( const ShaderAttribute attribute )
+{
+    switch ( attribute )
+    {
+    case ShaderAttribute::Position:
+    case ShaderAttribute::Normal:
+    case ShaderAttribute::Tangent:
+    case ShaderAttribute::Bitangent:
+    case ShaderAttribute::Color0:
+    case ShaderAttribute::Color1:
+    case ShaderAttribute::Indices:
+    case ShaderAttribute::Weight:
+    case ShaderAttribute::TexCoord0:
+    case ShaderAttribute::TexCoord1:
+    case ShaderAttribute::TexCoord2:
+    case ShaderAttribute::TexCoord3:
+    case ShaderAttribute::TexCoord4:
+    case ShaderAttribute::TexCoord5:
+    case ShaderAttribute::TexCoord6:
+    case ShaderAttribute::TexCoord7:
+    }
 }
 
 U32 EDK::Graphics::GetBgfxRenderType( const Interface interf )

@@ -28,6 +28,8 @@
 #ifndef __EDK_GFX_FORMAT_H__
 #define __EDK_GFX_FORMAT_H__
 
+#include "common/types.h"
+
 namespace EDK
 {
     namespace Graphics
@@ -96,6 +98,8 @@ namespace EDK
                 SpecialDataFormat specialFormat;
 
             } format;
+
+            U32 GetByteSize() const;
         };
     }
 }

@@ -25,57 +25,44 @@
 */
 
 #pragma once
-#ifndef __EDK_GFX_SWAPCHAIN_H__
-#define __EDK_GFX_SWAPCHAIN_H__
+#ifndef __EDK_BGFX_VERTEXBUFFER_H__
+#define __EDK_BGFX_VERTEXBUFFER_H__
 
-#include "math/scalar/vec2i.h"
+#include "gfx/abstract/gfxVertexBuffer.h"
 
-#include "gfx/gfxFormat.h"
-
-#include "window/abstract/windowHandle.h"
+#include <bgfx/bgfx.h>
 
 namespace EDK
 {
     namespace Graphics
     {
-        class FrameBuffer;
+        class BgfxManager;
 
-        enum SwapChainFlags
+        class BgfxVertexBuffer :
+            public VertexBuffer
         {
-            MSAA_2x  = 0x01,
-            MSAA_4x  = 0x02,
-            MSAA_8x  = 0x04,
-            MSAA_16x = 0x08,
-            fullscreen = 0x10,
-            vsync    = 0x20
-        };
-
-        struct SwapChainDesc
-        {
-            Vec2I size;
-            U32 swapChainFlags;
-            GpuDataFormat format;
-            NativeWindowHandle hwnd;
-            NativeDisplayHandle ndh;
-        };
-
-        class SwapChain
-        {
+            friend class BgfxManager;
         public:
 
-            virtual ~SwapChain() {}
+            BgfxVertexBuffer();
 
-            virtual void Present() const = 0;
-
-            virtual SwapChainDesc QueryDesc() const = 0;
-
-            virtual const FrameBuffer *GetFrameBuffer() const = 0;
+            //virtual SwapChainDesc QueryDesc() const = 0;
 
         public:
 
             // Required by the object pool
-            virtual void OnInit() = 0;
-            virtual void OnRelease() = 0;
+            virtual void OnInit() override;
+            virtual void OnRelease() override;
+
+        protected:
+
+            void Init( const VertexBufferDesc &desc, const bgfx::VertexBufferHandle &handle );
+
+        private:
+
+            VertexBufferDesc mDesc;
+            bgfx::VertexBufferHandle mBufferHandle;
+
         };
     }
 }
