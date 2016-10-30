@@ -97,7 +97,7 @@ namespace EDK
                 CompressedDataFormat compressedFormat;
                 SpecialDataFormat specialFormat;
 
-            } format;
+            } data;
 
             U32 GetByteSize() const;
         };

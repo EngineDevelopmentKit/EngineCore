@@ -7,7 +7,7 @@ U32 EDK::Graphics::GpuDataFormat::GetByteSize() const
 
     if ( formatView == DataFormatView::Compressed )
     {
-        switch ( format.compressedFormat )
+        switch ( data.compressedFormat )
         {
         // TODO
         case CompressedDataFormat::Format_BC1_UNORM:
@@ -27,7 +27,7 @@ U32 EDK::Graphics::GpuDataFormat::GetByteSize() const
     }
     else if ( formatView == DataFormatView::Special )
     {
-        switch ( format.specialFormat )
+        switch ( data.specialFormat )
         {
         case SpecialDataFormat::R24S8:
             bytesize = 32;
@@ -46,7 +46,7 @@ U32 EDK::Graphics::GpuDataFormat::GetByteSize() const
     {
         U32 sizePerElement = 0;
 
-        switch ( format.rgbaView.type )
+        switch ( data.rgbaView.type )
         {
         case AtributeType::UINT_8:
             sizePerElement = 1;
@@ -102,7 +102,7 @@ U32 EDK::Graphics::GpuDataFormat::GetByteSize() const
             break;
         }
 
-        bytesize = format.rgbaView.elements * sizePerElement;
+        bytesize = data.rgbaView.elements * sizePerElement;
     }
 
     return bytesize;
