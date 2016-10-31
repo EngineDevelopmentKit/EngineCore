@@ -51,7 +51,9 @@ namespace EDK
     {
         U32 GetBgfxRenderType( const Interface interf );
         U32 GetBgfxResetFlags( const U32 swapChainFlags );
-        bgfx::Attrib GetBgfxAttrib( const ShaderAttribute attribute );
+        bool IsNormalizedAttribType( const AtributeType type );
+        bgfx::Attrib::Enum GetBgfxAttrib( const ShaderAttribute attribute );
+        bgfx::AttribType::Enum GetBgfxAttribType( const AtributeType type );
         bgfx::VertexDecl GetBgfxVertexDecl( const BufferLayoutDecl &layout );
 
         class BgfxManager

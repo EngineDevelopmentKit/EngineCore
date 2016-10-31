@@ -2,6 +2,7 @@
 #include "gfx/bgfx/bgfxSwapChain.h"
 
 #include "common/util.h"
+#include "api/console.h"
 
 #include "manager/eventManager.h"
 #include "manager/poolManager.h"
@@ -87,7 +88,21 @@ bgfx::VertexDecl EDK::Graphics::GetBgfxVertexDecl( const BufferLayoutDecl &layou
         }
         else if ( item.itemView == BufferLayoutDecl::LayoutItem::LayoutItemView::Attribute )
         {
-
+           if ( item.data.format.formatView != DataFormatView::RGBA )
+           {
+               Console::Errorf( "Tried to process a bgfx layout item, where the data format is not RGBA");
+               
+               vertexDecl.skip( item.data.format.GetByteSize() );
+           } 
+           else
+           {
+               const bgfx::Attrib::Enum bgfxAttrib = GetBgfxAttrib( item.data.attribute );
+               const bgfx::AttribType::Enum bgfxAttribType = GetBgfxAttribType( item.data.format.data.rgbaView.type );
+               const bool isNormalized = IsNormalizedAttribType( item.data.format.data.rgbaView.type );
+               const U32 numelements = item.data.format.data.rgbaView.elements;
+               
+               vertexDecl.add( bgfxAttrib, numelements, bgfxAttribType, isNormalized, false );
+           }
         }
     }
 
@@ -96,26 +111,81 @@ bgfx::VertexDecl EDK::Graphics::GetBgfxVertexDecl( const BufferLayoutDecl &layou
     return vertexDecl;
 }
 
-bgfx::Attrib EDK::Graphics::GetBgfxAttrib( const ShaderAttribute attribute )
+bgfx::Attrib::Enum EDK::Graphics::GetBgfxAttrib( const ShaderAttribute attribute )
 {
     switch ( attribute )
     {
     case ShaderAttribute::Position:
+        return bgfx::Attrib::Position;
     case ShaderAttribute::Normal:
+        return bgfx::Attrib::Normal;
     case ShaderAttribute::Tangent:
+        return bgfx::Attrib::Tangent;
     case ShaderAttribute::Bitangent:
+        return bgfx::Attrib::Bitangent;
     case ShaderAttribute::Color0:
+        return bgfx::Attrib::Color0;
     case ShaderAttribute::Color1:
+        return bgfx::Attrib::Color1;
     case ShaderAttribute::Indices:
+        return bgfx::Attrib::Indices;
     case ShaderAttribute::Weight:
+        return bgfx::Attrib::Weight;
     case ShaderAttribute::TexCoord0:
+        return bgfx::Attrib::TexCoord0;
     case ShaderAttribute::TexCoord1:
+        return bgfx::Attrib::TexCoord1;
     case ShaderAttribute::TexCoord2:
+        return bgfx::Attrib::TexCoord2;
     case ShaderAttribute::TexCoord3:
+        return bgfx::Attrib::TexCoord3;
     case ShaderAttribute::TexCoord4:
+        return bgfx::Attrib::TexCoord4;
     case ShaderAttribute::TexCoord5:
+        return bgfx::Attrib::TexCoord5;
     case ShaderAttribute::TexCoord6:
+        return bgfx::Attrib::TexCoord6;
     case ShaderAttribute::TexCoord7:
+        return bgfx::Attrib::TexCoord7;
+    }
+}
+
+bool EDK::Graphics::IsNormalizedAttribType( const AtributeType type )
+{
+    switch( type )
+    {
+        case AtributeType::UINT_NORM_8:  
+        case AtributeType::UINT_NORM_16:
+        case AtributeType::SINT_NORM_8:
+        case AtributeType::SINT_NORM_16:
+        case AtributeType::UINT_NORM_SRGB_8:
+        
+        default:
+            return false;
+    }
+    
+    return true;
+}
+
+bgfx::AttribType::Enum EDK::Graphics::GetBgfxAttribType( const AtributeType type )
+{
+    switch( type )
+    {
+    case AtributeType::UINT_8:
+        return bgfx::AttribType::Enum::Uint8;
+    case AtributeType::UINT_NORM_8:
+        return bgfx::AttribType::Enum::Uint8;
+    case AtributeType::SINT_16:
+        return bgfx::AttribType::Enum::Int16;
+    case AtributeType::SINT_NORM_16:
+        return bgfx::AttribType::Enum::Int16;
+    case AtributeType::Float_16:
+        return bgfx::AttribType::Enum::Half;
+    case AtributeType::Float_32:
+        return bgfx::AttribType::Enum::Float;
+    default:
+        Console::Errorf("Could not translate an engine attribute type to a bgfx attribute type, unsupported attribute.");
+        return bgfx::AttribType::Enum::Float;
     }
 }
 
