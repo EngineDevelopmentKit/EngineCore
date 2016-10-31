@@ -38,3 +38,6 @@ test/extern
 test/assets
 
 tt_lib
+Packaging.androidproj
+Packaging.androidproj.user
+UpgradeLog.htm
