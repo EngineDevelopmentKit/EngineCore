@@ -30,6 +30,7 @@
 #include "api/controller.h"
 
 #include "common/program.h"
+#include "common/deltaTime.h"
 
 #include "math/scalar/vec2i.h"
 
@@ -84,6 +85,8 @@ void EDK::MainLoop( S32 argc, char **argv )
     bool initBgfx = true;
     // TEMP
 
+    DeltaTime time;
+
     while ( gameInstance.IsRunning() )
     {
         gameInstance.Update();
@@ -110,10 +113,13 @@ void EDK::MainLoop( S32 argc, char **argv )
         // Use debug font to print information about this example.
         bgfx::dbgTextClear();
         bgfx::dbgTextPrintf( 0, 1, 0x4f, "bgfx/examples/00-helloworld" );
-        bgfx::dbgTextPrintf( 0, 2, 0x6f, "Description: Initialization and debug text." );
+        bgfx::dbgTextPrintf( 0, 2, 0x0f, String::Place( "Fps: {:.0f}", 1 / time.GetEasedDeltaTime() ).c_str() );
+        bgfx::dbgTextPrintf( 0, 3, 0x0f, String::Place( "Mspf: {:f}", time.GetEasedDeltaTime() ).c_str() );
 
         // END TEMP
 
         Controller::Get<EDK::Graphics::BgfxManager>()->GetMainWindow()->Present();
+
+        time.Update();
     }
 }
