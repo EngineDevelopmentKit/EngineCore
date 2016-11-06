@@ -31,6 +31,7 @@
 
 #include "common/file.h"
 #include "common/program.h"
+#include "common/deltaTime.h"
 
 #include "math/scalar/vec2i.h"
 
@@ -128,6 +129,8 @@ void EDK::MainLoop( S32 argc, char **argv )
     bool initBgfx = true;
     // TEMP
 
+    DeltaTime time;
+    
     const IndexBuffer *indexBuffer = nullptr;
     const VertexBuffer *vertexBuffer = nullptr;
     const PipelineState *pipelineSate = nullptr;
@@ -138,7 +141,7 @@ void EDK::MainLoop( S32 argc, char **argv )
 
     std::vector<char> vs_buffer;
     std::vector<char> fs_buffer;
-
+    
     while ( gameInstance.IsRunning() )
     {
         gameInstance.Update();
@@ -212,7 +215,8 @@ void EDK::MainLoop( S32 argc, char **argv )
         bgfx::dbgTextClear();
         bgfx::dbgTextPrintf( 0, 1, 0x4f, "bgfx/examples/01-cube" );
         bgfx::dbgTextPrintf( 0, 2, 0x6f, "Description: Rendering simple static mesh." );
-
+        bgfx::dbgTextPrintf( 0, 3, 0x0f, String::Place( "Fps: {:.0f}", 1 / time.GetEasedDeltaTime() ).c_str() );
+        bgfx::dbgTextPrintf( 0, 4, 0x0f, String::Place( "Mspf: {:f}", time.GetEasedDeltaTime() ).c_str() );
 
         float at[3] = { 0.0f, 0.0f,   0.0f };
         float eye[3] = { 0.0f, 0.0f, -35.0f };
@@ -231,7 +235,6 @@ void EDK::MainLoop( S32 argc, char **argv )
         // if no other draw calls are submitted to view 0.
         bgfx::touch( 0 );
 
-
         // Submit 11x11 cubes.
         for ( uint32_t yy = 0; yy < 11; ++yy )
         {
@@ -242,7 +245,7 @@ void EDK::MainLoop( S32 argc, char **argv )
                 mtx[12] = -15.0f + float( xx ) * 3.0f;
                 mtx[13] = -15.0f + float( yy ) * 3.0f;
                 mtx[14] = 0.0f;
-
+                
                 // Set model matrix for rendering.
                 bgfx::setTransform( mtx );
 
@@ -260,5 +263,7 @@ void EDK::MainLoop( S32 argc, char **argv )
                 }
             }
         }
+        
+        time.Update();
     }
 }
