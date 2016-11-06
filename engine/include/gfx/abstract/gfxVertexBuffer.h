@@ -40,11 +40,9 @@ namespace EDK
         struct VertexBufferDesc
         {
             VertexBufferDesc();
-            VertexBufferDesc( const BufferLayoutDecl &layout, void *memory, size_t memSize, U32 flags = 0 );
+            VertexBufferDesc( const BufferLayoutDecl &layout, U32 flags = 0 );
 
             U32 flags;
-            void *memory;
-            size_t memSize;
             BufferLayoutDecl layoutDecl;
         };
 
@@ -53,8 +51,6 @@ namespace EDK
         public:
 
             virtual ~VertexBuffer() {}
-
-            //virtual SwapChainDesc QueryDesc() const = 0;
 
         public:
 

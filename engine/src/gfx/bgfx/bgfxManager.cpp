@@ -1,5 +1,11 @@
 #include "gfx/bgfx/bgfxManager.h"
 #include "gfx/bgfx/bgfxSwapChain.h"
+#include "gfx/bgfx/bgfxShaderBlob.h"
+#include "gfx/bgfx/bgfxCommandList.h"
+#include "gfx/bgfx/bgfxIndexBuffer.h"
+#include "gfx/bgfx/bgfxVertexBuffer.h"
+#include "gfx/bgfx/bgfxPipelineState.h"
+#include "gfx/bgfx/bgfxShaderProgram.h"
 
 #include "common/util.h"
 #include "api/console.h"
@@ -11,7 +17,8 @@
 
 
 EDK::Graphics::BgfxManager::BgfxManager() :
-    mMainwindow( nullptr ), mHasValidInterfaceLink( false ), mSwapChainPool( nullptr )
+    mMainwindow( nullptr ), mHasValidInterfaceLink( false ),
+    mSwapChainPool( nullptr ), mVertexBufferPool( nullptr )
 {
 
 }
@@ -27,7 +34,13 @@ void EDK::Graphics::BgfxManager::OnInit()
     ManagerHolder *const holder = SystemManager::Get()->GetManagers();
     PoolManager *const poolMngr = holder->pool;
 
-    mSwapChainPool = poolMngr->Add< BgfxSwapChain, SwapChain  >();
+    mSwapChainPool = poolMngr->Add< BgfxSwapChain, SwapChain >();
+    mShaderBlobPool = poolMngr->Add< BgfxShaderBlob, ShaderBlob >();
+    mIndexBufferPool = poolMngr->Add< BgfxIndexBuffer, IndexBuffer >();
+    mVertexBufferPool = poolMngr->Add< BgfxVertexBuffer, VertexBuffer >();
+    mPipelineStatePool = poolMngr->Add< BgfxPipelineState, PipelineState >();
+    mShaderProgramPool = poolMngr->Add< BgfxShaderProgram, ShaderProgram >();
+    mGraphicsCommandListPool = poolMngr->Add< BgfxGraphicsCommandList, GraphicsCommandList >();
 
     Observe < BgfxManager, VideoSwitchEvent >( &BgfxManager::OnVideoSwitch );
 }
@@ -48,6 +61,12 @@ void EDK::Graphics::BgfxManager::OnRelease()
     PoolManager *const poolMngr = holder->pool;
 
     poolMngr->Remove< BgfxSwapChain >();
+    poolMngr->Remove< BgfxShaderBlob >();
+    poolMngr->Remove< BgfxIndexBuffer >();
+    poolMngr->Remove< BgfxVertexBuffer >();
+    poolMngr->Remove< BgfxPipelineState >();
+    poolMngr->Remove< BgfxShaderProgram >();
+    poolMngr->Remove< BgfxGraphicsCommandList >();
 
     Unobserve< BgfxManager, VideoSwitchEvent >( &BgfxManager::OnVideoSwitch );
 
@@ -61,13 +80,102 @@ void EDK::Graphics::BgfxManager::OnUpdate()
     {
         Reinitialize( mVideoState.desc, mVideoState.card, mVideoState.interf );
     }
+
+    if ( mMainwindow )
+    {
+        mMainwindow->Present();
+    }
 }
 
-const EDK::Graphics::VertexBuffer *EDK::Graphics::BgfxManager::CreateVertexBuffer( const VertexBufferDesc &desc )
+const EDK::Graphics::PixelShaderBlob *EDK::Graphics::BgfxManager::CreatePixelShaderBlob( void *memory, size_t memSize )
 {
     std::lock_guard<std::mutex> lock( mMutex );
 
+    bgfx::ShaderHandle sh = bgfx::createShader( bgfx::makeRef( memory, memSize ) );
 
+    PixelShaderBlob *shader = mShaderBlobPool->Get();
+    static_cast<BgfxShaderBlob *>( shader )->Init( ShaderReflection(), sh );
+
+    return shader;
+}
+
+const EDK::Graphics::VertexShaderBlob *EDK::Graphics::BgfxManager::CreateVertexShaderBlob( void *memory,
+                                                                                           size_t memSize )
+{
+    std::lock_guard<std::mutex> lock( mMutex );
+
+    bgfx::ShaderHandle sh = bgfx::createShader( bgfx::makeRef( memory, memSize ) );
+
+    PixelShaderBlob *shader = mShaderBlobPool->Get();
+    static_cast<BgfxShaderBlob *>( shader )->Init( ShaderReflection(), sh );
+
+    return shader;
+}
+
+const EDK::Graphics::IndexBuffer *EDK::Graphics::BgfxManager::CreateIndexBuffer( const IndexBufferDesc &desc,
+                                                                                 void *memory, size_t memSize )
+{
+    std::lock_guard<std::mutex> lock( mMutex );
+
+    U32 bgfxFlags = desc.type == AttributeType::UINT_32 ? BGFX_BUFFER_INDEX32 : 0;
+
+    bgfx::IndexBufferHandle ibh = bgfx::createIndexBuffer( bgfx::makeRef( memory, memSize ), bgfxFlags );
+
+    IndexBuffer *ib = mIndexBufferPool->Get();
+    static_cast<BgfxIndexBuffer *>( ib )->Init( desc, ibh );
+
+    return ib;
+}
+
+const EDK::Graphics::VertexBuffer *EDK::Graphics::BgfxManager::CreateVertexBuffer( const VertexBufferDesc &desc,
+                                                                                   void *memory, size_t memSize )
+{
+    std::lock_guard<std::mutex> lock( mMutex );
+
+    bgfx::VertexBufferHandle vbh = bgfx::createVertexBuffer( bgfx::makeRef( memory, memSize ),
+                                                             GetBgfxVertexDecl( desc.layoutDecl ) );
+
+    VertexBuffer *vb = mVertexBufferPool->Get();
+    static_cast<BgfxVertexBuffer *>( vb )->Init( desc, vbh );
+
+    return vb;
+}
+
+const EDK::Graphics::PipelineState *EDK::Graphics::BgfxManager::CreatePipelineState( const PipelineStateDesc &desc )
+{
+    std::lock_guard<std::mutex> lock( mMutex );
+
+    PipelineState *ps = mPipelineStatePool->Get();
+    static_cast<BgfxPipelineState *>( ps )->Init( desc );
+
+    return ps;
+}
+
+const EDK::Graphics::GraphicsShaderProgram *EDK::Graphics::BgfxManager::CreateShaderProgram( const VertexShaderBlob *vs,
+                                                                                             const PixelShaderBlob *ps )
+{
+    ShaderProgram *program = nullptr;
+
+    if ( vs && ps )
+    {
+        const BgfxShaderBlob *vs_blob = static_cast<const BgfxShaderBlob *>( vs );
+        const BgfxShaderBlob *ps_blob = static_cast<const BgfxShaderBlob *>( ps );
+
+        bgfx::ProgramHandle handle = bgfx::createProgram( vs_blob->GetShaderHandle(), ps_blob->GetShaderHandle() );
+
+        program = mShaderProgramPool->Get();
+        static_cast<BgfxShaderProgram *>( program )->Init( handle );
+    }
+
+    return program;
+}
+
+
+EDK::Graphics::GraphicsCommandList *EDK::Graphics::BgfxManager::CreateGraphicsCommandList()
+{
+    std::lock_guard<std::mutex> lock( mMutex );
+
+    return mGraphicsCommandListPool->Get();
 }
 
 const EDK::Graphics::SwapChain *EDK::Graphics::BgfxManager::GetMainWindow()
@@ -80,29 +188,29 @@ bgfx::VertexDecl EDK::Graphics::GetBgfxVertexDecl( const BufferLayoutDecl &layou
     bgfx::VertexDecl vertexDecl;
     vertexDecl.begin();
 
-    for ( const BufferLayoutDecl::LayoutItem &item : layout.GetItems() )
+    for ( const LayoutItem &item : layout.GetItems() )
     {
-        if ( item.itemView == BufferLayoutDecl::LayoutItem::LayoutItemView::Padding )
+        if ( item.itemView == LayoutItemView::Padding )
         {
             vertexDecl.skip( item.data.paddingBytes );
         }
-        else if ( item.itemView == BufferLayoutDecl::LayoutItem::LayoutItemView::Attribute )
+        else if ( item.itemView == LayoutItemView::Attribute )
         {
-           if ( item.data.format.formatView != DataFormatView::RGBA )
-           {
-               Console::Errorf( "Tried to process a bgfx layout item, where the data format is not RGBA");
-               
-               vertexDecl.skip( item.data.format.GetByteSize() );
-           } 
-           else
-           {
-               const bgfx::Attrib::Enum bgfxAttrib = GetBgfxAttrib( item.data.attribute );
-               const bgfx::AttribType::Enum bgfxAttribType = GetBgfxAttribType( item.data.format.data.rgbaView.type );
-               const bool isNormalized = IsNormalizedAttribType( item.data.format.data.rgbaView.type );
-               const U32 numelements = item.data.format.data.rgbaView.elements;
-               
-               vertexDecl.add( bgfxAttrib, numelements, bgfxAttribType, isNormalized, false );
-           }
+            if ( item.data.layout.format.formatView != DataFormatView::RGBA )
+            {
+                Console::Errorf( "Tried to process a bgfx layout item, where the data format is not RGBA" );
+
+                vertexDecl.skip( item.data.layout.format.GetByteSize() );
+            }
+            else
+            {
+                const bgfx::Attrib::Enum bgfxAttrib = GetBgfxAttrib( item.data.layout.attribute );
+                const bool isNormalized = IsNormalizedAttribType( item.data.layout.format.data.rgbaView.type );
+                const bgfx::AttribType::Enum bgfxAttribType = GetBgfxAttribType( item.data.layout.format.data.rgbaView.type );
+                const U32 numelements = item.data.layout.format.data.rgbaView.elements;
+
+                vertexDecl.add( bgfxAttrib, numelements, bgfxAttribType, isNormalized, false );
+            }
         }
     }
 
@@ -117,74 +225,102 @@ bgfx::Attrib::Enum EDK::Graphics::GetBgfxAttrib( const ShaderAttribute attribute
     {
     case ShaderAttribute::Position:
         return bgfx::Attrib::Position;
+
     case ShaderAttribute::Normal:
         return bgfx::Attrib::Normal;
+
     case ShaderAttribute::Tangent:
         return bgfx::Attrib::Tangent;
+
     case ShaderAttribute::Bitangent:
         return bgfx::Attrib::Bitangent;
+
     case ShaderAttribute::Color0:
         return bgfx::Attrib::Color0;
+
     case ShaderAttribute::Color1:
         return bgfx::Attrib::Color1;
+
     case ShaderAttribute::Indices:
         return bgfx::Attrib::Indices;
+
     case ShaderAttribute::Weight:
         return bgfx::Attrib::Weight;
+
     case ShaderAttribute::TexCoord0:
         return bgfx::Attrib::TexCoord0;
+
     case ShaderAttribute::TexCoord1:
         return bgfx::Attrib::TexCoord1;
+
     case ShaderAttribute::TexCoord2:
         return bgfx::Attrib::TexCoord2;
+
     case ShaderAttribute::TexCoord3:
         return bgfx::Attrib::TexCoord3;
+
     case ShaderAttribute::TexCoord4:
         return bgfx::Attrib::TexCoord4;
+
     case ShaderAttribute::TexCoord5:
         return bgfx::Attrib::TexCoord5;
+
     case ShaderAttribute::TexCoord6:
         return bgfx::Attrib::TexCoord6;
+
     case ShaderAttribute::TexCoord7:
         return bgfx::Attrib::TexCoord7;
     }
 }
 
-bool EDK::Graphics::IsNormalizedAttribType( const AtributeType type )
+bool EDK::Graphics::IsNormalizedAttribType( const AttributeType type )
 {
-    switch( type )
+    switch ( type )
     {
-        case AtributeType::UINT_NORM_8:  
-        case AtributeType::UINT_NORM_16:
-        case AtributeType::SINT_NORM_8:
-        case AtributeType::SINT_NORM_16:
-        case AtributeType::UINT_NORM_SRGB_8:
-        
-        default:
-            return false;
+    case AttributeType::UINT_NORM_8:
+        return true;
+
+    case AttributeType::UINT_NORM_16:
+        return true;
+
+    case AttributeType::SINT_NORM_8:
+        return true;
+
+    case AttributeType::SINT_NORM_16:
+        return true;
+
+    case AttributeType::UINT_NORM_SRGB_8:
+        return true;
+
+    default:
+        return false;
     }
-    
-    return true;
 }
 
-bgfx::AttribType::Enum EDK::Graphics::GetBgfxAttribType( const AtributeType type )
+bgfx::AttribType::Enum EDK::Graphics::GetBgfxAttribType( const AttributeType type )
 {
-    switch( type )
+    switch ( type )
     {
-    case AtributeType::UINT_8:
+    case AttributeType::UINT_8:
         return bgfx::AttribType::Enum::Uint8;
-    case AtributeType::UINT_NORM_8:
+
+    case AttributeType::UINT_NORM_8:
         return bgfx::AttribType::Enum::Uint8;
-    case AtributeType::SINT_16:
+
+    case AttributeType::SINT_16:
         return bgfx::AttribType::Enum::Int16;
-    case AtributeType::SINT_NORM_16:
+
+    case AttributeType::SINT_NORM_16:
         return bgfx::AttribType::Enum::Int16;
-    case AtributeType::Float_16:
+
+    case AttributeType::FLOAT_16:
         return bgfx::AttribType::Enum::Half;
-    case AtributeType::Float_32:
+
+    case AttributeType::FLOAT_32:
         return bgfx::AttribType::Enum::Float;
+
     default:
-        Console::Errorf("Could not translate an engine attribute type to a bgfx attribute type, unsupported attribute.");
+        Console::Errorf( "Could not translate an engine attribute type to a bgfx attribute type, unsupported attribute." );
         return bgfx::AttribType::Enum::Float;
     }
 }

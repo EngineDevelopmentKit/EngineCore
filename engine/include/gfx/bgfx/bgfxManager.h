@@ -28,7 +28,9 @@
 #ifndef __EDK_BGFX_GRAPHICSMANAGER_H__
 #define __EDK_BGFX_GRAPHICSMANAGER_H__
 
+#include "gfx/gfxBufferDecl.h"
 #include "gfx/abstract/gfxManager.h"
+
 
 #include <mutex>
 #include <bgfx/bgfx.h>
@@ -51,9 +53,9 @@ namespace EDK
     {
         U32 GetBgfxRenderType( const Interface interf );
         U32 GetBgfxResetFlags( const U32 swapChainFlags );
-        bool IsNormalizedAttribType( const AtributeType type );
+        bool IsNormalizedAttribType( const AttributeType type );
         bgfx::Attrib::Enum GetBgfxAttrib( const ShaderAttribute attribute );
-        bgfx::AttribType::Enum GetBgfxAttribType( const AtributeType type );
+        bgfx::AttribType::Enum GetBgfxAttribType( const AttributeType type );
         bgfx::VertexDecl GetBgfxVertexDecl( const BufferLayoutDecl &layout );
 
         class BgfxManager
@@ -68,7 +70,15 @@ namespace EDK
             virtual void OnRelease() override;
             virtual void OnUpdate() override;
 
-            virtual const VertexBuffer *CreateVertexBuffer( const VertexBufferDesc &desc ) override;
+            virtual const IndexBuffer *CreateIndexBuffer( const IndexBufferDesc &desc, void *memory, size_t memSize ) override;
+            virtual const VertexBuffer *CreateVertexBuffer( const VertexBufferDesc &desc, void *memory, size_t memSize ) override;
+            virtual const PipelineState *CreatePipelineState( const PipelineStateDesc &desc ) override;
+            virtual const PixelShaderBlob *CreatePixelShaderBlob( void *memory, size_t memSize ) override;
+            virtual const VertexShaderBlob *CreateVertexShaderBlob( void *memory, size_t memSize ) override;
+            virtual const GraphicsShaderProgram *CreateShaderProgram( const VertexShaderBlob *vs,
+                                                                      const PixelShaderBlob *ps ) override;
+
+            virtual GraphicsCommandList *CreateGraphicsCommandList() override;
 
             virtual const SwapChain *GetMainWindow() override;
 
@@ -96,7 +106,12 @@ namespace EDK
             } mVideoState;
 
             AbstractObjectPool< SwapChain > *mSwapChainPool;
-
+            AbstractObjectPool< ShaderBlob > *mShaderBlobPool;
+            AbstractObjectPool< IndexBuffer > *mIndexBufferPool;
+            AbstractObjectPool< VertexBuffer > *mVertexBufferPool;
+            AbstractObjectPool< PipelineState > *mPipelineStatePool;
+            AbstractObjectPool< ShaderProgram > *mShaderProgramPool;
+            AbstractObjectPool< GraphicsCommandList > *mGraphicsCommandListPool;
         };
 
     }

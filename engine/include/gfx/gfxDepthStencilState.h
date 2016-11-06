@@ -3,23 +3,22 @@
 #define __EDK_GFX_DEPTH_STENCIL_STATE_H__
 
 #include "common/types.h"
+#include "gfx/gfxFormat.h"
 
 namespace EDK
 {
     namespace Graphics
     {
-        enum class DataFormat;
-
         enum ComparisonOperation
         {
-            DepthOpNever = 1,
-            DepthOpLess = 2,
-            DepthOpEqual = 3,
-            DepthOpLessEqual = 4,
-            DepthOpGreater = 5,
-            DepthOpNotEqual = 6,
-            DepthOpGreaterEqual = 7,
-            DepthOpAlways = 8
+            OpNever = 1,
+            OpLess = 2,
+            OpEqual = 3,
+            OpLessEqual = 4,
+            OpGreater = 5,
+            OpNotEqual = 6,
+            OpGreaterEqual = 7,
+            OpAlways = 8
         };
 
         enum StencilOperation
@@ -36,6 +35,8 @@ namespace EDK
 
         struct StencilTest
         {
+            StencilTest();
+
             StencilOperation onStencilFail;
             StencilOperation onStencilPassDepthFail;
             StencilOperation onStencilDepthPass;
@@ -44,6 +45,8 @@ namespace EDK
 
         struct DepthStencilState
         {
+            DepthStencilState();
+
             bool enableDepthTest;
             bool enableStencilTest;
             bool enableDepthWrite;
@@ -55,7 +58,7 @@ namespace EDK
             F32 depthBiasClamp;
             F32 slopeScaledDepthBias;
 
-            DataFormat depthBufferFormat;
+            GpuDataFormat depthBufferFormat;
 
             ComparisonOperation depthTestOp;
 

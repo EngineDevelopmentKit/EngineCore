@@ -24,33 +24,28 @@
 * @endcond
 */
 
-
 #pragma once
-#ifndef __EDK_GFX_CONTROLLER_H__
-#define __EDK_GFX_CONTROLLER_H__
-
-#include "common/types.h"
-
-#include "gfx/abstract/gfxArchitecture.h"
-
-#include "manager/abstract/abstractManager.h"
-
-#include <vector>
+#ifndef __EDK_GFX_SHADERPROGRAM_H__
+#define __EDK_GFX_SHADERPROGRAM_H__
 
 namespace EDK
 {
     namespace Graphics
     {
-        class Factory;
-        class VideoCard;
-
-        class Controller : public AbstractManager
+        class ShaderProgram
         {
         public:
 
-            virtual VideoArchitecture QueryVideoArchitecture() = 0;
-            virtual Factory *CreateGraphicsFactory( const VideoCard &card, Interface igfx ) = 0;
+            virtual ~ShaderProgram() {}
+
+        public:
+
+            // Required by the object pool
+            virtual void OnInit() = 0;
+            virtual void OnRelease() = 0;
         };
+
+        typedef ShaderProgram GraphicsShaderProgram;
     }
 }
 

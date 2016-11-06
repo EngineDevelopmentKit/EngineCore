@@ -59,39 +59,43 @@ namespace EDK
             TexCoord7 = 0x8000
         };
 
+        enum class LayoutItemView
+        {
+            UndefinedLayout = 0,
+            Attribute = 1,
+            Padding = 2
+        };
+
+        struct LayoutData
+        {
+            ShaderAttribute attribute;
+            GpuDataFormat format;
+        };
+
+        struct LayoutItem
+        {
+            LayoutItem();
+            LayoutItem( const U32 paddingBytes );
+            LayoutItem( const ShaderAttribute &attribute, const GpuDataFormat &format );
+
+            LayoutItemView itemView;
+
+            struct InternalData
+            {
+                LayoutData layout;
+                U32 paddingBytes;
+            } data;
+        };
+
         class BufferLayoutDecl
         {
         public:
             BufferLayoutDecl( const U32 alignment = 0 );
 
-            struct LayoutItem
-            {
-                LayoutItem();
-                LayoutItem( const U32 paddingBytes );
-                LayoutItem( const ShaderAttribute &attribute, const GpuDataFormat &format );
-
-                enum class LayoutItemView
-                {
-                    None = 0,
-                    Attribute = 1,
-                    Padding = 2
-                } itemView;
-
-                union
-                {
-                    struct
-                    {
-                        ShaderAttribute attribute;
-                        GpuDataFormat format;
-                    };
-                    U32 paddingBytes;
-                } data;
-            };
-
-
             void Add( const ShaderAttribute atribute, const GpuDataFormat &format );
             void Pad( const U32 bytes );
 
+            U32 GetByteSize() const;
             const std::vector< LayoutItem > &GetItems() const;
 
         private:

@@ -36,6 +36,8 @@ namespace EDK
 
         struct RasterizerState
         {
+            RasterizerState();
+
             FillMode fillMode;
             CullMode cullMode;
             TriangleFaceMode faceMode;

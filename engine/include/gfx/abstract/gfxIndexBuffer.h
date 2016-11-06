@@ -25,16 +25,36 @@
 */
 
 #pragma once
-#ifndef __EDK_GFX_TEXTURE_H__
-#define __EDK_GFX_TEXTURE_H__
+#ifndef __EDK_GFX_INDEXBUFFER_H__
+#define __EDK_GFX_INDEXBUFFER_H__
+
+#include "gfx/gfxFormat.h"
+#include "gfx/gfxBufferDecl.h"
 
 namespace EDK
 {
     namespace Graphics
     {
-        class DebugControl
+        struct IndexBufferDesc
         {
+            IndexBufferDesc();
+            IndexBufferDesc( AttributeType type, U32 flags = 0 );
 
+            U32 flags;
+            AttributeType type;
+        };
+
+        class IndexBuffer
+        {
+        public:
+
+            virtual ~IndexBuffer() {}
+
+        public:
+
+            // Required by the object pool
+            virtual void OnInit() = 0;
+            virtual void OnRelease() = 0;
         };
     }
 }

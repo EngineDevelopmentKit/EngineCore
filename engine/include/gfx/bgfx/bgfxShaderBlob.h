@@ -25,10 +25,10 @@
 */
 
 #pragma once
-#ifndef __EDK_BGFX_VERTEXBUFFER_H__
-#define __EDK_BGFX_VERTEXBUFFER_H__
+#ifndef __EDK_BGFX_SHADERBLOB_H__
+#define __EDK_BGFX_SHADERBLOB_H__
 
-#include "gfx/abstract/gfxVertexBuffer.h"
+#include "gfx/abstract/gfxShaderBlob.h"
 
 #include <bgfx/bgfx.h>
 
@@ -38,15 +38,15 @@ namespace EDK
     {
         class BgfxManager;
 
-        class BgfxVertexBuffer :
-            public VertexBuffer
+        class BgfxShaderBlob :
+            public ShaderBlob
         {
             friend class BgfxManager;
         public:
 
-            BgfxVertexBuffer();
+            BgfxShaderBlob();
 
-            bgfx::VertexBufferHandle GetVertexBufferHandle() const;
+            bgfx::ShaderHandle GetShaderHandle() const;
 
         public:
 
@@ -56,13 +56,12 @@ namespace EDK
 
         protected:
 
-            void Init( const VertexBufferDesc &desc, const bgfx::VertexBufferHandle &handle );
+            void Init( const ShaderReflection &desc, const bgfx::ShaderHandle &handle );
 
         private:
 
-            VertexBufferDesc mDesc;
-            bgfx::VertexBufferHandle mBufferHandle;
-
+            ShaderReflection mDesc;
+            bgfx::ShaderHandle mHandle;
         };
     }
 }

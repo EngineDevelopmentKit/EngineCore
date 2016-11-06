@@ -25,12 +25,14 @@
 */
 
 #pragma once
-#ifndef __EDK_BGFX_VERTEXBUFFER_H__
-#define __EDK_BGFX_VERTEXBUFFER_H__
+#ifndef __EDK_BGFX_COMMANDLIST_H__
+#define __EDK_BGFX_COMMANDLIST_H__
 
-#include "gfx/abstract/gfxVertexBuffer.h"
+#include "common/types.h"
 
-#include <bgfx/bgfx.h>
+#include "gfx/abstract/gfxCommandList.h"
+
+#include <mutex>
 
 namespace EDK
 {
@@ -38,31 +40,24 @@ namespace EDK
     {
         class BgfxManager;
 
-        class BgfxVertexBuffer :
-            public VertexBuffer
+        class BgfxGraphicsCommandList :
+            public GraphicsCommandList
         {
             friend class BgfxManager;
         public:
 
-            BgfxVertexBuffer();
+            BgfxGraphicsCommandList();
 
-            bgfx::VertexBufferHandle GetVertexBufferHandle() const;
+            virtual void SetVertexBuffer( const VertexBuffer *vb ) override;
+            virtual void SetVertexBufferRange( const VertexBuffer *vb, U32 start, U32 num ) override;
+
+            virtual void SetIndexBuffer( const IndexBuffer * ) override;
 
         public:
 
             // Required by the object pool
             virtual void OnInit() override;
             virtual void OnRelease() override;
-
-        protected:
-
-            void Init( const VertexBufferDesc &desc, const bgfx::VertexBufferHandle &handle );
-
-        private:
-
-            VertexBufferDesc mDesc;
-            bgfx::VertexBufferHandle mBufferHandle;
-
         };
     }
 }

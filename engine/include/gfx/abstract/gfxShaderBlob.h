@@ -25,45 +25,34 @@
 */
 
 #pragma once
-#ifndef __EDK_BGFX_VERTEXBUFFER_H__
-#define __EDK_BGFX_VERTEXBUFFER_H__
-
-#include "gfx/abstract/gfxVertexBuffer.h"
-
-#include <bgfx/bgfx.h>
+#ifndef __EDK_GFX_SHADERBLOB_H__
+#define __EDK_GFX_SHADERBLOB_H__
 
 namespace EDK
 {
     namespace Graphics
     {
-        class BgfxManager;
-
-        class BgfxVertexBuffer :
-            public VertexBuffer
+        struct ShaderReflection
         {
-            friend class BgfxManager;
+
+        };
+
+        class ShaderBlob
+        {
         public:
 
-            BgfxVertexBuffer();
-
-            bgfx::VertexBufferHandle GetVertexBufferHandle() const;
+            virtual ~ShaderBlob() {}
 
         public:
 
             // Required by the object pool
-            virtual void OnInit() override;
-            virtual void OnRelease() override;
-
-        protected:
-
-            void Init( const VertexBufferDesc &desc, const bgfx::VertexBufferHandle &handle );
-
-        private:
-
-            VertexBufferDesc mDesc;
-            bgfx::VertexBufferHandle mBufferHandle;
-
+            virtual void OnInit() = 0;
+            virtual void OnRelease() = 0;
         };
+
+        typedef ShaderBlob PixelShaderBlob;
+        typedef ShaderBlob VertexShaderBlob;
+
     }
 }
 

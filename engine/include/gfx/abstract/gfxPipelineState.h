@@ -28,31 +28,31 @@
 #ifndef __EDK_GFX_PIPELINE_STATE_H__
 #define __EDK_GFX_PIPELINE_STATE_H__
 
+#include "gfx/gfxRasterizerState.h"
+#include "gfx/gfxDepthStencilState.h"
+
+
 namespace EDK
 {
     namespace Graphics
     {
-        class ShaderProgram;
-        class PipelineSignature;
-
-        struct RasterizerState;
-        struct DepthStencilState;
-        struct RenderTargetState;
+        struct PipelineStateDesc
+        {
+            RasterizerState rasterizerState;
+            DepthStencilState depthStencilState;
+        };
 
         class PipelineState
         {
         public:
 
+            virtual ~PipelineState();
 
+        public:
 
-
-        private:
-
-            ShaderProgram     *mShaderProgram;
-            RasterizerState   *mRasterizerState;
-            DepthStencilState *mDepthStencilState;
-            RenderTargetState *mRenderTargetState;
-            PipelineSignature *mPipelineSignature;
+            // Required by the object pool
+            virtual void OnInit() = 0;
+            virtual void OnRelease() = 0;
         };
     }
 }

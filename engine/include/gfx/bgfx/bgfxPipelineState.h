@@ -25,28 +25,21 @@
 */
 
 #pragma once
-#ifndef __EDK_BGFX_VERTEXBUFFER_H__
-#define __EDK_BGFX_VERTEXBUFFER_H__
+#ifndef __EDK_BGFX_PIPELINE_STATE_H__
+#define __EDK_BGFX_PIPELINE_STATE_H__
 
-#include "gfx/abstract/gfxVertexBuffer.h"
-
-#include <bgfx/bgfx.h>
+#include "gfx/abstract/gfxPipelineState.h"
 
 namespace EDK
 {
     namespace Graphics
     {
-        class BgfxManager;
-
-        class BgfxVertexBuffer :
-            public VertexBuffer
+        class BgfxPipelineState : public PipelineState
         {
             friend class BgfxManager;
         public:
 
-            BgfxVertexBuffer();
-
-            bgfx::VertexBufferHandle GetVertexBufferHandle() const;
+            BgfxPipelineState();
 
         public:
 
@@ -56,13 +49,11 @@ namespace EDK
 
         protected:
 
-            void Init( const VertexBufferDesc &desc, const bgfx::VertexBufferHandle &handle );
+            void Init( const PipelineStateDesc &desce );
 
         private:
 
-            VertexBufferDesc mDesc;
-            bgfx::VertexBufferHandle mBufferHandle;
-
+            PipelineStateDesc mDesc;
         };
     }
 }

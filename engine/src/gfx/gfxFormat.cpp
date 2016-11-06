@@ -1,5 +1,41 @@
 #include "gfx/gfxFormat.h"
 
+EDK::Graphics::RGBAView::RGBAView() :
+    elements( 0 ), type( AttributeType::Dummy )
+{
+
+}
+
+EDK::Graphics::RGBAView::RGBAView( const U32 n_elem, const AttributeType type ) :
+    elements( n_elem ), type( type )
+{
+
+}
+
+EDK::Graphics::GpuDataFormat::GpuDataFormat() :
+    formatView( DataFormatView::UndefView )
+{
+
+}
+
+EDK::Graphics::GpuDataFormat::GpuDataFormat( const RGBAView &view ) :
+    formatView( DataFormatView::RGBA )
+{
+    data.rgbaView = view;
+}
+
+EDK::Graphics::GpuDataFormat::GpuDataFormat( const SpecialDataFormat &view ) :
+    formatView( DataFormatView::Special )
+{
+    data.specialFormat = view;
+}
+
+EDK::Graphics::GpuDataFormat::GpuDataFormat( const CompressedDataFormat &view ) :
+    formatView( DataFormatView::Compressed )
+{
+    data.compressedFormat = view;
+}
+
 U32 EDK::Graphics::GpuDataFormat::GetByteSize() const
 {
     // Depends on the format!
@@ -48,55 +84,55 @@ U32 EDK::Graphics::GpuDataFormat::GetByteSize() const
 
         switch ( data.rgbaView.type )
         {
-        case AtributeType::UINT_8:
+        case AttributeType::UINT_8:
             sizePerElement = 1;
             break;
 
-        case AtributeType::SINT_8:
+        case AttributeType::SINT_8:
             sizePerElement = 1;
             break;
 
-        case AtributeType::UINT_NORM_8:
+        case AttributeType::UINT_NORM_8:
             sizePerElement = 1;
             break;
 
-        case AtributeType::SINT_NORM_8:
+        case AttributeType::SINT_NORM_8:
             sizePerElement = 1;
             break;
 
-        case AtributeType::UINT_NORM_SRGB_8:
+        case AttributeType::UINT_NORM_SRGB_8:
             sizePerElement = 1;
             break;
 
-        case AtributeType::UINT_16:
+        case AttributeType::UINT_16:
             sizePerElement = 2;
             break;
 
-        case AtributeType::SINT_16:
+        case AttributeType::SINT_16:
             sizePerElement = 2;
             break;
 
-        case AtributeType::Float_16:
+        case AttributeType::FLOAT_16:
             sizePerElement = 2;
             break;
 
-        case AtributeType::UINT_NORM_16:
+        case AttributeType::UINT_NORM_16:
             sizePerElement = 2;
             break;
 
-        case AtributeType::SINT_NORM_16:
+        case AttributeType::SINT_NORM_16:
             sizePerElement = 2;
             break;
 
-        case AtributeType::UINT_32:
+        case AttributeType::UINT_32:
             sizePerElement = 4;
             break;
 
-        case AtributeType::SINT_32:
+        case AttributeType::SINT_32:
             sizePerElement = 4;
             break;
 
-        case AtributeType::Float_32:
+        case AttributeType::FLOAT_32:
 
             sizePerElement = 4;
             break;

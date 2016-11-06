@@ -25,44 +25,48 @@
 */
 
 #pragma once
-#ifndef __EDK_BGFX_VERTEXBUFFER_H__
-#define __EDK_BGFX_VERTEXBUFFER_H__
-
-#include "gfx/abstract/gfxVertexBuffer.h"
-
-#include <bgfx/bgfx.h>
+#ifndef __EDK_GFX_COMMANDLIST_H__
+#define __EDK_GFX_COMMANDLIST_H__
 
 namespace EDK
 {
     namespace Graphics
     {
-        class BgfxManager;
+        class IndexBuffer;
+        class VertexBuffer;
 
-        class BgfxVertexBuffer :
-            public VertexBuffer
+        class CommandList
         {
-            friend class BgfxManager;
         public:
 
-            BgfxVertexBuffer();
-
-            bgfx::VertexBufferHandle GetVertexBufferHandle() const;
+            virtual ~CommandList() {}
 
         public:
 
             // Required by the object pool
-            virtual void OnInit() override;
-            virtual void OnRelease() override;
+            virtual void OnInit() = 0;
+            virtual void OnRelease() = 0;
+        };
 
-        protected:
+        class GraphicsCommandList :
+            public CommandList
+        {
+        public:
 
-            void Init( const VertexBufferDesc &desc, const bgfx::VertexBufferHandle &handle );
+            virtual ~GraphicsCommandList() {}
 
-        private:
+            virtual void SetVertexBuffer( const VertexBuffer * ) = 0;
+            virtual void SetVertexBufferRange( const VertexBuffer *vb, U32 start, U32 num ) = 0;
 
-            VertexBufferDesc mDesc;
-            bgfx::VertexBufferHandle mBufferHandle;
+            virtual void SetIndexBuffer( const IndexBuffer * ) = 0;
+        };
 
+        class ComputeCommandList :
+            public CommandList
+        {
+        public:
+
+            virtual ~ComputeCommandList() {}
         };
     }
 }

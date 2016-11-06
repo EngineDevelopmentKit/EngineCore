@@ -25,10 +25,10 @@
 */
 
 #pragma once
-#ifndef __EDK_BGFX_VERTEXBUFFER_H__
-#define __EDK_BGFX_VERTEXBUFFER_H__
+#ifndef __EDK_BGFX_INDEXBUFFER_H__
+#define __EDK_BGFX_INDEXBUFFER_H__
 
-#include "gfx/abstract/gfxVertexBuffer.h"
+#include "gfx/abstract/gfxIndexBuffer.h"
 
 #include <bgfx/bgfx.h>
 
@@ -38,15 +38,15 @@ namespace EDK
     {
         class BgfxManager;
 
-        class BgfxVertexBuffer :
-            public VertexBuffer
+        class BgfxIndexBuffer :
+            public IndexBuffer
         {
             friend class BgfxManager;
         public:
 
-            BgfxVertexBuffer();
+            BgfxIndexBuffer();
 
-            bgfx::VertexBufferHandle GetVertexBufferHandle() const;
+            bgfx::IndexBufferHandle GetIndexBufferHandle() const;
 
         public:
 
@@ -56,12 +56,12 @@ namespace EDK
 
         protected:
 
-            void Init( const VertexBufferDesc &desc, const bgfx::VertexBufferHandle &handle );
+            void Init( const IndexBufferDesc &desc, const bgfx::IndexBufferHandle &handle );
 
         private:
 
-            VertexBufferDesc mDesc;
-            bgfx::VertexBufferHandle mBufferHandle;
+            IndexBufferDesc mDesc;
+            bgfx::IndexBufferHandle mBufferHandle;
 
         };
     }

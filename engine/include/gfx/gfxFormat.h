@@ -36,21 +36,23 @@ namespace EDK
     {
         enum class DataFormatView
         {
+            UndefView = 0,
             RGBA = 1,
             Compressed = 2,
             Special = 3
         };
 
-        enum class AtributeType
+        enum class AttributeType
         {
+            Dummy = 0,
             UINT_8 = 1,
             UINT_16 = 2,
             UINT_32 = 3,
             SINT_8 = 4,
             SINT_16 = 5,
             SINT_32 = 6,
-            Float_16 = 7,
-            Float_32 = 8,
+            FLOAT_16 = 7,
+            FLOAT_32 = 8,
             UINT_NORM_8 = 9,
             UINT_NORM_16 = 10,
             SINT_NORM_8 = 11,
@@ -81,23 +83,31 @@ namespace EDK
             RGB_10_A_2_UINT_NORM = 29,
         };
 
+        struct RGBAView
+        {
+            RGBAView();
+            RGBAView( const U32 n_elem, const AttributeType type );
+
+            U32 elements;
+            AttributeType type;
+        };
+
         struct GpuDataFormat
         {
             DataFormatView formatView;
 
-            union
+            struct InternalData
             {
-                struct
-                {
-                    U32 elements;
-                    AtributeType type;
-
-                } rgbaView;
-
-                CompressedDataFormat compressedFormat;
+                RGBAView rgbaView;
                 SpecialDataFormat specialFormat;
+                CompressedDataFormat compressedFormat;
 
             } data;
+
+            GpuDataFormat();
+            GpuDataFormat( const RGBAView &view );
+            GpuDataFormat( const SpecialDataFormat &view );
+            GpuDataFormat( const CompressedDataFormat &view );
 
             U32 GetByteSize() const;
         };

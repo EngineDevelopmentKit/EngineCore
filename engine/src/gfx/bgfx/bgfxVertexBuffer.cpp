@@ -5,6 +5,10 @@ EDK::Graphics::BgfxVertexBuffer::BgfxVertexBuffer()
 
 }
 
+bgfx::VertexBufferHandle EDK::Graphics::BgfxVertexBuffer::GetVertexBufferHandle() const
+{
+    return mBufferHandle;
+}
 
 // Required by the object pool
 void EDK::Graphics::BgfxVertexBuffer::OnInit()
