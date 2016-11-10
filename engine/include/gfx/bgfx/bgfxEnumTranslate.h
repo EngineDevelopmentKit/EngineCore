@@ -25,54 +25,32 @@
 */
 
 #pragma once
-#ifndef __EDK_BGFX_COMMANDLIST_H__
-#define __EDK_BGFX_COMMANDLIST_H__
+#ifndef __EDK_BGFX_ENUMTRANSLATE_H__
+#define __EDK_BGFX_ENUMTRANSLATE_H__
 
 #include "common/types.h"
-
-#include "gfx/abstract/gfxCommandList.h"
-#include "gfx/abstract/gfxShaderProgram.h"
-
-#include <mutex>
 
 namespace EDK
 {
     namespace Graphics
     {
-        class BgfxManager;
+        struct StencilTest;
 
-        class BgfxGraphicsCommandList :
-            public GraphicsCommandList
-        {
-            friend class BgfxManager;
-        public:
+        enum CullMode;
+        enum InputPrimitives;
+        enum TriangleFaceMode;
+        enum ComparisonOperation;
 
-            BgfxGraphicsCommandList();
+        enum class BlendSource;
+        enum class BlendOperation;
 
-            virtual void BeginRecording();
-            virtual void EndRecording();
+        U32 GetBgfxStencilFlags( const StencilTest &stencil );
 
-            virtual void SetVertexBuffer( const VertexBuffer *vb ) override;
-            virtual void SetVertexBufferRange( const VertexBuffer *vb, U32 start, U32 num ) override;
-
-            virtual void SetIndexBuffer( const IndexBuffer * ) override;
-            virtual void SetIndexBufferRange( const IndexBuffer *, U32 start, U32 num ) override;
-
-            virtual void SetPipelineState( const GraphicsPipelineState *pso ) override;
-
-            virtual void Submit( U32 sortKey = 0 ) override;
-
-        public:
-
-            // Required by the object pool
-            virtual void OnInit() override;
-            virtual void OnRelease() override;
-
-        private:
-
-            U32 mDrawCalls;
-            const GraphicsShaderProgram *mActiveProgram;
-        };
+        U64 GetBgfxBlendFunc( BlendOperation bop );
+        U64 GetBgfxBlendSource( BlendSource bsource );
+        U64 GetBgfxDepthTest( ComparisonOperation op );
+        U64 GetBgfxCullMode( CullMode mode, TriangleFaceMode trimode );
+        U64 GetBgfxPrimitiveFlags( InputPrimitives iprim );
     }
 }
 

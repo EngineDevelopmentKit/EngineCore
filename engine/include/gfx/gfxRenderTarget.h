@@ -25,10 +25,12 @@
 */
 
 #pragma once
-#ifndef __EDK_GFX_PIPELINE_STATE_H__
-#define __EDK_GFX_PIPELINE_STATE_H__
+#ifndef __EDK_GFX_RENDERTARGET_H__
+#define __EDK_GFX_RENDERTARGET_H__
 
 #include "common/types.h"
+
+#define GFX_MAX_RENDERTARGETS 3
 
 namespace EDK
 {
@@ -61,26 +63,35 @@ namespace EDK
             BlendOpMax = 5
         };
 
-        enum ChannelTarget
+        enum class ChannelTarget
         {
-            ChannelR = 0x01,
-            ChannelG = 0x02,
-            ChannelB = 0x04,
-            ChannelA = 0x08,
-            ChannelRG = ( ChannelR | ChannelG ),
-            ChannelRGB = ( ChannelR | ChannelG | ChannelB ),
-            ChannelRGBA = ( ChannelR | ChannelG | ChannelB | ChannelA )
+            ChannelA = 1,
+            ChannelRGB = 2,
+            ChannelRGBA = 3
         };
 
         enum BlendStateFlags
         {
-            EnableBlending = 0x01,
-            EnableAlphaToCoverage = 0x02,
-            EnableIndependentBlending = 0x04
+            EnableAlphaToCoverage = 0x01
+                                    // EnableIndependentBlending = 0x02
         };
 
         struct RenderTarget
         {
+            RenderTarget();
+
+            DataFormat renderTargetFormat;
+        };
+
+
+        struct RenderTargetState
+        {
+            RenderTargetState();
+
+            U32 blendStateFlags;
+
+            ChannelTarget writeMask;
+
             BlendSource srcBlendValue;
             BlendSource destBlendValue;
             BlendOperation blendOp;
@@ -89,18 +100,7 @@ namespace EDK
             BlendSource destBlendAlpha;
             BlendOperation alphaBlendOp;
 
-            ChannelTarget writeMask;
-
-            DataFormat renderTargetFormat;
-        };
-
-
-        struct RenderTargetState
-        {
-            U32 blendStateFlags;
-            U32 numRenderTargets;
-
-            RenderTarget renderTargets[8];
+            RenderTarget renderTargets[GFX_MAX_RENDERTARGETS];
         };
     }
 }

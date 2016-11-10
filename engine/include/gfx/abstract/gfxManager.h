@@ -15,6 +15,8 @@
 
 #include "manager/abstract/abstractManager.h"
 
+#include "math/scalar/matrix4.h"
+
 namespace EDK
 {
     struct VideoSwitchEvent : public IEvent
@@ -32,9 +34,13 @@ namespace EDK
 
             virtual ~Manager() {}
 
+            virtual Matrix4f LookAtMatrix( const Vec3f &eye, const Vec3f &at ) const  = 0;
+            virtual Matrix4f ProjMatrix( F32 fov, U32 width, U32 height, F32 near, F32 far ) const = 0;
+
             virtual const IndexBuffer *CreateIndexBuffer( const IndexBufferDesc &desc, void *memory, size_t memSize ) = 0;
             virtual const VertexBuffer *CreateVertexBuffer( const VertexBufferDesc &desc, void *memory, size_t memSize ) = 0;
-            virtual const PipelineState *CreatePipelineState( const PipelineStateDesc &desc ) = 0;
+            virtual const GraphicsPipelineState *CreatePipelineState( const GraphicsPipelineStateDesc &desc,
+                                                                      const GraphicsShaderProgram *gsp ) = 0;
             virtual const PixelShaderBlob *CreatePixelShaderBlob( void *memory, size_t memSize ) = 0;
             virtual const VertexShaderBlob *CreateVertexShaderBlob( void *memory, size_t memSize ) = 0;
             virtual const GraphicsShaderProgram *CreateShaderProgram( const VertexShaderBlob *vs, const PixelShaderBlob *ps ) = 0;

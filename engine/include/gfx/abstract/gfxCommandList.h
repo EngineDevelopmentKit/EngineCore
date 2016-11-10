@@ -34,6 +34,7 @@ namespace EDK
     {
         class IndexBuffer;
         class VertexBuffer;
+        class GraphicsPipelineState;
 
         class CommandList
         {
@@ -55,10 +56,18 @@ namespace EDK
 
             virtual ~GraphicsCommandList() {}
 
+            virtual void BeginRecording() = 0;
+            virtual void EndRecording() = 0;
+
             virtual void SetVertexBuffer( const VertexBuffer * ) = 0;
             virtual void SetVertexBufferRange( const VertexBuffer *vb, U32 start, U32 num ) = 0;
 
             virtual void SetIndexBuffer( const IndexBuffer * ) = 0;
+            virtual void SetIndexBufferRange( const IndexBuffer *, U32 start, U32 num ) = 0;
+
+            virtual void SetPipelineState( const GraphicsPipelineState *pso ) = 0;
+
+            virtual void Submit( U32 sortKey = 0 ) = 0;
         };
 
         class ComputeCommandList :

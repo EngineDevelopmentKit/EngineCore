@@ -34,6 +34,8 @@
 #include "common/deltaTime.h"
 
 #include "math/scalar/vec2i.h"
+#include "math/scalar/vec3.h"
+#include "math/scalar/matrix4.h"
 
 #include "window/impl/sfmlWindowManager.h"
 
@@ -130,10 +132,10 @@ void EDK::MainLoop( S32 argc, char **argv )
     // TEMP
 
     DeltaTime time;
-    
+
     const IndexBuffer *indexBuffer = nullptr;
     const VertexBuffer *vertexBuffer = nullptr;
-    const PipelineState *pipelineSate = nullptr;
+    const GraphicsPipelineState *pipelineSate = nullptr;
     const PixelShaderBlob *psblob = nullptr;
     const VertexShaderBlob *vsblob = nullptr;
     const GraphicsShaderProgram *shaderProgram = nullptr;
@@ -141,7 +143,7 @@ void EDK::MainLoop( S32 argc, char **argv )
 
     std::vector<char> vs_buffer;
     std::vector<char> fs_buffer;
-    
+
     while ( gameInstance.IsRunning() )
     {
         gameInstance.Update();
@@ -153,9 +155,6 @@ void EDK::MainLoop( S32 argc, char **argv )
 
             // Set view 0 clear state.
             bgfx::setViewClear( 0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0 );
-
-            PipelineStateDesc pipelineStateDesc;
-            pipelineSate = gfxManager->CreatePipelineState( pipelineStateDesc );
 
             BufferLayoutDecl vertexLayout;
             vertexLayout.Add( ShaderAttribute::Position, GpuDataFormat( RGBAView( 3, AttributeType::FLOAT_32 ) ) );
@@ -204,66 +203,67 @@ void EDK::MainLoop( S32 argc, char **argv )
 
             shaderProgram = gfxManager->CreateShaderProgram( vsblob, psblob );
 
+            GraphicsPipelineStateDesc pipelineStateDesc;
+            //pipelineStateDesc.rasterizerState.fillMode = FillMode::FillWireFrame;
+            pipelineSate = gfxManager->CreatePipelineState( pipelineStateDesc, shaderProgram );
+
             initBgfx = false;
         }
 
+
+        // Setup the command list for recording
+        commandList->BeginRecording();
 
         // TEMP
         // Set view 0 default viewport.
         bgfx::setViewRect( 0, 0, 0, uint16_t( width ), uint16_t( height ) );
 
         bgfx::dbgTextClear();
-        bgfx::dbgTextPrintf( 0, 1, 0x4f, "bgfx/examples/01-cube" );
-        bgfx::dbgTextPrintf( 0, 2, 0x6f, "Description: Rendering simple static mesh." );
-        bgfx::dbgTextPrintf( 0, 3, 0x0f, String::Place( "Fps: {:.0f}", 1 / time.GetEasedDeltaTime() ).c_str() );
-        bgfx::dbgTextPrintf( 0, 4, 0x0f, String::Place( "Mspf: {:f}", time.GetEasedDeltaTime() ).c_str() );
+        bgfx::dbgTextPrintf( 0, 0, 0x4f, "bgfx/examples/01-cube" );
+        bgfx::dbgTextPrintf( 0, 1, 0x6f, "Description: Rendering simple static mesh." );
+        bgfx::dbgTextPrintf( 0, 2, 0x0f, String::Place( "Fps: {:.0f}", 1 / time.GetEasedDeltaTime() ).c_str() );
+        bgfx::dbgTextPrintf( 0, 3, 0x0f, String::Place( "Mspf: {:f}", time.GetEasedDeltaTime() ).c_str() );
 
-        float at[3] = { 0.0f, 0.0f,   0.0f };
-        float eye[3] = { 0.0f, 0.0f, -35.0f };
+        Vec3f at = { 0.0f, 0.0f, 0.0f };
+        Vec3f eye = { 0.0f, 0.0f, -35.0f };
 
-        float view[16];
-        bx::mtxLookAt( view, eye, at );
+        Matrix4f view = gfxManager->LookAtMatrix( eye, at );
+        Matrix4f proj = gfxManager->ProjMatrix( 60.0f, width, height, 0.1f, 100.0f );
 
-        float proj[16];
-        bx::mtxProj( proj, 60.0f, float( width ) / float( height ), 0.1f, 100.0f );
-        bgfx::setViewTransform( 0, view, proj );
+        bgfx::setViewTransform( 0, view.Data(), proj.Data() );
 
         // Set view 0 default viewport.
         bgfx::setViewRect( 0, 0, 0, uint16_t( width ), uint16_t( height ) );
 
-        // This dummy draw call is here to make sure that view 0 is cleared
-        // if no other draw calls are submitted to view 0.
-        bgfx::touch( 0 );
+        // Set vertex and index buffer.
+        commandList->SetVertexBuffer( vertexBuffer );
+        commandList->SetIndexBuffer( indexBuffer );
+        commandList->SetPipelineState( pipelineSate );
 
         // Submit 11x11 cubes.
         for ( uint32_t yy = 0; yy < 11; ++yy )
         {
             for ( uint32_t xx = 0; xx < 11; ++xx )
             {
-                float mtx[16];
-                bx::mtxRotateXY( mtx, xx * 0.21f, yy * 0.37f );
-                mtx[12] = -15.0f + float( xx ) * 3.0f;
-                mtx[13] = -15.0f + float( yy ) * 3.0f;
-                mtx[14] = 0.0f;
-                
+                Matrix4f mtxf;
+                mtxf.SetIdentity();
+                mtxf[3][0] = -15.0f + float( xx ) * 3.0f;
+                mtxf[3][1] = -15.0f + float( yy ) * 3.0f;
+                mtxf[3][2] = 0.0f;
+
                 // Set model matrix for rendering.
-                bgfx::setTransform( mtx );
-
-                // Set vertex and index buffer.
-                commandList->SetVertexBuffer( vertexBuffer );
-                commandList->SetIndexBuffer( indexBuffer );
-
-                // Set render states.
-                bgfx::setState( BGFX_STATE_DEFAULT );
+                bgfx::setTransform( mtxf.Data() );
 
                 // Submit primitive for rendering to view 0.
                 if ( shaderProgram )
                 {
-                    bgfx::submit( 0, static_cast< const BgfxShaderProgram *>( shaderProgram )->GetProgramHandle() );
+                    commandList->Submit();
                 }
             }
         }
-        
+
+        commandList->EndRecording();
+
         time.Update();
     }
 }

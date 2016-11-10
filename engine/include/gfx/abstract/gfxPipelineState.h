@@ -28,25 +28,26 @@
 #ifndef __EDK_GFX_PIPELINE_STATE_H__
 #define __EDK_GFX_PIPELINE_STATE_H__
 
+#include "gfx/gfxRenderTarget.h"
 #include "gfx/gfxRasterizerState.h"
 #include "gfx/gfxDepthStencilState.h"
-
 
 namespace EDK
 {
     namespace Graphics
     {
-        struct PipelineStateDesc
+        struct GraphicsPipelineStateDesc
         {
             RasterizerState rasterizerState;
             DepthStencilState depthStencilState;
+            RenderTargetState renderTargetState;
         };
 
-        class PipelineState
+        class GraphicsPipelineState
         {
         public:
 
-            virtual ~PipelineState();
+            virtual ~GraphicsPipelineState();
 
         public:
 

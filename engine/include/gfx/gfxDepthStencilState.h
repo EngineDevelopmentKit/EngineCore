@@ -47,7 +47,6 @@ namespace EDK
         {
             DepthStencilState();
 
-            bool enableDepthTest;
             bool enableStencilTest;
             bool enableDepthWrite;
 

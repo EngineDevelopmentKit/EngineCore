@@ -13,6 +13,8 @@
 #include "manager/eventManager.h"
 #include "manager/poolManager.h"
 
+#include <bx/bx.h>
+#include <bx/fpumath.h>
 #include <bgfx/bgfxplatform.h>
 
 
@@ -38,8 +40,8 @@ void EDK::Graphics::BgfxManager::OnInit()
     mShaderBlobPool = poolMngr->Add< BgfxShaderBlob, ShaderBlob >();
     mIndexBufferPool = poolMngr->Add< BgfxIndexBuffer, IndexBuffer >();
     mVertexBufferPool = poolMngr->Add< BgfxVertexBuffer, VertexBuffer >();
-    mPipelineStatePool = poolMngr->Add< BgfxPipelineState, PipelineState >();
     mShaderProgramPool = poolMngr->Add< BgfxShaderProgram, ShaderProgram >();
+    mPipelineStatePool = poolMngr->Add< BgfxGraphicsPipelineState, GraphicsPipelineState >();
     mGraphicsCommandListPool = poolMngr->Add< BgfxGraphicsCommandList, GraphicsCommandList >();
 
     Observe < BgfxManager, VideoSwitchEvent >( &BgfxManager::OnVideoSwitch );
@@ -64,9 +66,9 @@ void EDK::Graphics::BgfxManager::OnRelease()
     poolMngr->Remove< BgfxShaderBlob >();
     poolMngr->Remove< BgfxIndexBuffer >();
     poolMngr->Remove< BgfxVertexBuffer >();
-    poolMngr->Remove< BgfxPipelineState >();
     poolMngr->Remove< BgfxShaderProgram >();
     poolMngr->Remove< BgfxGraphicsCommandList >();
+    poolMngr->Remove< BgfxGraphicsPipelineState >();
 
     Unobserve< BgfxManager, VideoSwitchEvent >( &BgfxManager::OnVideoSwitch );
 
@@ -85,6 +87,22 @@ void EDK::Graphics::BgfxManager::OnUpdate()
     {
         mMainwindow->Present();
     }
+}
+
+Matrix4f EDK::Graphics::BgfxManager::LookAtMatrix( const Vec3f &eye, const Vec3f &at ) const
+{
+    Matrix4f mat;
+    bx::mtxLookAt( mat.Data(), eye.Data(), at.Data() );
+
+    return mat;
+}
+
+Matrix4f EDK::Graphics::BgfxManager::ProjMatrix( F32 fov, U32 width, U32 height, F32 near, F32 far ) const
+{
+    Matrix4f mat;
+    bx::mtxProj( mat.Data(), fov, float( width ) / float( height ), near, far );
+
+    return mat;
 }
 
 const EDK::Graphics::PixelShaderBlob *EDK::Graphics::BgfxManager::CreatePixelShaderBlob( void *memory, size_t memSize )
@@ -141,12 +159,14 @@ const EDK::Graphics::VertexBuffer *EDK::Graphics::BgfxManager::CreateVertexBuffe
     return vb;
 }
 
-const EDK::Graphics::PipelineState *EDK::Graphics::BgfxManager::CreatePipelineState( const PipelineStateDesc &desc )
+const EDK::Graphics::GraphicsPipelineState *EDK::Graphics::BgfxManager::CreatePipelineState(
+    const GraphicsPipelineStateDesc &desc,
+    const GraphicsShaderProgram *gsp )
 {
     std::lock_guard<std::mutex> lock( mMutex );
 
-    PipelineState *ps = mPipelineStatePool->Get();
-    static_cast<BgfxPipelineState *>( ps )->Init( desc );
+    GraphicsPipelineState *ps = mPipelineStatePool->Get();
+    static_cast<BgfxGraphicsPipelineState *>( ps )->Init( desc, gsp );
 
     return ps;
 }
@@ -154,6 +174,8 @@ const EDK::Graphics::PipelineState *EDK::Graphics::BgfxManager::CreatePipelineSt
 const EDK::Graphics::GraphicsShaderProgram *EDK::Graphics::BgfxManager::CreateShaderProgram( const VertexShaderBlob *vs,
                                                                                              const PixelShaderBlob *ps )
 {
+    std::lock_guard<std::mutex> lock( mMutex );
+
     ShaderProgram *program = nullptr;
 
     if ( vs && ps )

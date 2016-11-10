@@ -2,7 +2,7 @@
 
 EDK::Graphics::RasterizerState::RasterizerState() :
     fillMode( FillMode::FillSolid ), cullMode( CullMode::CullBack ),
-    faceMode( TriangleFaceMode::FrontByClockWise ), inputLayout( InputPrimitives::TriangleList ),
+    faceMode( TriangleFaceMode::FrontByCounterClockWise ), inputLayout( InputPrimitives::TriangleList ),
     msaaSamples( 0 ), lineAntiAliasing( false )
 {
 

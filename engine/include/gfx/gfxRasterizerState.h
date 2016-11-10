@@ -31,7 +31,8 @@ namespace EDK
         {
             PointList = 1,
             LineList = 2,
-            TriangleList = 3
+            TriangleList = 3,
+            TriangleStrip = 4
         };
 
         struct RasterizerState

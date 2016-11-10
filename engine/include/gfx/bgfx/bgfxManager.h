@@ -70,9 +70,13 @@ namespace EDK
             virtual void OnRelease() override;
             virtual void OnUpdate() override;
 
+            virtual Matrix4f LookAtMatrix( const Vec3f &eye, const Vec3f &at ) const override;
+            virtual Matrix4f ProjMatrix( F32 fov, U32 width, U32 height, F32 near, F32 far ) const override;
+
             virtual const IndexBuffer *CreateIndexBuffer( const IndexBufferDesc &desc, void *memory, size_t memSize ) override;
             virtual const VertexBuffer *CreateVertexBuffer( const VertexBufferDesc &desc, void *memory, size_t memSize ) override;
-            virtual const PipelineState *CreatePipelineState( const PipelineStateDesc &desc ) override;
+            virtual const GraphicsPipelineState *CreatePipelineState( const GraphicsPipelineStateDesc &desc,
+                                                                      const GraphicsShaderProgram *gsp ) override;
             virtual const PixelShaderBlob *CreatePixelShaderBlob( void *memory, size_t memSize ) override;
             virtual const VertexShaderBlob *CreateVertexShaderBlob( void *memory, size_t memSize ) override;
             virtual const GraphicsShaderProgram *CreateShaderProgram( const VertexShaderBlob *vs,
@@ -109,7 +113,7 @@ namespace EDK
             AbstractObjectPool< ShaderBlob > *mShaderBlobPool;
             AbstractObjectPool< IndexBuffer > *mIndexBufferPool;
             AbstractObjectPool< VertexBuffer > *mVertexBufferPool;
-            AbstractObjectPool< PipelineState > *mPipelineStatePool;
+            AbstractObjectPool< GraphicsPipelineState > *mPipelineStatePool;
             AbstractObjectPool< ShaderProgram > *mShaderProgramPool;
             AbstractObjectPool< GraphicsCommandList > *mGraphicsCommandListPool;
         };

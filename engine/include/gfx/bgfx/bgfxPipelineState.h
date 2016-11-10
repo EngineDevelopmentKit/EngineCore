@@ -29,17 +29,21 @@
 #define __EDK_BGFX_PIPELINE_STATE_H__
 
 #include "gfx/abstract/gfxPipelineState.h"
+#include "gfx/abstract/gfxShaderProgram.h"
 
 namespace EDK
 {
     namespace Graphics
     {
-        class BgfxPipelineState : public PipelineState
+        class BgfxGraphicsPipelineState : public GraphicsPipelineState
         {
             friend class BgfxManager;
         public:
 
-            BgfxPipelineState();
+            BgfxGraphicsPipelineState();
+
+            GraphicsPipelineStateDesc QueryDesc() const;
+            const GraphicsShaderProgram *GetShaderProgram() const;
 
         public:
 
@@ -49,11 +53,12 @@ namespace EDK
 
         protected:
 
-            void Init( const PipelineStateDesc &desce );
+            void Init( const GraphicsPipelineStateDesc &desc, const GraphicsShaderProgram *gsp );
 
         private:
 
-            PipelineStateDesc mDesc;
+            GraphicsPipelineStateDesc mDesc;
+            const GraphicsShaderProgram *mShader;
         };
     }
 }

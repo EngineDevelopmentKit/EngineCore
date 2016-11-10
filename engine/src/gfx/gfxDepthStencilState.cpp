@@ -4,11 +4,11 @@ EDK::Graphics::StencilTest::StencilTest() :
     onStencilFail( StencilOperation::StencilOpZero ),
     onStencilPassDepthFail( StencilOperation::StencilOpZero ),
     onStencilDepthPass( StencilOperation::StencilOpZero ),
-    stencilCompareOp( ComparisonOperation::OpNever )
+    stencilCompareOp( ComparisonOperation::OpAlways )
 {}
 
 EDK::Graphics::DepthStencilState::DepthStencilState() :
-    enableDepthTest( false ), enableStencilTest( false ), enableDepthWrite( false ),
+    enableStencilTest( false ), enableDepthWrite( true ),
     stencilWriteMask( 0 ), stencilReadMask( 0 ),
     depthBias( 0.0 ), depthBiasClamp( 0.0 ), slopeScaledDepthBias( 0.0 ),
     depthBufferFormat( GpuDataFormat( SpecialDataFormat::R24S8 ) ),
