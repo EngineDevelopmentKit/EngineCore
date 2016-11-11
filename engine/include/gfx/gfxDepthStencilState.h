@@ -9,7 +9,7 @@ namespace EDK
 {
     namespace Graphics
     {
-        enum ComparisonOperation
+        enum class ComparisonOperation
         {
             OpNever = 1,
             OpLess = 2,
@@ -21,7 +21,7 @@ namespace EDK
             OpAlways = 8
         };
 
-        enum StencilOperation
+        enum class StencilOperation
         {
             StencilOpKeep = 1,
             StencilOpZero = 2,

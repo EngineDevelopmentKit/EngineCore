@@ -44,7 +44,10 @@ namespace EDK
 
             GraphicsPipelineStateDesc QueryDesc() const;
             const GraphicsShaderProgram *GetShaderProgram() const;
-
+    	    U64 GetBgfxStateFlags() const;
+            U32 GetBgfxFrontStencilFlags() const;
+            U32 GetBgfxBackStencilFlags() const;
+            
         public:
 
             // Required by the object pool
@@ -53,12 +56,15 @@ namespace EDK
 
         protected:
 
-            void Init( const GraphicsPipelineStateDesc &desc, const GraphicsShaderProgram *gsp );
+            void Init( const GraphicsPipelineStateDesc &desc, const GraphicsShaderProgram *gsp, U64 stateflags, U32 fstencil, U32 bstencil );
 
         private:
 
             GraphicsPipelineStateDesc mDesc;
             const GraphicsShaderProgram *mShader;
+            U64 mBgfxStateFlags;
+            U32 mBgfxFrontStencilFlags;
+            U32 mBgfxBackStencilFlags;
         };
     }
 }

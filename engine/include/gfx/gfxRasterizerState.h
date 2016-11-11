@@ -8,26 +8,26 @@ namespace EDK
 {
     namespace Graphics
     {
-        enum FillMode
+        enum class FillMode
         {
             FillSolid = 1,
             FillWireFrame = 2
         };
 
-        enum CullMode
+        enum class CullMode
         {
             CullFront = 1,
             CullBack = 2,
             CullNone = 3
         };
 
-        enum TriangleFaceMode
+        enum class TriangleFaceMode
         {
             FrontByClockWise = 1,
             FrontByCounterClockWise = 2
         };
 
-        enum InputPrimitives
+        enum class InputPrimitives
         {
             PointList = 1,
             LineList = 2,
