@@ -41,7 +41,7 @@ namespace EDK
 {
     namespace Graphics
     {
-        enum Interface
+        enum class Interface
         {
             Direct3D9   = 0x01,
             Direct3D11  = 0x02,

@@ -31,7 +31,6 @@
 #include "gfx/gfxBufferDecl.h"
 #include "gfx/abstract/gfxManager.h"
 
-
 #include <mutex>
 #include <bgfx/bgfx.h>
 
@@ -51,13 +50,6 @@ namespace EDK
 {
     namespace Graphics
     {
-        U32 GetBgfxRenderType( const Interface interf );
-        U32 GetBgfxResetFlags( const U32 swapChainFlags );
-        bool IsNormalizedAttribType( const AttributeType type );
-        bgfx::Attrib::Enum GetBgfxAttrib( const ShaderAttribute attribute );
-        bgfx::AttribType::Enum GetBgfxAttribType( const AttributeType type );
-        bgfx::VertexDecl GetBgfxVertexDecl( const BufferLayoutDecl &layout );
-
         class BgfxManager
             : public Graphics::Manager
         {

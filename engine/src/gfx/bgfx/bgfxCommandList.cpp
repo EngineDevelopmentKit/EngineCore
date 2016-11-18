@@ -61,74 +61,10 @@ void EDK::Graphics::BgfxGraphicsCommandList::SetPipelineState( const GraphicsPip
 {
     const BgfxGraphicsPipelineState *bpso = static_cast<const BgfxGraphicsPipelineState *>( pso );
 
-    // set the active shader
     mActiveProgram = bpso->GetShaderProgram();
-
-    const GraphicsPipelineStateDesc &desc = bpso->QueryDesc();
-
-    U64 bgfxStateFlags = 0;
-
-    bgfxStateFlags |= GetBgfxDepthTest( desc.depthStencilState.depthTestOp );
-
-    if ( desc.depthStencilState.enableDepthWrite )
-    {
-        bgfxStateFlags |= BGFX_STATE_DEPTH_WRITE;
-    }
-
-    if ( desc.rasterizerState.fillMode == FillMode::FillWireFrame )
-    {
-        bgfx::setDebug( BGFX_DEBUG_WIREFRAME | BGFX_DEBUG_TEXT );
-    }
-
-    bgfxStateFlags |= GetBgfxCullMode( desc.rasterizerState.cullMode, desc.rasterizerState.faceMode );
-    bgfxStateFlags |= GetBgfxPrimitiveFlags( desc.rasterizerState.inputLayout );
-
-    if ( desc.rasterizerState.msaaSamples > 0 )
-    {
-        bgfxStateFlags |= BGFX_STATE_MSAA;
-    }
-
-    if ( desc.rasterizerState.lineAntiAliasing )
-    {
-        bgfxStateFlags |= BGFX_STATE_LINEAA;
-    }
-
-    // TEMP do write RGBA
-    if ( desc.renderTargetState.writeMask == ChannelTarget::ChannelA )
-    {
-        bgfxStateFlags |= BGFX_STATE_ALPHA_WRITE;
-    }
-    else if ( desc.renderTargetState.writeMask == ChannelTarget::ChannelRGB )
-    {
-        bgfxStateFlags |= BGFX_STATE_RGB_WRITE;
-    }
-    else if ( desc.renderTargetState.writeMask == ChannelTarget::ChannelRGBA )
-    {
-        bgfxStateFlags |= BGFX_STATE_RGB_WRITE | BGFX_STATE_ALPHA_WRITE;
-    }
-
-    if ( IS_SET( desc.renderTargetState.blendStateFlags, BlendStateFlags::EnableAlphaToCoverage ) )
-    {
-        bgfxStateFlags |= BGFX_STATE_BLEND_ALPHA_TO_COVERAGE;
-    }
-
-    bgfxStateFlags |= BGFX_STATE_BLEND_FUNC_SEPARATE( GetBgfxBlendSource( desc.renderTargetState.srcBlendValue ),
-                                                      GetBgfxBlendSource( desc.renderTargetState.destBlendValue ),
-                                                      GetBgfxBlendSource( desc.renderTargetState.srcBlendAlpha ),
-                                                      GetBgfxBlendSource( desc.renderTargetState.destBlendAlpha ) );
-
-    bgfxStateFlags |= BGFX_STATE_BLEND_EQUATION_SEPARATE( GetBgfxBlendFunc( desc.renderTargetState.blendOp ),
-                                                          GetBgfxBlendFunc( desc.renderTargetState.alphaBlendOp ) );
-
-    bgfx::setState( bgfxStateFlags );
-
-    if ( desc.depthStencilState.enableStencilTest )
-    {
-        U32 frontFaceStencil = GetBgfxStencilFlags( desc.depthStencilState.frontFaceStencilTest );
-        U32 backFaceStencil = GetBgfxStencilFlags( desc.depthStencilState.backFaceStencilTest );
-
-        bgfx::setStencil( frontFaceStencil, backFaceStencil );
-    }
+    
+    bgfx::setState( bpso->GetBgfxStateFlags() );
+    bgfx::setStencil( bpso->GetBgfxFrontStencilFlags(), bpso->GetBgfxBackStencilFlags() );
 }
 
 void EDK::Graphics::BgfxGraphicsCommandList::Submit( U32 sortKey )
