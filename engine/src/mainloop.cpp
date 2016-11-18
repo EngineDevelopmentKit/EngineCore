@@ -99,13 +99,11 @@ static uint16_t s_cubeIndices[36] =
     6, 3, 7,
 };
 
-void EDK::MainLoop( S32 argc, char **argv )
+void EDK::MainLoop( Program &program )
 {
-    Program gameInstance( argc, argv );
-
     RegisterControllers();
 
-    gameInstance.Init();
+    program.Init();
 
     //
     // TEMP section
@@ -144,9 +142,9 @@ void EDK::MainLoop( S32 argc, char **argv )
     std::vector<char> vs_buffer;
     std::vector<char> fs_buffer;
 
-    while ( gameInstance.IsRunning() )
+    while ( program.IsRunning() )
     {
-        gameInstance.Update();
+        program.Update();
 
         if ( initBgfx )
         {

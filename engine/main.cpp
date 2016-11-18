@@ -24,14 +24,25 @@
 * @endcond
 */
 
+#include "ecs.h"
+
+#include "common/program.h"
+
+#include "api/controller.h"
+#include "api/plugin.h"
+
 #include "mainloop.h"
 
 #include <stdlib.h>
 
 S32 main( S32 argc, char **argv )
 {
+    Program gameInstance( argc, argv );
+
+    Plugin::Add< ECSPlugin >();
+
     //start the new game instance and run it
-    EDK::MainLoop( argc, argv );
+    EDK::MainLoop( gameInstance );
 
     return 0;
 }

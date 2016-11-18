@@ -31,10 +31,12 @@
 
 #include "common/types.h"
 
+class Program;
+
 namespace EDK
 {
     void RegisterControllers();
-    void MainLoop( S32 argc, char **argv );
+    void MainLoop( Program &program );
 }
 
 #endif

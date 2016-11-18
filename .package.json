@@ -1,12 +1,17 @@
 {
-    "name": "Zefiros-Software/CoreLib",
+    "name": "Zefiros-Software/EDK",
+    "modules": [
+        {
+            "Zefiros-Software/Plugins": "@head"
+        }
+    ],
     "dev": {
         "modules": [
             "Zefiros-Software/Zefiros-Defaults",
             "akaStiX/vsandroid"
         ],
         "requires": [
-	    {
+	        {
                 "name": "Zefiros-Software/CoreLib",
                 "version": "@head"
             },
@@ -21,6 +26,12 @@
             {
                 "name": "Zefiros-Software/bgfx",
                 "version": "@head"
+            }
+        ],
+        "plugins": [
+            {
+                "name": "EDK/ECS",
+                "path": "plugins/ecs/"
             }
         ]
     }
