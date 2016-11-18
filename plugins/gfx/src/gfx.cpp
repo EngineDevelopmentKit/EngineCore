@@ -24,51 +24,16 @@
 * @endcond
 */
 
-#pragma once
-#ifndef __EDK_WINDOW_H__
-#define __EDK_WINDOW_H__
+#include "gfx/bgfx/bgfxManager.h"
 
-#include "common/types.h"
+#include "api/controller.h"
 
-#include "math/scalar/vec2i.h"
+#include "gfx/gfx.h"
 
-#include "window/abstract/windowStyle.h"
-#include "window/abstract/windowHandle.h"
 
-#include <string>
-
-namespace EDK
+void GraphicsPlugin::OnInit()
 {
-    class IWindow
-    {
-    public:
-
-        virtual ~IWindow() {}
-
-        virtual void Close() = 0;
-        virtual void Open( const Vec2I &size, const std::string &title, Window::Style style = Window::Style::Default ) = 0;
-
-        virtual bool IsOpen() const = 0;
-
-        virtual Vec2I GetSize() const = 0;
-        virtual Vec2I GetPosition() const = 0;
-
-        virtual void SetSize( const Vec2I &v ) = 0;
-        virtual void SetPosition( const Vec2I &v ) = 0;
-        virtual void SetStyle( Window::Style style ) = 0;
-
-        virtual void SetVisible( bool mode ) = 0;
-        virtual void SetCursorVisible( bool mode ) = 0;
-
-        virtual void SetIcon( const std::string &path ) = 0;
-        virtual void SetTitle( const std::string &title ) = 0;
-
-        virtual void Release() = 0;
-        virtual void ProcessEvents() = 0;
-
-        virtual NativeWindowHandle GetNativeWindowHandle() const = 0;
-
-    };
+    Controller::Add<BgfxManager>();
 }
 
-#endif
+SET_PLUGIN( GraphicsPlugin );

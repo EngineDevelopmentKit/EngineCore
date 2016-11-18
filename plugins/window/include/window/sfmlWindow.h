@@ -28,14 +28,14 @@
 #ifndef __EDK_SFML_WINDOW_H__
 #define __EDK_SFML_WINDOW_H__
 
-#include "common/types.h"
+#include "window/abstract/windowHandle.h"
+
+#include "window/abstract/window.h"
 
 #include "math/scalar/vec2i.h"
 
-#include "window/abstract/window.h"
-#include "window/abstract/windowHandle.h"
+#include "common/types.h"
 
-#include <string>
 #include <SFML/Window.hpp>
 
 namespace EDK
@@ -48,7 +48,7 @@ namespace EDK
         SFMLWindow( U8 id );
         virtual ~SFMLWindow() ;
 
-        
+
         virtual void Close() override;
         virtual void Open( const Vec2I &size, const std::string &title, Window::Style style ) override;
 
@@ -59,23 +59,23 @@ namespace EDK
 
         virtual void SetSize( const Vec2I &v ) override;
         virtual void SetPosition( const Vec2I &v ) override;
-        virtual void SetStyle( Window::Style style ) override;  
-        
+        virtual void SetStyle( Window::Style style ) override;
+
         virtual void SetVisible( bool mode ) override;
         virtual void SetCursorVisible( bool mode ) override;
-        
+
         virtual void SetIcon( const std::string &path ) override;
-    	virtual void SetTitle( const std::string &title ) override;
-        
+        virtual void SetTitle( const std::string &title ) override;
+
         virtual void Release() override;
         virtual void ProcessEvents() override;
 
         virtual NativeWindowHandle GetNativeWindowHandle() const override;
-    
+
     private:
-        
+
         U32 EngineEnumToSfmlEnum( Window::Style style ) const;
-        
+
         U8 mWindowID;
         std::string mTitle;
         sf::Window mWindowImpl;

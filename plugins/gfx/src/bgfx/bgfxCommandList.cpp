@@ -62,7 +62,7 @@ void EDK::Graphics::BgfxGraphicsCommandList::SetPipelineState( const GraphicsPip
     const BgfxGraphicsPipelineState *bpso = static_cast<const BgfxGraphicsPipelineState *>( pso );
 
     mActiveProgram = bpso->GetShaderProgram();
-    
+
     bgfx::setState( bpso->GetBgfxStateFlags() );
     bgfx::setStencil( bpso->GetBgfxFrontStencilFlags(), bpso->GetBgfxBackStencilFlags() );
 }

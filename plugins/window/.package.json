@@ -1,0 +1,9 @@
+{
+    "name": "EDK/Window",
+    "requires": [
+        {   
+            "name": "Zefiros-Software/SFML",
+            "version": "@head"
+        }
+    ]
+}

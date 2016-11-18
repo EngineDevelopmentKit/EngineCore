@@ -27,13 +27,13 @@
 #include "warnings/push.h"
 #include "warnings/nonConstRValue.h"
 
-#include "window/impl/sfmlWindow.h"
-#include "window/impl/sfmlWindowManager.h"
 #include "window/abstract/windowEvents.h"
+#include "window/sfmlWindowManager.h"
+#include "window/sfmlWindow.h"
 
-#include "manager/eventManager.h"
-#include "manager/applicationManager.h"
 #include "manager/configurationManager.h"
+#include "manager/applicationManager.h"
+#include "manager/eventManager.h"
 
 #include "common/file.h"
 #include "common/util.h"

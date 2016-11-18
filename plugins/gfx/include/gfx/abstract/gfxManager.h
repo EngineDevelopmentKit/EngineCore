@@ -2,6 +2,7 @@
 #ifndef __EDK_GFX_FACTORY_H__
 #define __EDK_GFX_FACTORY_H__
 
+#include "manager/abstract/abstractManager.h"
 #include "events/abstract/IEvent.h"
 
 #include "gfx/gfxArchitecture.h"
@@ -12,8 +13,6 @@
 #include "gfx/abstract/gfxVertexBuffer.h"
 #include "gfx/abstract/gfxPipelineState.h"
 #include "gfx/abstract/gfxShaderProgram.h"
-
-#include "manager/abstract/abstractManager.h"
 
 #include "math/scalar/matrix4.h"
 
@@ -28,7 +27,8 @@ namespace EDK
 
     namespace Graphics
     {
-        class Manager : public AbstractManager
+        class Manager
+            : public AbstractManager
         {
         public:
 

@@ -25,45 +25,50 @@
 */
 
 #pragma once
-#ifndef __EDK_BGFX_ENUMTRANSLATE_H__
-#define __EDK_BGFX_ENUMTRANSLATE_H__
+#ifndef __EDK_WINDOW_H__
+#define __EDK_WINDOW_H__
 
 #include "common/types.h"
-#include "gfx/gfxBufferDecl.h"
 
-#include <bgfx/bgfx.h>
+#include "math/scalar/vec2i.h"
+
+#include "abstract/windowStyle.h"
+#include "abstract/windowHandle.h"
+
+#include <string>
 
 namespace EDK
 {
-    namespace Graphics
+    class IWindow
     {
-        struct StencilTest;
-        
-        enum class CullMode;
-        enum class InputPrimitives;
-        enum class TriangleFaceMode;
-        enum class ComparisonOperation;
-    	enum class AttributeType;
-        enum class BlendSource;
-        enum class BlendOperation;
-    	enum class Interface;
-        
-        bool IsNormalizedAttribType( const AttributeType type );
+    public:
 
-        U32 GetBgfxStencilFlags( const StencilTest &stencil );
-        U32 GetBgfxRenderType( const Interface interf );
-        U32 GetBgfxResetFlags( const U32 swapChainFlags );
-        
-        U64 GetBgfxBlendFunc( BlendOperation bop );
-        U64 GetBgfxBlendSource( BlendSource bsource );
-        U64 GetBgfxDepthTest( ComparisonOperation op );
-        U64 GetBgfxCullMode( CullMode mode, TriangleFaceMode trimode );
-        U64 GetBgfxPrimitiveFlags( InputPrimitives iprim );
-        
-        bgfx::Attrib::Enum GetBgfxAttrib( const ShaderAttribute attribute );
-        bgfx::AttribType::Enum GetBgfxAttribType( const AttributeType type );
-        bgfx::VertexDecl GetBgfxVertexDecl( const BufferLayoutDecl &layout );
-    }
+        virtual ~IWindow() {}
+
+        virtual void Close() = 0;
+        virtual void Open( const Vec2I &size, const std::string &title, Window::Style style = Window::Style::Default ) = 0;
+
+        virtual bool IsOpen() const = 0;
+
+        virtual Vec2I GetSize() const = 0;
+        virtual Vec2I GetPosition() const = 0;
+
+        virtual void SetSize( const Vec2I &v ) = 0;
+        virtual void SetPosition( const Vec2I &v ) = 0;
+        virtual void SetStyle( Window::Style style ) = 0;
+
+        virtual void SetVisible( bool mode ) = 0;
+        virtual void SetCursorVisible( bool mode ) = 0;
+
+        virtual void SetIcon( const std::string &path ) = 0;
+        virtual void SetTitle( const std::string &title ) = 0;
+
+        virtual void Release() = 0;
+        virtual void ProcessEvents() = 0;
+
+        virtual NativeWindowHandle GetNativeWindowHandle() const = 0;
+
+    };
 }
 
 #endif

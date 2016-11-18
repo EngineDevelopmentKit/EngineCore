@@ -6,10 +6,7 @@ project "EngineCore"
     kind "StaticLib"
     
     zpm.uses { 
-        "Zefiros-Software/CoreLib",
-        "Zefiros-Software/SFML",
-        "Zefiros-Software/bx",
-        "Zefiros-Software/bgfx" 
+        "Zefiros-Software/CoreLib" 
         }
     
     zpm.export([[
@@ -40,10 +37,7 @@ project "Engine"
     links "EngineCore"
     
     zpm.uses { 
-        "Zefiros-Software/CoreLib",
-        "Zefiros-Software/SFML",
-        "Zefiros-Software/bx",
-        "Zefiros-Software/bgfx" 
+        "Zefiros-Software/CoreLib"
         }
     
     includedirs "engine/include/"

@@ -28,14 +28,13 @@
 #ifndef __EDK_WINDOWMANAGER_H__
 #define __EDK_WINDOWMANAGER_H__
 
-#include "window/abstract/window.h"
-#include "window/abstract/windowStyle.h"
 #include "window/abstract/windowHandle.h"
+#include "window/abstract/windowStyle.h"
+#include "window/abstract/window.h"
+
 #include "manager/abstract/abstractManager.h"
 
-#include <stack>
 #include <mutex>
-#include <unordered_map>
 
 /// @addtogroup Windows
 /// @{

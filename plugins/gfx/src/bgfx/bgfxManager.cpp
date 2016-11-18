@@ -219,7 +219,7 @@ const EDK::Graphics::GraphicsPipelineState *EDK::Graphics::BgfxManager::CreatePi
 
     bgfxStateFlags |= BGFX_STATE_BLEND_EQUATION_SEPARATE( GetBgfxBlendFunc( desc.renderTargetState.blendOp ),
                                                           GetBgfxBlendFunc( desc.renderTargetState.alphaBlendOp ) );
-    
+
     U32 bgfxFrontStencilFlags = 0;
     U32 bgfxBackStencilFlags = 0;
 
@@ -227,13 +227,14 @@ const EDK::Graphics::GraphicsPipelineState *EDK::Graphics::BgfxManager::CreatePi
     {
         // store in lower half
         bgfxFrontStencilFlags |= GetBgfxStencilFlags( desc.depthStencilState.frontFaceStencilTest );
-        
+
         // store in upper half
         bgfxBackStencilFlags |= GetBgfxStencilFlags( desc.depthStencilState.backFaceStencilTest );
     }
 
     GraphicsPipelineState *ps = mPipelineStatePool->Get();
-    static_cast<BgfxGraphicsPipelineState *>( ps )->Init( desc, gsp, bgfxStateFlags, bgfxFrontStencilFlags, bgfxBackStencilFlags );
+    static_cast<BgfxGraphicsPipelineState *>( ps )->Init( desc, gsp, bgfxStateFlags, bgfxFrontStencilFlags,
+                                                          bgfxBackStencilFlags );
 
     return ps;
 }
@@ -272,42 +273,10 @@ const EDK::Graphics::SwapChain *EDK::Graphics::BgfxManager::GetMainWindow()
     return mMainwindow;
 }
 
-bgfx::VertexDecl EDK::Graphics::GetBgfxVertexDecl( const BufferLayoutDecl &layout )
+bool EDK::Graphics::BgfxManager::IsDirty() const
 {
-    bgfx::VertexDecl vertexDecl;
-    vertexDecl.begin();
-
-    for ( const LayoutItem &item : layout.GetItems() )
-    {
-        if ( item.itemView == LayoutItemView::Padding )
-        {
-            vertexDecl.skip( item.data.paddingBytes );
-        }
-        else if ( item.itemView == LayoutItemView::Attribute )
-        {
-            if ( item.data.layout.format.formatView != DataFormatView::RGBA )
-            {
-                Console::Errorf( "Tried to process a bgfx layout item, where the data format is not RGBA" );
-
-                vertexDecl.skip( item.data.layout.format.GetByteSize() );
-            }
-            else
-            {
-                const bgfx::Attrib::Enum bgfxAttrib = GetBgfxAttrib( item.data.layout.attribute );
-                const bool isNormalized = IsNormalizedAttribType( item.data.layout.format.data.rgbaView.type );
-                const bgfx::AttribType::Enum bgfxAttribType = GetBgfxAttribType( item.data.layout.format.data.rgbaView.type );
-                const U32 numelements = item.data.layout.format.data.rgbaView.elements;
-
-                vertexDecl.add( bgfxAttrib, numelements, bgfxAttribType, isNormalized, false );
-            }
-        }
-    }
-
-    vertexDecl.end();
-
-    return vertexDecl;
+    return mVideoState.dirty;
 }
-
 
 void EDK::Graphics::BgfxManager::Reinitialize( const SwapChainDesc &desc, const VideoCard &card,
                                                const Interface interf )
@@ -354,3 +323,40 @@ void EDK::Graphics::BgfxManager::OnVideoSwitch( const VideoSwitchEvent &e )
     mVideoState.interf = e.interface;
     mVideoState.dirty = true;
 }
+
+bgfx::VertexDecl EDK::Graphics::GetBgfxVertexDecl( const BufferLayoutDecl &layout )
+{
+    bgfx::VertexDecl vertexDecl;
+    vertexDecl.begin();
+
+    for ( const LayoutItem &item : layout.GetItems() )
+    {
+        if ( item.itemView == LayoutItemView::Padding )
+        {
+            vertexDecl.skip( item.data.paddingBytes );
+        }
+        else if ( item.itemView == LayoutItemView::Attribute )
+        {
+            if ( item.data.layout.format.formatView != DataFormatView::RGBA )
+            {
+                Console::Errorf( "Tried to process a bgfx layout item, where the data format is not RGBA" );
+
+                vertexDecl.skip( item.data.layout.format.GetByteSize() );
+            }
+            else
+            {
+                const bgfx::Attrib::Enum bgfxAttrib = GetBgfxAttrib( item.data.layout.attribute );
+                const bool isNormalized = IsNormalizedAttribType( item.data.layout.format.data.rgbaView.type );
+                const bgfx::AttribType::Enum bgfxAttribType = GetBgfxAttribType( item.data.layout.format.data.rgbaView.type );
+                const U32 numelements = item.data.layout.format.data.rgbaView.elements;
+
+                vertexDecl.add( bgfxAttrib, numelements, bgfxAttribType, isNormalized, false );
+            }
+        }
+    }
+
+    vertexDecl.end();
+
+    return vertexDecl;
+}
+
