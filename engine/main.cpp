@@ -36,7 +36,7 @@
 #include <stdlib.h>
 
 #include "window/abstract/windowStyle.h"
-#include "window/impl/sfmlWindowManager.h"
+#include "window/sfmlWindowManager.h"
 #include "gfx/bgfx/bgfxManager.h"
 
 
@@ -52,7 +52,7 @@
 #include "math/scalar/vec3.h"
 #include "math/scalar/matrix4.h"
 
-#include "window/impl/sfmlWindowManager.h"
+#include "window/sfmlWindowManager.h"
 
 #include "gfx/bgfx/bgfxManager.h"
 #include "gfx/bgfx/bgfxIndexBuffer.h"
@@ -61,7 +61,8 @@
 #include "gfx/bgfx/bgfxShaderBlob.h"
 #include "gfx/bgfx/bgfxShaderProgram.h"
 
-#include "gfx.h"
+#include "window/window.h"
+#include "gfx/gfx.h"
 
 // TEMP
 #include <bx/bx.h>
@@ -71,7 +72,6 @@
 // END TEMP
 
 #include <iostream>
-#include "window.h"
 
 using namespace EDK::Graphics;
 
