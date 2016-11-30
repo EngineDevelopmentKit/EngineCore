@@ -25,61 +25,39 @@
 */
 
 #pragma once
-#ifndef __EDK_BGFX_COMMANDLIST_H__
-#define __EDK_BGFX_COMMANDLIST_H__
+#ifndef __EDK_BGFX_RENDERTARGET_H__
+#define __EDK_BGFX_RENDERTARGET_H__
 
-#include "math/scalar/matrix4.h"
-
-#include "common/types.h"
-
-#include "gfx/abstract/gfxCommandList.h"
 #include "gfx/abstract/gfxRenderTarget.h"
-#include "gfx/abstract/gfxShaderProgram.h"
 
-#include <mutex>
-#include <string>
+#include <bgfx/bgfx.h>
 
 namespace EDK
 {
     namespace Graphics
     {
-        class BgfxManager;
-
-        class BgfxGraphicsCommandList :
-            public GraphicsCommandList
+        class BgfxFrameBuffer : public FrameBuffer
         {
             friend class BgfxManager;
         public:
 
-            BgfxGraphicsCommandList();
+            BgfxFrameBuffer();
 
-            virtual void BeginRecording( const FrameBuffer *rtv, const ViewPort &viewPort, const ClearStrategy &cstrat,
-                                         const Matrix4f &viewm, const Matrix4f &projm, const Scissor &scissor );
-            virtual void EndRecording();
-
-            virtual void SetVertexBuffer( const VertexBuffer *vb ) override;
-            virtual void SetVertexBufferRange( const VertexBuffer *vb, U32 start, U32 num ) override;
-
-            virtual void SetIndexBuffer( const IndexBuffer * ) override;
-            virtual void SetIndexBufferRange( const IndexBuffer *, U32 start, U32 num ) override;
-
-            virtual void SetPipelineState( const GraphicsPipelineState *pso ) override;
-
-            virtual void Submit( U32 sortKey = 0 ) override;
+            bgfx::FrameBufferHandle GetHandle() const;
 
         public:
-
-            void Init( const std::string &name );
 
             // Required by the object pool
             virtual void OnInit() override;
             virtual void OnRelease() override;
 
+        protected:
+
+            void Init( bgfx::FrameBufferHandle handle );
+
         private:
 
-            U32 mDrawCalls;
-            std::string mName;
-            const GraphicsShaderProgram *mActiveProgram;
+            bgfx::FrameBufferHandle mHandle;
         };
     }
 }

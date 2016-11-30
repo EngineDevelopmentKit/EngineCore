@@ -38,28 +38,32 @@ namespace EDK
     namespace Graphics
     {
         struct StencilTest;
-        
+
         enum class CullMode;
         enum class InputPrimitives;
         enum class TriangleFaceMode;
         enum class ComparisonOperation;
-    	enum class AttributeType;
+        enum class AttributeType;
         enum class BlendSource;
         enum class BlendOperation;
-    	enum class Interface;
-        
+        enum class Interface;
+
         bool IsNormalizedAttribType( const AttributeType type );
+
+        U16 GetBgfxClearFlags( U32 engineFlags );
 
         U32 GetBgfxStencilFlags( const StencilTest &stencil );
         U32 GetBgfxRenderType( const Interface interf );
         U32 GetBgfxResetFlags( const U32 swapChainFlags );
-        
+
         U64 GetBgfxBlendFunc( BlendOperation bop );
         U64 GetBgfxBlendSource( BlendSource bsource );
         U64 GetBgfxDepthTest( ComparisonOperation op );
         U64 GetBgfxCullMode( CullMode mode, TriangleFaceMode trimode );
         U64 GetBgfxPrimitiveFlags( InputPrimitives iprim );
-        
+
+
+
         bgfx::Attrib::Enum GetBgfxAttrib( const ShaderAttribute attribute );
         bgfx::AttribType::Enum GetBgfxAttribType( const AttributeType type );
         bgfx::VertexDecl GetBgfxVertexDecl( const BufferLayoutDecl &layout );

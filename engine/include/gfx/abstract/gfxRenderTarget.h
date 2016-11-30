@@ -83,7 +83,6 @@ namespace EDK
             DataFormat renderTargetFormat;
         };
 
-
         struct RenderTargetState
         {
             RenderTargetState();
@@ -101,6 +100,59 @@ namespace EDK
             BlendOperation alphaBlendOp;
 
             RenderTarget renderTargets[GFX_MAX_RENDERTARGETS];
+        };
+
+        struct ViewPort
+        {
+            ViewPort();
+            ViewPort( U32 x, U32 y, U32 w, U32 h );
+
+            U32 x;
+            U32 y;
+            U32 width;
+            U32 height;
+        };
+
+        struct Scissor
+        {
+            Scissor();
+            Scissor( U32 x, U32 y, U32 w, U32 h );
+
+            U32 x;
+            U32 y;
+            U32 width;
+            U32 height;
+        };
+
+        enum ClearChannel
+        {
+            ClearColour = 0x01,
+            ClearDepth  = 0x02,
+            ClearStencil = 0x04
+        };
+
+        struct ClearStrategy
+        {
+            ClearStrategy();
+            ClearStrategy( U32 flags, U32 colour, F32 depth, U8 stencil );
+
+            U32 flags;
+            U32 colour;
+            F32 depth;
+            U8  stencil;
+        };
+
+        class FrameBuffer
+        {
+        public:
+
+            virtual ~FrameBuffer();
+
+        public:
+
+            // Required by the object pool
+            virtual void OnInit() = 0;
+            virtual void OnRelease() = 0;
         };
     }
 }

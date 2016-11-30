@@ -28,10 +28,17 @@
 #ifndef __EDK_GFX_COMMANDLIST_H__
 #define __EDK_GFX_COMMANDLIST_H__
 
+#include "math/scalar/matrix4.h"
+
 namespace EDK
 {
     namespace Graphics
     {
+        struct Scissor;
+        struct ViewPort;
+        struct ClearStrategy;
+
+        class FrameBuffer;
         class IndexBuffer;
         class VertexBuffer;
         class GraphicsPipelineState;
@@ -56,7 +63,8 @@ namespace EDK
 
             virtual ~GraphicsCommandList() {}
 
-            virtual void BeginRecording() = 0;
+            virtual void BeginRecording( const FrameBuffer *rtv, const ViewPort &viewPort, const ClearStrategy &cstrat,
+                                         const Matrix4f &viewm, const Matrix4f &projm, const Scissor &scissor ) = 0;
             virtual void EndRecording() = 0;
 
             virtual void SetVertexBuffer( const VertexBuffer * ) = 0;

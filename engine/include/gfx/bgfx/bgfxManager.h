@@ -74,7 +74,7 @@ namespace EDK
             virtual const GraphicsShaderProgram *CreateShaderProgram( const VertexShaderBlob *vs,
                                                                       const PixelShaderBlob *ps ) override;
 
-            virtual GraphicsCommandList *CreateGraphicsCommandList() override;
+            virtual GraphicsCommandList *CreateGraphicsCommandList( const std::string &name = "Undefined" ) override;
 
             virtual const SwapChain *GetMainWindow() override;
 

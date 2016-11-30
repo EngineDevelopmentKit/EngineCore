@@ -4,6 +4,30 @@
 #include "gfx/abstract/gfxSwapChain.h"
 #include "api/console.h"
 
+#include "common/util.h"
+
+U16 EDK::Graphics::GetBgfxClearFlags( U32 engineFlags )
+{
+    U16 flags = 0;
+
+    if ( IS_SET( engineFlags, ClearChannel::ClearColour ) )
+    {
+        flags |= BGFX_CLEAR_COLOR;
+    }
+
+    if ( IS_SET( engineFlags, ClearChannel::ClearDepth ) )
+    {
+        flags |= BGFX_CLEAR_DEPTH;
+    }
+
+    if ( IS_SET( engineFlags, ClearChannel::ClearStencil ) )
+    {
+        flags |= BGFX_CLEAR_STENCIL;
+    }
+
+    return flags;
+}
+
 U32 EDK::Graphics::GetBgfxStencilFlags( const StencilTest &stencil )
 {
     U32 flags = 0;

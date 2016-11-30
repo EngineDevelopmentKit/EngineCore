@@ -210,30 +210,22 @@ void EDK::MainLoop( S32 argc, char **argv )
             initBgfx = false;
         }
 
-
-        // Setup the command list for recording
-        commandList->BeginRecording();
-
-        // TEMP
-        // Set view 0 default viewport.
-        bgfx::setViewRect( 0, 0, 0, uint16_t( width ), uint16_t( height ) );
-
-        bgfx::dbgTextClear();
-        bgfx::dbgTextPrintf( 0, 0, 0x4f, "bgfx/examples/01-cube" );
-        bgfx::dbgTextPrintf( 0, 1, 0x6f, "Description: Rendering simple static mesh." );
-        bgfx::dbgTextPrintf( 0, 2, 0x0f, String::Place( "Fps: {:.0f}", 1 / time.GetEasedDeltaTime() ).c_str() );
-        bgfx::dbgTextPrintf( 0, 3, 0x0f, String::Place( "Mspf: {:f}", time.GetEasedDeltaTime() ).c_str() );
-
         Vec3f at = { 0.0f, 0.0f, 0.0f };
         Vec3f eye = { 0.0f, 0.0f, -35.0f };
 
         Matrix4f view = gfxManager->LookAtMatrix( eye, at );
         Matrix4f proj = gfxManager->ProjMatrix( 60.0f, width, height, 0.1f, 100.0f );
 
-        bgfx::setViewTransform( 0, view.Data(), proj.Data() );
+        // Setup the command list for recording
+        commandList->BeginRecording( nullptr, ViewPort( 0, 0, width, height ),
+                                     ClearStrategy( ClearChannel::ClearColour | ClearChannel::ClearDepth, 0x303030ff, 1.0f, 0 ),
+                                     view, proj, Scissor() );
 
-        // Set view 0 default viewport.
-        bgfx::setViewRect( 0, 0, 0, uint16_t( width ), uint16_t( height ) );
+        bgfx::dbgTextClear();
+        bgfx::dbgTextPrintf( 0, 0, 0x4f, "bgfx/examples/01-cube" );
+        bgfx::dbgTextPrintf( 0, 1, 0x6f, "Description: Rendering simple static mesh." );
+        bgfx::dbgTextPrintf( 0, 2, 0x0f, String::Place( "Fps: {:.0f}", 1 / time.GetEasedDeltaTime() ).c_str() );
+        bgfx::dbgTextPrintf( 0, 3, 0x0f, String::Place( "Mspf: {:f}", time.GetEasedDeltaTime() ).c_str() );
 
         // Set vertex and index buffer.
         commandList->SetVertexBuffer( vertexBuffer );

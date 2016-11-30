@@ -28,9 +28,9 @@
 #ifndef __EDK_GFX_PIPELINE_STATE_H__
 #define __EDK_GFX_PIPELINE_STATE_H__
 
-#include "gfx/gfxRenderTarget.h"
 #include "gfx/gfxRasterizerState.h"
 #include "gfx/gfxDepthStencilState.h"
+#include "gfx/abstract/gfxRenderTarget.h"
 
 namespace EDK
 {

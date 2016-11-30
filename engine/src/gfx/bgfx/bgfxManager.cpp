@@ -219,7 +219,7 @@ const EDK::Graphics::GraphicsPipelineState *EDK::Graphics::BgfxManager::CreatePi
 
     bgfxStateFlags |= BGFX_STATE_BLEND_EQUATION_SEPARATE( GetBgfxBlendFunc( desc.renderTargetState.blendOp ),
                                                           GetBgfxBlendFunc( desc.renderTargetState.alphaBlendOp ) );
-    
+
     U32 bgfxFrontStencilFlags = 0;
     U32 bgfxBackStencilFlags = 0;
 
@@ -227,13 +227,14 @@ const EDK::Graphics::GraphicsPipelineState *EDK::Graphics::BgfxManager::CreatePi
     {
         // store in lower half
         bgfxFrontStencilFlags |= GetBgfxStencilFlags( desc.depthStencilState.frontFaceStencilTest );
-        
+
         // store in upper half
         bgfxBackStencilFlags |= GetBgfxStencilFlags( desc.depthStencilState.backFaceStencilTest );
     }
 
     GraphicsPipelineState *ps = mPipelineStatePool->Get();
-    static_cast<BgfxGraphicsPipelineState *>( ps )->Init( desc, gsp, bgfxStateFlags, bgfxFrontStencilFlags, bgfxBackStencilFlags );
+    static_cast<BgfxGraphicsPipelineState *>( ps )->Init( desc, gsp, bgfxStateFlags, bgfxFrontStencilFlags,
+                                                          bgfxBackStencilFlags );
 
     return ps;
 }
@@ -260,11 +261,14 @@ const EDK::Graphics::GraphicsShaderProgram *EDK::Graphics::BgfxManager::CreateSh
 }
 
 
-EDK::Graphics::GraphicsCommandList *EDK::Graphics::BgfxManager::CreateGraphicsCommandList()
+EDK::Graphics::GraphicsCommandList *EDK::Graphics::BgfxManager::CreateGraphicsCommandList( const std::string &name )
 {
     std::lock_guard<std::mutex> lock( mMutex );
 
-    return mGraphicsCommandListPool->Get();
+    GraphicsCommandList *commandList = mGraphicsCommandListPool->Get();
+    static_cast<BgfxGraphicsCommandList *>( commandList )->Init( name );
+
+    return commandList;
 }
 
 const EDK::Graphics::SwapChain *EDK::Graphics::BgfxManager::GetMainWindow()

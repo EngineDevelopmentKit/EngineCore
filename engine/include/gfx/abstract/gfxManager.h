@@ -17,6 +17,8 @@
 
 #include "math/scalar/matrix4.h"
 
+#include <string>
+
 namespace EDK
 {
     struct VideoSwitchEvent : public IEvent
@@ -45,7 +47,7 @@ namespace EDK
             virtual const VertexShaderBlob *CreateVertexShaderBlob( void *memory, size_t memSize ) = 0;
             virtual const GraphicsShaderProgram *CreateShaderProgram( const VertexShaderBlob *vs, const PixelShaderBlob *ps ) = 0;
 
-            virtual GraphicsCommandList *CreateGraphicsCommandList() = 0;
+            virtual GraphicsCommandList *CreateGraphicsCommandList( const std::string &name ) = 0;
 
             virtual const SwapChain *GetMainWindow() = 0;
         };
