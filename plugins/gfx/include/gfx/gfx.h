@@ -28,8 +28,6 @@
 #ifndef __EDK_BGFX_GFX_H__
 #define __EDK_BGFX_GFX_H__
 
-using namespace EDK::Graphics;
-
 #include "common/deltaTime.h"
 
 #include "plugin/plugin.h"

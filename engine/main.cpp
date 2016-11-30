@@ -28,31 +28,23 @@
 
 #include "common/program.h"
 
-#include "api/controller.h"
-#include "api/plugin.h"
-
-#include "mainloop.h"
-
-#include <stdlib.h>
-
-#include "window/abstract/windowStyle.h"
-#include "window/sfmlWindowManager.h"
-#include "gfx/bgfx/bgfxManager.h"
-
-
+#include "gfx/gfx.h"
 
 #include "api/event.h"
+#include "api/plugin.h"
 #include "api/controller.h"
 
 #include "common/file.h"
 #include "common/program.h"
 #include "common/deltaTime.h"
 
-#include "math/scalar/vec2i.h"
 #include "math/scalar/vec3.h"
+#include "math/scalar/vec2i.h"
 #include "math/scalar/matrix4.h"
 
+#include "window/window.h"
 #include "window/sfmlWindowManager.h"
+#include "window/abstract/windowStyle.h"
 
 #include "gfx/bgfx/bgfxManager.h"
 #include "gfx/bgfx/bgfxIndexBuffer.h"
@@ -60,9 +52,6 @@
 #include "gfx/bgfx/bgfxCommandList.h"
 #include "gfx/bgfx/bgfxShaderBlob.h"
 #include "gfx/bgfx/bgfxShaderProgram.h"
-
-#include "window/window.h"
-#include "gfx/gfx.h"
 
 // TEMP
 #include <bx/bx.h>
@@ -72,6 +61,7 @@
 // END TEMP
 
 #include <iostream>
+#include <stdlib.h>
 
 using namespace EDK::Graphics;
 
@@ -225,13 +215,14 @@ S32 main( S32 argc, char **argv )
             initBgfx = false;
         }
 
-
+        Vec3f at = { 0.0f, 0.0f, 0.0f };
+        Vec3f eye = { 0.0f, 0.0f, -35.0f };
+        Matrix4f view = gfxManager->LookAtMatrix( eye, at );
+        Matrix4f proj = gfxManager->ProjMatrix( 60.0f, width, height, 0.1f, 100.0f );
         // Setup the command list for recording
-        commandList->BeginRecording();
-
-        // TEMP
-        // Set view 0 default viewport.
-        bgfx::setViewRect( 0, 0, 0, uint16_t( width ), uint16_t( height ) );
+        commandList->BeginRecording( nullptr, ViewPort( 0, 0, width, height ),
+                                     ClearStrategy( ClearChannel::ClearColour | ClearChannel::ClearDepth, 0x303030ff, 1.0f, 0 ),
+                                     view, proj, Scissor() );
 
         bgfx::dbgTextClear();
         bgfx::dbgTextPrintf( 0, 0, 0x4f, "bgfx/examples/01-cube" );
@@ -239,16 +230,6 @@ S32 main( S32 argc, char **argv )
         bgfx::dbgTextPrintf( 0, 2, 0x0f, String::Place( "Fps: {:.0f}", 1 / time.GetEasedDeltaTime() ).c_str() );
         bgfx::dbgTextPrintf( 0, 3, 0x0f, String::Place( "Mspf: {:f}", time.GetEasedDeltaTime() ).c_str() );
 
-        Vec3f at = { 0.0f, 0.0f, 0.0f };
-        Vec3f eye = { 0.0f, 0.0f, -35.0f };
-
-        Matrix4f view = gfxManager->LookAtMatrix( eye, at );
-        Matrix4f proj = gfxManager->ProjMatrix( 60.0f, width, height, 0.1f, 100.0f );
-
-        bgfx::setViewTransform( 0, view.Data(), proj.Data() );
-
-        // Set view 0 default viewport.
-        bgfx::setViewRect( 0, 0, 0, uint16_t( width ), uint16_t( height ) );
 
         // Set vertex and index buffer.
         commandList->SetVertexBuffer( vertexBuffer );

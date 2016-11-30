@@ -23,11 +23,3 @@
 *
 * @endcond
 */
-        Vec3f at = { 0.0f, 0.0f, 0.0f };
-        Vec3f eye = { 0.0f, 0.0f, -35.0f };
-        Matrix4f view = gfxManager->LookAtMatrix( eye, at );
-        Matrix4f proj = gfxManager->ProjMatrix( 60.0f, width, height, 0.1f, 100.0f );
-        // Setup the command list for recording
-        commandList->BeginRecording( nullptr, ViewPort( 0, 0, width, height ),
-                                     ClearStrategy( ClearChannel::ClearColour | ClearChannel::ClearDepth, 0x303030ff, 1.0f, 0 ),
-                                     view, proj, Scissor() );

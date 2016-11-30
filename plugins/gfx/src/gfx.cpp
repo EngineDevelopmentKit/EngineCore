@@ -30,6 +30,7 @@
 
 #include "gfx/gfx.h"
 
+using namespace EDK::Graphics;
 
 void GraphicsPlugin::OnInit()
 {

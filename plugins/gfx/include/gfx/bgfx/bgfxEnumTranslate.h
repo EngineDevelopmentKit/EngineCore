@@ -62,8 +62,6 @@ namespace EDK
         U64 GetBgfxCullMode( CullMode mode, TriangleFaceMode trimode );
         U64 GetBgfxPrimitiveFlags( InputPrimitives iprim );
 
-
-
         bgfx::Attrib::Enum GetBgfxAttrib( const ShaderAttribute attribute );
         bgfx::AttribType::Enum GetBgfxAttribType( const AttributeType type );
         bgfx::VertexDecl GetBgfxVertexDecl( const BufferLayoutDecl &layout );
