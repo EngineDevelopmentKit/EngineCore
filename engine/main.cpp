@@ -54,10 +54,10 @@
 #include "gfx/bgfx/bgfxShaderProgram.h"
 
 // TEMP
-#include <bx/bx.h>
-#include <bx/fpumath.h>
-#include <bgfx/bgfx.h>
-#include <bgfx/bgfxplatform.h>
+//#include <bx/bx.h>
+//#include <bx/fpumath.h>
+//#include <bgfx/bgfx.h>
+//#include <bgfx/bgfxplatform.h>
 // END TEMP
 
 #include <iostream>
@@ -100,6 +100,31 @@ static uint16_t s_cubeIndices[36] =
     2, 3, 6, // 10
     6, 3, 7,
 };
+
+std::vector<char> ReadBinShader( const std::string &location )
+{
+    EDK::Graphics::BgfxManager *gfxManager = Controller::Get<EDK::Graphics::BgfxManager>();
+
+    std::ifstream s_stream;
+    std::vector<char> s_buffer;
+
+    File::ReadOpen( s_stream, location.c_str(), Path::Type::Program, std::ios::binary | std::ios::ate );
+
+    const VertexShaderBlob *vsblob = nullptr;
+
+    if ( s_stream.is_open() )
+    {
+        std::streamsize size = s_stream.tellg();
+        s_stream.seekg( 0, std::ios::beg );
+        s_buffer.resize( size );
+
+        s_stream.read( s_buffer.data(), size );
+
+        s_stream.close();
+    }
+
+    return s_buffer;
+}
 
 
 S32 main( S32 argc, char **argv )
@@ -158,9 +183,6 @@ S32 main( S32 argc, char **argv )
             // Enable debug text.
             bgfx::setDebug( debug );
 
-            // Set view 0 clear state.
-            bgfx::setViewClear( 0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0 );
-
             BufferLayoutDecl vertexLayout;
             vertexLayout.Add( ShaderAttribute::Position, GpuDataFormat( RGBAView( 3, AttributeType::FLOAT_32 ) ) );
             vertexLayout.Add( ShaderAttribute::Color0, GpuDataFormat( RGBAView( 4, AttributeType::UINT_NORM_8 ) ) );
@@ -173,38 +195,10 @@ S32 main( S32 argc, char **argv )
 
             commandList = gfxManager->CreateGraphicsCommandList();
 
-            std::ifstream vs_stream, fs_stream;
-            File::ReadOpen( vs_stream, "vs_cubes.bin", Path::Type::Program, std::ios::binary | std::ios::ate );
-            File::ReadOpen( fs_stream, "fs_cubes.bin", Path::Type::Program, std::ios::binary | std::ios::ate );
-
-            if ( vs_stream.is_open() )
-            {
-                std::streamsize size = vs_stream.tellg();
-                vs_stream.seekg( 0, std::ios::beg );
-                vs_buffer.resize( size );
-
-                if ( vs_stream.read( vs_buffer.data(), size ) )
-                {
-                    vsblob = gfxManager->CreateVertexShaderBlob( vs_buffer.data(), size );
-                }
-
-                vs_stream.close();
-            }
-
-            if ( fs_stream.is_open() )
-            {
-                std::streamsize size = fs_stream.tellg();
-                fs_stream.seekg( 0, std::ios::beg );
-
-                fs_buffer.resize( size );
-
-                if ( fs_stream.read( fs_buffer.data(), size ) )
-                {
-                    psblob = gfxManager->CreateVertexShaderBlob( fs_buffer.data(), size );
-                }
-
-                fs_stream.close();
-            }
+            vs_buffer = ReadBinShader( "vs_cubes.bin" );
+            fs_buffer = ReadBinShader( "fs_cubes.bin" );
+            vsblob = gfxManager->CreateVertexShaderBlob( vs_buffer.data(), vs_buffer.size() );
+            psblob = gfxManager->CreateVertexShaderBlob( fs_buffer.data(), fs_buffer.size() );
 
             shaderProgram = gfxManager->CreateShaderProgram( vsblob, psblob );
 
@@ -219,16 +213,17 @@ S32 main( S32 argc, char **argv )
         Vec3f eye = { 0.0f, 0.0f, -35.0f };
         Matrix4f view = gfxManager->LookAtMatrix( eye, at );
         Matrix4f proj = gfxManager->ProjMatrix( 60.0f, width, height, 0.1f, 100.0f );
+
         // Setup the command list for recording
         commandList->BeginRecording( nullptr, ViewPort( 0, 0, width, height ),
                                      ClearStrategy( ClearChannel::ClearColour | ClearChannel::ClearDepth, 0x303030ff, 1.0f, 0 ),
                                      view, proj, Scissor() );
 
-        bgfx::dbgTextClear();
-        bgfx::dbgTextPrintf( 0, 0, 0x4f, "bgfx/examples/01-cube" );
-        bgfx::dbgTextPrintf( 0, 1, 0x6f, "Description: Rendering simple static mesh." );
-        bgfx::dbgTextPrintf( 0, 2, 0x0f, String::Place( "Fps: {:.0f}", 1 / time.GetEasedDeltaTime() ).c_str() );
-        bgfx::dbgTextPrintf( 0, 3, 0x0f, String::Place( "Mspf: {:f}", time.GetEasedDeltaTime() ).c_str() );
+        //bgfx::dbgTextClear();
+        //bgfx::dbgTextPrintf( 0, 0, 0x4f, "bgfx/examples/01-cube" );
+        //bgfx::dbgTextPrintf( 0, 1, 0x6f, "Description: Rendering simple static mesh." );
+        //bgfx::dbgTextPrintf( 0, 2, 0x0f, String::Place( "Fps: {:.0f}", 1 / time.GetEasedDeltaTime() ).c_str() );
+        //bgfx::dbgTextPrintf( 0, 3, 0x0f, String::Place( "Mspf: {:f}", time.GetEasedDeltaTime() ).c_str() );
 
 
         // Set vertex and index buffer.
@@ -236,10 +231,11 @@ S32 main( S32 argc, char **argv )
         commandList->SetIndexBuffer( indexBuffer );
         commandList->SetPipelineState( pipelineSate );
 
+
         // Submit 11x11 cubes.
-        for ( uint32_t yy = 0; yy < 11; ++yy )
+        for ( U32 yy = 0; yy < 11; ++yy )
         {
-            for ( uint32_t xx = 0; xx < 11; ++xx )
+            for ( U32 xx = 0; xx < 11; ++xx )
             {
                 Matrix4f mtxf;
                 mtxf.SetIdentity();
@@ -247,13 +243,10 @@ S32 main( S32 argc, char **argv )
                 mtxf[3][1] = -15.0f + float( yy ) * 3.0f;
                 mtxf[3][2] = 0.0f;
 
-                // Set model matrix for rendering.
-                bgfx::setTransform( mtxf.Data() );
-
                 // Submit primitive for rendering to view 0.
                 if ( shaderProgram )
                 {
-                    commandList->Submit();
+                    commandList->Submit( &mtxf );
                 }
             }
         }

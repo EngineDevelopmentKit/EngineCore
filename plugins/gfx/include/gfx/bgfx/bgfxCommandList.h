@@ -65,7 +65,7 @@ namespace EDK
 
             virtual void SetPipelineState( const GraphicsPipelineState *pso ) override;
 
-            virtual void Submit( U32 sortKey = 0 ) override;
+            virtual void Submit( const Matrix4f *matrices, U32 numMatrices, U32 sortKey = 0 ) override;
 
         public:
 

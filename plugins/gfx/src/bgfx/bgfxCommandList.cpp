@@ -94,10 +94,16 @@ void EDK::Graphics::BgfxGraphicsCommandList::SetPipelineState( const GraphicsPip
     bgfx::setStencil( bpso->GetBgfxFrontStencilFlags(), bpso->GetBgfxBackStencilFlags() );
 }
 
-void EDK::Graphics::BgfxGraphicsCommandList::Submit( U32 sortKey )
+void EDK::Graphics::BgfxGraphicsCommandList::Submit( const Matrix4f *matrices, U32 numMatrices, U32 sortKey )
 {
-    mDrawCalls += bgfx::submit( TEMP_VIEWID, static_cast<const BgfxShaderProgram *>( mActiveProgram )->GetProgramHandle(),
-                                sortKey, true );
+    // Set model matrix for rendering.
+    if ( matrices )
+    {
+        const U32 matrixCache = bgfx::setTransform( matrices->Data(), numMatrices );
+
+        mDrawCalls += bgfx::submit( TEMP_VIEWID, static_cast<const BgfxShaderProgram *>( mActiveProgram )->GetProgramHandle(),
+                                    sortKey, true );
+    }
 }
 
 

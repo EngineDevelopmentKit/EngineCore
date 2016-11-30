@@ -75,7 +75,7 @@ namespace EDK
 
             virtual void SetPipelineState( const GraphicsPipelineState *pso ) = 0;
 
-            virtual void Submit( U32 sortKey = 0 ) = 0;
+            virtual void Submit( const Matrix4f *matrices, U32 numMatrices = 1, U32 sortKey = 0 ) = 0;
         };
 
         class ComputeCommandList :
