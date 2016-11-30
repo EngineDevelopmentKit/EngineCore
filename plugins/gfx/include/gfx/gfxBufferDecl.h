@@ -39,7 +39,7 @@ namespace EDK
 {
     namespace Graphics
     {
-        enum ShaderAttribute 
+        enum ShaderAttribute
         {
             Position  = 0x01,
             Normal    = 0x02,

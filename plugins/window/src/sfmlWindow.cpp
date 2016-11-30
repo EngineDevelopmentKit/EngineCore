@@ -24,16 +24,15 @@
 * @endcond
 */
 
-#include "api/event.h"
+#include "window/abstract/windowEvents.h"
 
-#include "common/types.h"
+#include "window/sfmlWindow.h"
 
 #include "math/scalar/vec2i.h"
 
-#include "window/impl/sfmlWindow.h"
-#include "window/abstract/windowEvents.h"
+#include "common/types.h"
 
-#include <string>
+#include "api/event.h"
 
 EDK::SFMLWindow::SFMLWindow( U8 id ) : mWindowID( id )
 {

@@ -24,17 +24,16 @@
 * @endcond
 */
 
+#include "gfx/bgfx/bgfxManager.h"
 
-#pragma once
-#ifndef __EDK_MAINLOOP_H__
-#define __EDK_MAINLOOP_H__
+#include "api/controller.h"
 
-#include "common/types.h"
+#include "gfx/gfx.h"
 
-class Program;
 
-namespace EDK
+void GraphicsPlugin::OnInit()
 {
+    Controller::Add<BgfxManager>();
 }
 
-#endif
+SET_PLUGIN( GraphicsPlugin );

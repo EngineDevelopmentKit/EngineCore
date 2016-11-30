@@ -1,0 +1,23 @@
+{
+    "name": "EDK/GFX",
+    "requires": [
+        {   
+            "name": "Zefiros-Software/SFML",
+            "version": "@head"
+        },
+        {
+            "name": "Zefiros-Software/bx",
+            "version": "@head"
+        },
+        {
+            "name": "Zefiros-Software/bgfx",
+            "version": "@head"
+        }
+    ],
+    "plugins": [
+        {
+            "name": "EDK/Window",
+            "path": "..//window/"
+        }
+    ]
+}

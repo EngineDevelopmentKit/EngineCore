@@ -78,6 +78,8 @@ namespace EDK
 
             virtual const SwapChain *GetMainWindow() override;
 
+            bool IsDirty() const;
+
         protected:
 
             void Reinitialize( const SwapChainDesc &desc, const VideoCard &card, const Interface interf );

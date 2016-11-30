@@ -1,26 +1,33 @@
 {
-    "name": "Zefiros-Software/CoreLib",
+    "name": "Zefiros-Software/EDK",
+    "modules": [
+        {
+            "Zefiros-Software/Plugins": "@head"
+        }
+    ],
+    "requires": [
+        {
+            "name": "Zefiros-Software/CoreLib",
+            "version": "@head"
+        }
+    ],
     "dev": {
         "modules": [
             "Zefiros-Software/Zefiros-Defaults",
             "akaStiX/vsandroid"
         ],
-        "requires": [
-	    {
-                "name": "Zefiros-Software/CoreLib",
-                "version": "@head"
-            },
-            {   
-                "name": "Zefiros-Software/SFML",
-                "version": "@head"
+        "plugins": [
+            {
+                "name": "EDK/ECS",
+                "path": "plugins/ecs/"
             },
             {
-                "name": "Zefiros-Software/bx",
-                "version": "@head"
+                "name": "EDK/GFX",
+                "path": "plugins/gfx/"
             },
             {
-                "name": "Zefiros-Software/bgfx",
-                "version": "@head"
+                "name": "EDK/Window",
+                "path": "plugins/window/"
             }
         ]
     }

@@ -24,17 +24,50 @@
 * @endcond
 */
 
-
 #pragma once
-#ifndef __EDK_MAINLOOP_H__
-#define __EDK_MAINLOOP_H__
+#ifndef __EDK_BGFX_PIPELINE_STATE_H__
+#define __EDK_BGFX_PIPELINE_STATE_H__
 
-#include "common/types.h"
-
-class Program;
+#include "gfx/abstract/gfxPipelineState.h"
+#include "gfx/abstract/gfxShaderProgram.h"
 
 namespace EDK
 {
+    namespace Graphics
+    {
+        class BgfxGraphicsPipelineState : public GraphicsPipelineState
+        {
+            friend class BgfxManager;
+        public:
+
+            BgfxGraphicsPipelineState();
+
+            GraphicsPipelineStateDesc QueryDesc() const;
+            const GraphicsShaderProgram *GetShaderProgram() const;
+            U64 GetBgfxStateFlags() const;
+            U32 GetBgfxFrontStencilFlags() const;
+            U32 GetBgfxBackStencilFlags() const;
+
+        public:
+
+            // Required by the object pool
+            virtual void OnInit() override;
+            virtual void OnRelease() override;
+
+        protected:
+
+            void Init( const GraphicsPipelineStateDesc &desc, const GraphicsShaderProgram *gsp, U64 stateflags, U32 fstencil,
+                       U32 bstencil );
+
+        private:
+
+            GraphicsPipelineStateDesc mDesc;
+            const GraphicsShaderProgram *mShader;
+            U64 mBgfxStateFlags;
+            U32 mBgfxFrontStencilFlags;
+            U32 mBgfxBackStencilFlags;
+        };
+    }
 }
 
 #endif

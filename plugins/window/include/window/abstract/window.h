@@ -25,48 +25,50 @@
 */
 
 #pragma once
-#ifndef __EDK_BGFX_PIPELINE_STATE_H__
-#define __EDK_BGFX_PIPELINE_STATE_H__
+#ifndef __EDK_WINDOW_H__
+#define __EDK_WINDOW_H__
 
-#include "gfx/abstract/gfxPipelineState.h"
-#include "gfx/abstract/gfxShaderProgram.h"
+#include "common/types.h"
+
+#include "math/scalar/vec2i.h"
+
+#include "abstract/windowStyle.h"
+#include "abstract/windowHandle.h"
+
+#include <string>
 
 namespace EDK
 {
-    namespace Graphics
+    class IWindow
     {
-        class BgfxGraphicsPipelineState : public GraphicsPipelineState
-        {
-            friend class BgfxManager;
-        public:
+    public:
 
-            BgfxGraphicsPipelineState();
+        virtual ~IWindow() {}
 
-            GraphicsPipelineStateDesc QueryDesc() const;
-            const GraphicsShaderProgram *GetShaderProgram() const;
-    	    U64 GetBgfxStateFlags() const;
-            U32 GetBgfxFrontStencilFlags() const;
-            U32 GetBgfxBackStencilFlags() const;
-            
-        public:
+        virtual void Close() = 0;
+        virtual void Open( const Vec2I &size, const std::string &title, Window::Style style = Window::Style::Default ) = 0;
 
-            // Required by the object pool
-            virtual void OnInit() override;
-            virtual void OnRelease() override;
+        virtual bool IsOpen() const = 0;
 
-        protected:
+        virtual Vec2I GetSize() const = 0;
+        virtual Vec2I GetPosition() const = 0;
 
-            void Init( const GraphicsPipelineStateDesc &desc, const GraphicsShaderProgram *gsp, U64 stateflags, U32 fstencil, U32 bstencil );
+        virtual void SetSize( const Vec2I &v ) = 0;
+        virtual void SetPosition( const Vec2I &v ) = 0;
+        virtual void SetStyle( Window::Style style ) = 0;
 
-        private:
+        virtual void SetVisible( bool mode ) = 0;
+        virtual void SetCursorVisible( bool mode ) = 0;
 
-            GraphicsPipelineStateDesc mDesc;
-            const GraphicsShaderProgram *mShader;
-            U64 mBgfxStateFlags;
-            U32 mBgfxFrontStencilFlags;
-            U32 mBgfxBackStencilFlags;
-        };
-    }
+        virtual void SetIcon( const std::string &path ) = 0;
+        virtual void SetTitle( const std::string &title ) = 0;
+
+        virtual void Release() = 0;
+        virtual void ProcessEvents() = 0;
+
+        virtual NativeWindowHandle GetNativeWindowHandle() const = 0;
+
+    };
 }
 
 #endif

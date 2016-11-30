@@ -23,34 +23,26 @@
 -- @endcond
 --]]
 
-local vsandroid = require( "akaStiX/vsandroid", "@head" )
+vsandroid = require( "akaStiX/vsandroid", "@head" )
+plugins = require( "Zefiros-Software/Plugins", "@head" )
 
 workspace "EngineDevelopmentKit"
     
     configurations { "Debug", "Release", "OptimisedDebug" }
     
     startproject "Engine"
-    objdir "bin/obj/"
     
     vectorextensions "SSE"
     characterset "Unicode"
     warnings "Extra"
-    
     flags "C++11"
 
-    filter { "action:vs*" }
-        platforms { "x86_64", "x86" }
-     
-    filter { "action:vs*", "platforms:x86" }
-        targetdir "bin/x86/"
-        debugdir "bin/x86/"
-        architecture "x86"
-    
-    filter { "action:vs*", "platforms:x86_64" }
-        targetdir "bin/x86_64/"
-        debugdir "bin/x86_64/"
-        architecture "x86_64"
-      
+    objdir "bin/obj/"
+    targetdir "bin/"
+    debugdir "bin/"
+    platforms "x86_64"
+    architecture "x86_64"
+               
     filter "*Debug"
         targetsuffix "d"
         defines "DEBUG"
@@ -80,83 +72,6 @@ workspace "EngineDevelopmentKit"
         flags "LinkTimeOptimization"
        
     filter {}
-    
-    project "EngineCore"
-     
-        targetname "EngineCore"
-        location "engine/"
-        kind "StaticLib"             
-        
-        zpm.uses { 
-            "Zefiros-Software/CoreLib",
-            "Zefiros-Software/SFML",
-            "Zefiros-Software/bx",
-            "Zefiros-Software/bgfx" 
-            }
-        
-        includedirs "engine/include/"
-            
-        files { 
-           "engine/include/**.hpp",
-           "engine/include/**.h",
-           "engine/src/**.cpp"
-            }
-
-        filter "action:android"
-            androidapilevel(21)
-            cppstandard "c++11"
-		    stl "libc++"
-
-        filter {}
-                
-    project "Engine"
-
-        kind "WindowedApp"
-        location "engine/"
-        targetname "Engine" 
-    
-        links "EngineCore"
-        
-        zpm.uses { 
-            "Zefiros-Software/CoreLib",
-            "Zefiros-Software/SFML",
-            "Zefiros-Software/bx",
-            "Zefiros-Software/bgfx" 
-            }
-        
-        includedirs "engine/include/"
-        
-        files { 
-            "engine/main.cpp", 
-            "engine/**.rc"
-          } 
-
-        filter "action:vs*"
-            kind "WindowedApp"
-
-        filter "action:android"
-            kind "SharedLib"
-            androidapilevel(21)
-            cppstandard "c++11"
-		    stl "libc++"
-
-        filter {}
-
-if _ACTION == "android" then
-	project "Packaging"
-
-		kind "Packaging"
-		
-		links {
-			"Application",
-		}
-		
-		files {
-			"%{sln.location}/res/values/strings.xml",
-            "%{sln.location}/assets/**.*",
-		}
-		
-		symbolspath "%{sln.location}/obj/%{cfg.buildcfg}/Application"
-end
 
     
+dofile(".build.lua")

@@ -28,17 +28,17 @@
 #ifndef __EDK_SFML_WINDOWMANAGER_H__
 #define __EDK_SFML_WINDOWMANAGER_H__
 
+
+#include "window/abstract/windowManager.h"
+#include "window/abstract/windowHandle.h"
+#include "window/abstract/windowStyle.h"
+#include "window/abstract/window.h"
+
 #include "threading/spinlock.h"
 
-
-#include "window/abstract/window.h"
-#include "window/abstract/windowStyle.h"
-#include "window/abstract/windowHandle.h"
-#include "window/abstract/windowManager.h"
-
+#include <unordered_map>
 #include <stack>
 #include <mutex>
-#include <unordered_map>
 
 /// @addtogroup Windows
 /// @{
